@@ -1,4 +1,5 @@
 import logo from "../../assets/logo.png";
+import { Button } from "../button/button";
 import styles from './header.module.css';
 
 export function Header() {
@@ -12,7 +13,7 @@ export function Header() {
         Galaxy 1
       </div>
       <div className={styles.login}>
-        
+        <Button onClick={() => {}}>Admin Login</Button>
       </div>
     </header>
   );

@@ -13,7 +13,7 @@ export function Header() {
         Galaxy 1
       </div>
       <div className={styles.login}>
-        <Button onClick={() => {}}>Admin Login</Button>
+        <Button onClick={() => {}}>Curator Login</Button>
       </div>
     </header>
   );

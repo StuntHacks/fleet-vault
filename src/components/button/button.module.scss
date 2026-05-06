@@ -9,6 +9,8 @@
     transition: background-color 150ms, box-shadow 150ms, border-color 150ms;
     box-shadow: 0 0 8px rgba(0, 0, 0, 0.3);
     border: 2px solid var(--color-primary);
+    display: inline-flex;
+    align-items: center;
 
     &:hover {
         background-color: var(--color-primary-hover);
@@ -36,5 +38,11 @@
             color: var(--color-primary-hover);
             box-shadow: none;
         }
+    }
+
+    span {
+        font-size: 0.75rem;
+        margin-left: 5px;
+        color: #fffc;
     }
 }

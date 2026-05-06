@@ -1,5 +1,6 @@
+import Footer from "../footer/footer";
 import Header from "../header/header";
-import styles from './baselayout.module.css';
+import styles from './baselayout.module.scss';
 
 interface BaseLayoutProps {
   children?: React.ReactNode;
@@ -9,7 +10,10 @@ export function BaseLayout({ children }: BaseLayoutProps) {
   return (
     <>
       <Header />
-      {children}
+      <main className={styles.main}>
+        {children}
+      </main>
+      <Footer />
     </>
   );
 }

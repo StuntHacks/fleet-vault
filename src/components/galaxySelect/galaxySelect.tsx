@@ -1,4 +1,4 @@
-import { useParams } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
 import { clsx } from "clsx"
 import styles from './galaxySelect.module.css';
 import data from '../../data.json';
@@ -22,9 +22,9 @@ export default function GalaxySelect() {
       Galaxy {id}
       <div className={styles.dropdown} onClick={(e) => { e.stopPropagation(); }}>
         {data.galaxies.map((g, index) => index + 1 === id ? undefined : (
-          <a key={index} href={`/g/${index + 1}`} className={clsx(styles.dropdownItem, { [styles.selected]: index + 1 === id })}>
+          <Link key={index} to={`/g/${index + 1}`} className={clsx(styles.dropdownItem, { [styles.selected]: index + 1 === id })}>
             Galaxy {index + 1}
-          </a>
+          </Link>
         ))}
       </div>
     </div>

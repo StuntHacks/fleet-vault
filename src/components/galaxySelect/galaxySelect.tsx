@@ -20,7 +20,7 @@ export default function GalaxySelect() {
       onClick={() => setShown(!shown)}
     >
       Galaxy {id}
-      <div className={styles.dropdown} onClick={(e) => { e.stopPropagation(); }}>
+      <div className={styles.dropdown}>
         {data.galaxies.map((g, index) => index + 1 === id ? undefined : (
           <Link key={index} to={`/g/${index + 1}`} className={clsx(styles.dropdownItem, { [styles.selected]: index + 1 === id })}>
             Galaxy {index + 1}

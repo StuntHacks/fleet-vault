@@ -1,8 +1,16 @@
 import logo from "../../assets/logo.png";
+import { adminLogin } from "../../lib/api";
+import { useAdminSession } from "../../lib/hooks";
 import { Button } from "../button/button";
+import GalaxySelect from "../galaxySelect/galaxySelect";
 import styles from './header.module.css';
 
-export function Header() {
+export default function Header() {
+  const session = useAdminSession();
+  const isAdmin = !!session;
+
+  console.log(session?.user.user_metadata)
+  
   return (
     <header className={styles.header}>
       <div className={styles.title}>
@@ -10,10 +18,14 @@ export function Header() {
         <h1>FleetVault</h1>
       </div>
       <div className={styles.galaxy}>
-        Galaxy 1
+        <GalaxySelect />
       </div>
       <div className={styles.login}>
-        <Button onClick={() => {}}>Curator Login</Button>
+        {isAdmin ? 
+          <Button variant="secondary" onClick={() => {}}>Advisor Explorer</Button> :
+          <Button variant="secondary" onClick={() => {adminLogin(window.prompt() || "")}}>Login</Button>
+        }
+        <Button onClick={() => {}}>Submit Solution</Button>
       </div>
     </header>
   );

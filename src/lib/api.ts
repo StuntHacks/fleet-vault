@@ -120,7 +120,10 @@ export async function getFlaggedSolutions(): Promise<Solution[]> {
 export async function adminLogin(token: string): Promise<void> {
   const res = await fetch(`${process.env.REACT_APP_SUPABASE_URL}/functions/v1/admin-login`, {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
+    headers: {
+      'Content-Type': 'application/json',
+      'apikey': process.env.REACT_APP_SUPABASE_ANON_KEY || "",
+    },
     body: JSON.stringify({ token }),
   });
 

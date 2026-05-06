@@ -19,6 +19,10 @@ code {
     monospace;
 }
 
+#root {
+  margin-top: 60px;
+}
+
 * {
   user-select: none;
 }

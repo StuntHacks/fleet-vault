@@ -1,12 +1,16 @@
-import styles from './App.module.css';
-import { Header } from './components/header/header';
+import { Routes, Route } from 'react-router-dom';
+import GalaxyView from './views/galaxy';
+import BattleView from './views/battle';
 
-function App() {
+export default function App() {
   return (
-    <>
-      <Header />
-    </>
+    <Routes>
+      <Route path="/" element={<GalaxyView />} />
+      <Route path="/g" element={<GalaxyView />} />
+      <Route path="/g/:galaxy" element={<GalaxyView />} />
+      <Route path="/g/:galaxy/b" element={<GalaxyView />} />
+      <Route path="/g/:galaxy/b/:battle" element={<BattleView />} />
+      <Route path="*" element={<GalaxyView />} />
+    </Routes>
   );
 }
-
-export default App;

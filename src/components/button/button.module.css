@@ -2,20 +2,39 @@
     background-color: var(--color-primary);
     border: none;
     color: white;
-    padding: 8px 15px;
+    padding: 6px 13px;
     border-radius: 10px;
     cursor: pointer;
     font-size: 1rem;
-    transition: background-color 150ms, box-shadow 150ms;
+    transition: background-color 150ms, box-shadow 150ms, border-color 150ms;
     box-shadow: 0 0 8px rgba(0, 0, 0, 0.3);
+    border: 2px solid var(--color-primary);
 
     &:hover {
         background-color: var(--color-primary-hover);
+        border-color: var(--color-primary-hover);
         box-shadow: 0 0 16px rgba(0, 0, 0, 0.3);
     }
 
     &:active {
-        background-color: var(--color-primary-active);
+        background-color: var(--color-primary-hover);
+        border-color: var(--color-primary-active);
         box-shadow: 0 0 8px rgba(0, 0, 0, 0.3);
+    }
+
+    &.secondary {
+        background-color: transparent;
+        color: var(--color-primary);
+        box-shadow: none;
+
+        &:hover {
+            color: var(--color-primary-hover);
+            box-shadow: none;
+        }
+
+        &:active {
+            color: var(--color-primary-hover);
+            box-shadow: none;
+        }
     }
 }

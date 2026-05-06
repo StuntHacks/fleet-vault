@@ -16,16 +16,26 @@ Deno.serve(async (req) => {
     return new Response('ok', { headers: corsHeaders });
   }
 
-  const { token } = await req.json();
+  console.log('Request received');
+  const raw = await req.text();
+  console.log('Raw body:', raw);
+
+  const { token } = JSON.parse(raw);
   if (!token) return new Response('Missing token', { status: 400, headers: corsHeaders });
 
   const hash = createHash('sha256').update(token).digest('hex');
 
+  console.log('Received token:', token);
+  console.log('Computed hash:', hash);
+
   const { data, error } = await serviceClient
     .from('admins')
-    .select('id, label')
+    .select('id, label, token_hash')
     .eq('token_hash', hash)
     .single();
+
+  console.log('DB row:', JSON.stringify(data));
+  console.log('DB error:', JSON.stringify(error));
 
   if (error || !data) return new Response('Invalid token', { status: 401, headers: corsHeaders });
 

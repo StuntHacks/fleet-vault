@@ -1,15 +1,15 @@
 {
   "files": {
     "main.css": "/fleet-vault/static/css/main.4fb66b9b.css",
-    "main.js": "/fleet-vault/static/js/main.c2f866ba.js",
+    "main.js": "/fleet-vault/static/js/main.82f2603a.js",
     "static/js/453.fc2f17c8.chunk.js": "/fleet-vault/static/js/453.fc2f17c8.chunk.js",
     "index.html": "/fleet-vault/index.html",
     "main.4fb66b9b.css.map": "/fleet-vault/static/css/main.4fb66b9b.css.map",
-    "main.c2f866ba.js.map": "/fleet-vault/static/js/main.c2f866ba.js.map",
+    "main.82f2603a.js.map": "/fleet-vault/static/js/main.82f2603a.js.map",
     "453.fc2f17c8.chunk.js.map": "/fleet-vault/static/js/453.fc2f17c8.chunk.js.map"
   },
   "entrypoints": [
     "static/css/main.4fb66b9b.css",
-    "static/js/main.c2f866ba.js"
+    "static/js/main.82f2603a.js"
   ]
 }

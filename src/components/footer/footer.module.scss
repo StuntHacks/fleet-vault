@@ -4,10 +4,12 @@
     top: 0;
     left: 0;
     width: 100%;
+    min-height: 40px;
     padding: 0.5rem 1rem;
     box-sizing: border-box;
     background-color: var(--color-glass);
-    backdrop-filter: blur(10px);
+    backdrop-filter: var(--glass-blur);
+    box-shadow: 0 0 4px rgba(0, 0, 0, 0.2);
 
     .version {
         flex-grow: 1;

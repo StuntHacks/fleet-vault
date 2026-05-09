@@ -136,16 +136,16 @@ export async function adminLogin(token: string): Promise<void> {
     refresh_token: session.refresh_token,
   });
 
-  localStorage.setItem('admin_label', adminLabel);
+  localStorage.setItem('fleetvault_admin_label', adminLabel);
 }
 
 async function setAdminContext(): Promise<void> {
-  const label = localStorage.getItem('admin_label') ?? 'unknown';
-  await supabase.rpc('set_config', { key: 'app.admin_label', value: label });
+  const label = localStorage.getItem('fleetvault_admin_label') ?? 'unknown';
+  await supabase.rpc('set_config', { key: 'app.fleetvault_admin_label', value: label });
 }
 
 export async function adminLogout(): Promise<void> {
   const { error } = await supabase.auth.signOut();
   if (error) throw error;
-  localStorage.removeItem('admin_label');
+  localStorage.removeItem('fleetvault_admin_label');
 }

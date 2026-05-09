@@ -2,7 +2,8 @@
   --color-primary: #5c85d6;
   --color-primary-hover: #4b6db1;
   --color-primary-active: #405d97;
-  --color-glass: #fffa;
+  --color-glass: #fff5;
+  --glass-blur: blur(10px);
 }
 
 body {
@@ -24,6 +25,7 @@ code {
   display: flex;
   flex-direction: column;
   min-height: 100vh;
+  max-height: 100vh;
   box-sizing: border-box;
 }
 

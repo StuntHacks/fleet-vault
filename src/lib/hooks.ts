@@ -20,7 +20,7 @@ export function useAdminSession() {
 export function useUsername(): string | null {
   const session = useAdminSession();
   if (!session) return null;
-  return localStorage.getItem('admin_label');
+  return localStorage.getItem('fleetvault_admin_label');
 }
 
 export function useBattles(galaxyId: number) {

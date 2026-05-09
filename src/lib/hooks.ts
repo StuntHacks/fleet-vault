@@ -5,7 +5,7 @@ import { getSolutionsForBattle, getBattlesForGalaxy, getGalaxy } from './api';
 import type { Solution, Galaxy } from './types';
 
 export function useAdminSession() {
-  const [session, setSession] = useState<Session | null>(null);
+  const [session, setSession] = useState<Session | null | undefined>(undefined);
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data }) => setSession(data.session));
@@ -15,6 +15,12 @@ export function useAdminSession() {
   }, []);
 
   return session;
+}
+
+export function useUsername(): string | null {
+  const session = useAdminSession();
+  if (!session) return null;
+  return localStorage.getItem('admin_label');
 }
 
 export function useBattles(galaxyId: number) {

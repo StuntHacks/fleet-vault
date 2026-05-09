@@ -1,3 +1,16 @@
 .footer {
-    
+    display: flex;
+    align-items: center;
+    top: 0;
+    left: 0;
+    width: 100%;
+    padding: 0.5rem 1rem;
+    box-sizing: border-box;
+    background-color: var(--color-glass);
+    backdrop-filter: blur(10px);
+
+    .version {
+        flex-grow: 1;
+        text-align: right;
+    }
 }

@@ -1,15 +1,16 @@
-import { useAdminSession } from "../../lib/hooks";
+import { useAdminSession, useUsername } from "../../lib/hooks";
 import styles from './footer.module.scss';
 
 export default function Footer() {
   const session = useAdminSession();
-  const isAdmin = !!session;
-
-  console.log(session?.user.user_metadata)
+  const username = useUsername();
   
   return (
     <div className={styles.footer}>
-      {process.env.REACT_APP_VERSION}
+      {username && !!session ? `Logged in as ${username} ` : ''}
+      <span className={styles.version}>
+        v{process.env.REACT_APP_VERSION} - report bugs in #wiki-stuff on the discord
+      </span>
     </div>
   );
 }

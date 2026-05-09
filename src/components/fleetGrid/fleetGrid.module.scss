@@ -1,0 +1,107 @@
+.wrapper {
+    width: 100%;
+}
+
+.grid {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-start;
+    justify-content: center;
+}
+
+.column {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.colLabel {
+    height: 1.5rem;
+    font-size: 0.85rem;
+    color: var(--color-text-secondary);
+    display: flex;
+    align-items: center;
+}
+
+.slot {
+    background-color: var(--color-grid-slot);
+    height: 50px;
+    width: 100px;
+    margin: 0.5rem;
+    background-position: center;
+    background-size: contain;
+    background-repeat: no-repeat;
+
+    @media screen and (max-width: 404px) {
+        margin: 0.1rem;
+    }
+}
+
+.shipsColumn {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    padding-top: 2.5rem;
+    margin-left: 1rem;
+    position: relative;
+
+    &:empty {
+        display: none;
+    }
+
+    @media screen and (max-width: 640px) {
+        width: 100%;
+        order: -1;
+        align-items: center;
+        margin: 0;
+    }
+}
+
+.shipsLabel {
+    position: absolute;
+    top: 0;
+    left: 0;
+    color: var(--color-text-secondary);
+    font-size: 0.85rem;
+    white-space: nowrap;
+
+    @media screen and (max-width: 640px) {
+        position: static;
+        text-align: center;
+        margin-bottom: 0.5rem;
+    }
+}
+
+.shipEntry {
+    margin-bottom: 1rem;
+}
+
+.shipTitle {
+    display: flex;
+    align-items: center;
+    font-weight: bold;
+}
+
+.shipTitleImg {
+    height: 30px;
+    object-fit: contain;
+    margin-left: 0.5rem;
+}
+
+.modList {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    font-size: 1rem;
+    display: flex;
+    align-items: center;
+}
+
+.modIcon {
+    display: inline-block;
+    width: 25px;
+    height: 25px;
+    margin-right: 0.3rem;
+    vertical-align: middle;
+    margin-top: -2px;
+}

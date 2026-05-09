@@ -1,0 +1,62 @@
+.wrapper {
+    position: relative;
+    width: 100%;
+    max-width: 600px;
+    padding-top: 1.5rem;
+}
+
+.label {
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    font-weight: bold;
+    white-space: nowrap;
+}
+
+.options {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 0.5rem;
+}
+
+.option {
+    display: flex;
+    align-items: center;
+    gap: 0 0.3rem;
+    font-size: 1rem;
+    cursor: pointer;
+    width: 110px;
+    justify-content: center;
+    flex-direction: column;
+    text-align: center;
+
+    input {
+        order: -1;
+    }
+}
+
+.bossOption {
+    flex-direction: row;
+    width: auto;
+
+    input {
+        margin-top: 5px;
+    }
+}
+
+.hazardNode {
+    display: flex;
+    align-items: center;
+    gap: 0.3rem;
+
+    input {
+        margin-top: 5px;
+    }
+}
+
+.hazardType {
+    color: var(--color-text-secondary);
+    font-size: 0.85rem;
+}

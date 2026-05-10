@@ -1,8 +1,8 @@
-import { WikiBattle } from '../../lib/wiki';
+import { Battle } from '../../lib/advisor';
 import styles from './hazardSelect.module.scss';
 
 interface HazardSelectProps {
-    battleData: WikiBattle;
+    battleData: Battle;
     hazardIds: string[];
     bossActive: boolean;
     onHazardChange: (id: string, checked: boolean) => void;

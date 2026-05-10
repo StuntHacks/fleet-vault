@@ -1,6 +1,6 @@
 import { clsx } from 'clsx';
 import icons from '../../assets/icons';
-import { GRID_IMAGES, MOD_MAP, ParsedAdvisor, shipImage, shipNameToClass, shipNameToDisplayName } from '../../lib/wiki';
+import { GRID_IMAGES, MOD_MAP, ParsedAdvisor, shipImage, shipNameToClass, shipNameToDisplayName } from '../../lib/advisor';
 import styles from './fleetGrid.module.scss';
 
 const GRID_COLUMNS = [

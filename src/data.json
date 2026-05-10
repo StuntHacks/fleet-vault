@@ -1,14 +1,1847 @@
 {
     "galaxies": [
-        [],
-        [],
-        [],
-        [],
-        [],
-        [],
-        [],
-        [],
-        [],
-        []
+        {
+            "id": "g1",
+            "name": "Galaxy 1",
+            "step": 0.025,
+            "maxStats": 2.75,
+            "minStats": 1,
+            "battles": [
+                {
+                    "name": "B1",
+                    "id": "g1_1_b1",
+                    "color": "red"
+                },
+                {
+                    "name": "B2",
+                    "id": "g1_2_b2",
+                    "color": "red"
+                },
+                {
+                    "name": "B3",
+                    "id": "g1_3_b3",
+                    "color": "red"
+                },
+                {
+                    "name": "B4",
+                    "id": "g1_4_b4",
+                    "color": "red"
+                },
+                {
+                    "name": "B5",
+                    "id": "g1_4_b5",
+                    "color": "red"
+                },
+                {
+                    "name": "B6",
+                    "id": "g1_6_b6",
+                    "color": "white",
+                    "boss": true
+                }
+            ]
+        },
+        {
+            "id": "g2",
+            "name": "Galaxy 2",
+            "step": 0.025,
+            "maxStats": 3.85,
+            "minStats": 1,
+            "battles": [
+                {
+                    "id": "g2_1_b1",
+                    "name": "B1",
+                    "color": "red"
+                },
+                {
+                    "id": "g2_2_b2",
+                    "name": "B2",
+                    "color": "red"
+                },
+                {
+                    "id": "g2_3_bb1",
+                    "name": "BB1",
+                    "color": "white",
+                    "boss": true
+                },
+                {
+                    "id": "g2_3_b3a",
+                    "name": "B3A",
+                    "color": "red"
+                },
+                {
+                    "id": "g2_3_b3b",
+                    "name": "B3B",
+                    "color": "red"
+                },
+                {
+                    "id": "g2_4_b4a",
+                    "name": "B4A",
+                    "color": "red"
+                },
+                {
+                    "id": "g2_4_b4b",
+                    "name": "B4B",
+                    "color": "red"
+                },
+                {
+                    "id": "g2_4_b5",
+                    "name": "B5",
+                    "color": "red"
+                },
+                {
+                    "id": "g2_6_b6a",
+                    "name": "B6A",
+                    "color": "red"
+                },
+                {
+                    "id": "g2_6_b6b",
+                    "name": "B6B",
+                    "color": "red"
+                },
+                {
+                    "id": "g2_7_b7",
+                    "name": "B7",
+                    "color": "red"
+                },
+                {
+                    "id": "g2_8_b8",
+                    "name": "B8",
+                    "color": "red"
+                },
+                {
+                    "id": "g2_10_b9",
+                    "name": "B9",
+                    "color": "white",
+                    "boss": true
+                }
+            ]
+        },
+        {
+            "id": "g3",
+            "name": "Galaxy 3",
+            "step": 0.025,
+            "maxStats": 3.85,
+            "minStats": 1,
+            "battles": [
+                {
+                    "id": "g3_1_b1",
+                    "name": "B1",
+                    "color": "red"
+                },
+                {
+                    "id": "g3_3_b2a",
+                    "name": "B2A",
+                    "color": "red"
+                },
+                {
+                    "id": "g3_3_b3a",
+                    "name": "B3A",
+                    "color": "red"
+                },
+                {
+                    "id": "g3_3_b2b",
+                    "name": "B2B",
+                    "color": "red"
+                },
+                {
+                    "id": "g3_3_b3b",
+                    "name": "B3B",
+                    "color": "red"
+                },
+                {
+                    "id": "g3_4_b4a",
+                    "name": "B4A",
+                    "color": "red"
+                },
+                {
+                    "id": "g3_4_b4b",
+                    "name": "B4B",
+                    "color": "red"
+                },
+                {
+                    "id": "g3_4_bb1",
+                    "name": "BB1",
+                    "color": "white",
+                    "boss": true
+                },
+                {
+                    "id": "g3_5_b5a",
+                    "name": "B5A",
+                    "color": "red"
+                },
+                {
+                    "id": "g3_5_b5b",
+                    "name": "B5B",
+                    "color": "red"
+                },
+                {
+                    "id": "g3_6_b6a",
+                    "name": "B6A",
+                    "color": "red"
+                },
+                {
+                    "id": "g3_6_b7a",
+                    "name": "B7A",
+                    "color": "red"
+                },
+                {
+                    "id": "g3_6_b6b",
+                    "name": "B6B",
+                    "color": "red"
+                },
+                {
+                    "id": "g3_6_b7b",
+                    "name": "B7B",
+                    "color": "red"
+                },
+                {
+                    "id": "g3_6_b8",
+                    "name": "B8",
+                    "color": "red"
+                },
+                {
+                    "id": "g3_7_b9",
+                    "name": "B9",
+                    "color": "red"
+                },
+                {
+                    "id": "g3_9_b10",
+                    "name": "B10",
+                    "color": "white",
+                    "boss": true
+                }
+            ]
+        },
+        {
+            "id": "g4",
+            "name": "Galaxy 4",
+            "step": 0.15,
+            "maxStats": 3.1,
+            "minStats": 1,
+            "battles": [
+                {
+                    "id": "g4_b1",
+                    "name": "B1",
+                    "color": "red"
+                },
+                {
+                    "id": "g4_b2",
+                    "name": "B2",
+                    "color": "red"
+                },
+                {
+                    "id": "g4_b3",
+                    "name": "B3",
+                    "color": "red"
+                },
+                {
+                    "id": "g4_b4",
+                    "name": "B4",
+                    "color": "red"
+                },
+                {
+                    "id": "g4_b5",
+                    "name": "B5",
+                    "color": "red"
+                },
+                {
+                    "id": "g4_b6",
+                    "name": "B6",
+                    "color": "red"
+                },
+                {
+                    "id": "g4_b7",
+                    "name": "B7",
+                    "color": "red"
+                },
+                {
+                    "id": "g4_b8",
+                    "name": "B8",
+                    "color": "red"
+                },
+                {
+                    "id": "g4_bb1",
+                    "name": "BB1",
+                    "color": "white",
+                    "boss": true
+                },
+                {
+                    "id": "g4_b9",
+                    "name": "B9",
+                    "color": "red"
+                },
+                {
+                    "id": "g4_b10",
+                    "name": "B10",
+                    "color": "red"
+                },
+                {
+                    "id": "g4_b11",
+                    "name": "B11",
+                    "color": "red"
+                },
+                {
+                    "id": "g4_b12",
+                    "name": "B12",
+                    "color": "red"
+                },
+                {
+                    "id": "g4_b13",
+                    "name": "B13",
+                    "color": "red"
+                },
+                {
+                    "id": "g4_b14",
+                    "name": "B14",
+                    "color": "red"
+                },
+                {
+                    "id": "g4_b15",
+                    "name": "B15",
+                    "color": "red"
+                },
+                {
+                    "id": "g4_bb2",
+                    "name": "BB2",
+                    "color": "white",
+                    "boss": true
+                },
+                {
+                    "id": "g4_b16",
+                    "name": "B16",
+                    "color": "red"
+                },
+                {
+                    "id": "g4_b17",
+                    "name": "B17",
+                    "color": "red"
+                },
+                {
+                    "id": "g4_b18",
+                    "name": "B18",
+                    "color": "red"
+                },
+                {
+                    "id": "g4_b19",
+                    "name": "B19",
+                    "color": "red"
+                },
+                {
+                    "id": "g4_b20",
+                    "name": "B20",
+                    "color": "red"
+                },
+                {
+                    "id": "g4_b21",
+                    "name": "B21",
+                    "color": "red"
+                },
+                {
+                    "id": "g4_b22",
+                    "name": "B22",
+                    "color": "red"
+                },
+                {
+                    "id": "g4_b23",
+                    "name": "B23",
+                    "color": "white",
+                    "boss": true
+                }
+            ]
+        },
+        {
+            "id": "g5",
+            "name": "Galaxy 5",
+            "step": 0.05,
+            "maxStats": 3.25,
+            "minStats": 1,
+            "battles": [
+                {
+                    "id": "g5_b1",
+                    "name": "B1",
+                    "color": "red"
+                },
+                {
+                    "id": "g5_b2",
+                    "name": "B2",
+                    "color": "red"
+                },
+                {
+                    "id": "g5_bb1",
+                    "name": "BB1",
+                    "color": "white",
+                    "boss": true,
+                    "hazard": [
+                        {
+                            "type": "Reinforcements",
+                            "node": "B6A",
+                            "id": "g5a_b6"
+                        },
+                        {
+                            "type": "Reinforcements",
+                            "node": "B6B",
+                            "id": "g5b_b6"
+                        }
+                    ]
+                },
+                {
+                    "id": "g5a_b3",
+                    "name": "B3A",
+                    "color": "red",
+                    "hazard": [
+                        {
+                            "type": "Reinforcements",
+                            "node": "B6A",
+                            "id": "g5a_b6"
+                        }
+                    ]
+                },
+                {
+                    "id": "g5a_b4",
+                    "name": "B4A",
+                    "color": "red",
+                    "hazard": [
+                        {
+                            "type": "Reinforcements",
+                            "node": "B6A",
+                            "id": "g5a_b6"
+                        }
+                    ]
+                },
+                {
+                    "id": "g5a_b5",
+                    "name": "B5A",
+                    "color": "red",
+                    "hazard": [
+                        {
+                            "type": "Reinforcements",
+                            "node": "B6A",
+                            "id": "g5a_b6"
+                        }
+                    ]
+                },
+                {
+                    "id": "g5a_b6",
+                    "name": "B6A",
+                    "color": "pink",
+                    "boss": true,
+                    "hazard": [
+                        {
+                            "type": "Reinforcements",
+                            "node": "B6A",
+                            "id": "g5a_b6"
+                        }
+                    ]
+                },
+                {
+                    "id": "g5a_b7",
+                    "name": "B7A",
+                    "color": "red"
+                },
+                {
+                    "id": "g5a_b8",
+                    "name": "B8A",
+                    "color": "red"
+                },
+                {
+                    "id": "g5a_b9",
+                    "name": "B9A",
+                    "color": "red",
+                    "hazard": [
+                        {
+                            "type": "Laser Volley",
+                            "node": "B11A",
+                            "id": "g5a_b11"
+                        }
+                    ]
+                },
+                {
+                    "id": "g5a_b10",
+                    "name": "B10A",
+                    "color": "red",
+                    "hazard": [
+                        {
+                            "type": "Laser Volley",
+                            "node": "B11A",
+                            "id": "g5a_b11"
+                        }
+                    ]
+                },
+                {
+                    "id": "g5a_b11",
+                    "name": "B11A",
+                    "color": "pink",
+                    "boss": true,
+                    "hazard": [
+                        {
+                            "type": "Laser Volley",
+                            "node": "B11A",
+                            "id": "g5a_b11"
+                        }
+                    ]
+                },
+                {
+                    "id": "g5a_b12",
+                    "name": "B12A",
+                    "color": "red"
+                },
+                {
+                    "id": "g5b_b3",
+                    "name": "B3B",
+                    "color": "red",
+                    "hazard": [
+                        {
+                            "type": "Reinforcements",
+                            "node": "B6B",
+                            "id": "g5b_b6"
+                        }
+                    ]
+                },
+                {
+                    "id": "g5b_b4",
+                    "name": "B4B",
+                    "color": "red",
+                    "hazard": [
+                        {
+                            "type": "Reinforcements",
+                            "node": "B6B",
+                            "id": "g5b_b6"
+                        }
+                    ]
+                },
+                {
+                    "id": "g5b_b5",
+                    "name": "B5B",
+                    "color": "red",
+                    "hazard": [
+                        {
+                            "type": "Reinforcements",
+                            "node": "B6B",
+                            "id": "g5b_b6"
+                        }
+                    ]
+                },
+                {
+                    "id": "g5b_b6",
+                    "name": "B6B",
+                    "color": "pink",
+                    "boss": true,
+                    "hazard": [
+                        {
+                            "type": "Reinforcements",
+                            "node": "B6B",
+                            "id": "g5b_b6"
+                        }
+                    ]
+                },
+                {
+                    "id": "g5b_b7",
+                    "name": "B7B",
+                    "color": "red"
+                },
+                {
+                    "id": "g5b_b8",
+                    "name": "B8B",
+                    "color": "red"
+                },
+                {
+                    "id": "g5b_b9",
+                    "name": "B9B",
+                    "color": "red",
+                    "hazard": [
+                        {
+                            "type": "Laser Volley",
+                            "node": "B11B",
+                            "id": "g5b_b11"
+                        }
+                    ]
+                },
+                {
+                    "id": "g5b_b10",
+                    "name": "B10B",
+                    "color": "red",
+                    "hazard": [
+                        {
+                            "type": "Laser Volley",
+                            "node": "B11B",
+                            "id": "g5b_b11"
+                        }
+                    ]
+                },
+                {
+                    "id": "g5b_b11",
+                    "name": "B11B",
+                    "color": "pink",
+                    "boss": true,
+                    "hazard": [
+                        {
+                            "type": "Laser Volley",
+                            "node": "B11B",
+                            "id": "g5b_b11"
+                        }
+                    ]
+                },
+                {
+                    "id": "g5b_b12",
+                    "name": "B12B",
+                    "color": "red"
+                },
+                {
+                    "id": "g5_b13",
+                    "name": "B13",
+                    "color": "red",
+                    "hazard": [
+                        {
+                            "type": "Laser Volley",
+                            "node": "B11A",
+                            "id": "g5a_b11"
+                        },
+                        {
+                            "type": "Laser Volley",
+                            "node": "B11B",
+                            "id": "g5b_b11"
+                        }
+                    ]
+                },
+                {
+                    "id": "g5_b14",
+                    "name": "B14",
+                    "color": "red",
+                    "hazard": [
+                        {
+                            "type": "Laser Volley",
+                            "node": "B11A",
+                            "id": "g5a_b11"
+                        },
+                        {
+                            "type": "Laser Volley",
+                            "node": "B11B",
+                            "id": "g5b_b11"
+                        }
+                    ]
+                },
+                {
+                    "id": "g5_b15",
+                    "name": "B15",
+                    "color": "red"
+                },
+                {
+                    "id": "g5_b16",
+                    "name": "B16",
+                    "color": "red",
+                    "hazard": [
+                        {
+                            "type": "Damage Per Second",
+                            "node": "B16",
+                            "id": "g5_b16"
+                        }
+                    ]
+                },
+                {
+                    "id": "g5_b17",
+                    "name": "B17",
+                    "color": "red",
+                    "hazard": [
+                        {
+                            "type": "Damage Per Second",
+                            "node": "B17",
+                            "id": "g5_b17"
+                        }
+                    ]
+                },
+                {
+                    "id": "g5_b18",
+                    "name": "B18",
+                    "color": "red"
+                },
+                {
+                    "id": "g5_b19",
+                    "name": "B19",
+                    "color": "red"
+                },
+                {
+                    "id": "g5_bb2",
+                    "name": "BB2",
+                    "color": "white"
+                },
+                {
+                    "id": "g5_b20",
+                    "name": "B20",
+                    "color": "red"
+                },
+                {
+                    "id": "g5_b21",
+                    "name": "B21",
+                    "color": "red",
+                    "hazard": [
+                        {
+                            "type": "Laser Volley",
+                            "node": "B23",
+                            "id": "g5_b23"
+                        },
+                        {
+                            "type": "Laser Volley",
+                            "node": "B25",
+                            "id": "g5_b25"
+                        }
+                    ]
+                },
+                {
+                    "id": "g5_b22",
+                    "name": "B22",
+                    "color": "red",
+                    "hazard": [
+                        {
+                            "type": "Laser Volley",
+                            "node": "B23",
+                            "id": "g5_b23"
+                        }
+                    ]
+                },
+                {
+                    "id": "g5_b23",
+                    "name": "B23",
+                    "color": "pink",
+                    "boss": true,
+                    "hazard": [
+                        {
+                            "type": "Laser Volley",
+                            "node": "B23",
+                            "id": "g5_b23"
+                        },
+                        {
+                            "type": "Reinforcements",
+                            "node": "B27",
+                            "id": "g5_b27"
+                        }
+                    ]
+                },
+                {
+                    "id": "g5_b24",
+                    "name": "B24",
+                    "color": "red",
+                    "hazard": [
+                        {
+                            "type": "Laser Volley",
+                            "node": "B25",
+                            "id": "g5_b25"
+                        }
+                    ]
+                },
+                {
+                    "id": "g5_b25",
+                    "name": "B25",
+                    "color": "pink",
+                    "boss": true,
+                    "hazard": [
+                        {
+                            "type": "Laser Volley",
+                            "node": "B25",
+                            "id": "g5_b25"
+                        },
+                        {
+                            "type": "Reinforcements",
+                            "node": "B27",
+                            "id": "g5_b27"
+                        }
+                    ]
+                },
+                {
+                    "id": "g5_b26",
+                    "name": "B26",
+                    "color": "red",
+                    "hazard": [
+                        {
+                            "type": "Laser Volley",
+                            "node": "B23",
+                            "id": "g5_b23"
+                        },
+                        {
+                            "type": "Laser Volley",
+                            "node": "B25",
+                            "id": "g5_b25"
+                        },
+                        {
+                            "type": "Reinforcements",
+                            "node": "B27",
+                            "id": "g5_b27"
+                        }
+                    ]
+                },
+                {
+                    "id": "g5_b27",
+                    "name": "B27",
+                    "color": "pink",
+                    "boss": true,
+                    "hazard": [
+                        {
+                            "type": "Laser Volley",
+                            "node": "B23",
+                            "id": "g5_b23"
+                        },
+                        {
+                            "type": "Laser Volley",
+                            "node": "B25",
+                            "id": "g5_b25"
+                        },
+                        {
+                            "type": "Reinforcements",
+                            "node": "B27",
+                            "id": "g5_b27"
+                        }
+                    ]
+                },
+                {
+                    "id": "g5_bb3",
+                    "name": "BB3",
+                    "color": "white",
+                    "boss": true,
+                    "hazard": [
+                        {
+                            "type": "Damage Per Second",
+                            "node": "BB3",
+                            "id": "g5_bb3"
+                        }
+                    ]
+                },
+                {
+                    "id": "g5_b28",
+                    "name": "B28",
+                    "color": "red",
+                    "hazard": [
+                        {
+                            "type": "Reinforcements",
+                            "node": "B27",
+                            "id": "g5_b27"
+                        }
+                    ]
+                },
+                {
+                    "id": "g5_b29",
+                    "name": "B29",
+                    "color": "red",
+                    "hazard": [
+                        {
+                            "type": "Reinforcements",
+                            "node": "B27",
+                            "id": "g5_b27"
+                        },
+                        {
+                            "type": "Damage Per Second",
+                            "node": "B29",
+                            "id": "g5_b29"
+                        }
+                    ]
+                },
+                {
+                    "id": "g5_b30",
+                    "name": "B30",
+                    "color": "red",
+                    "hazard": [
+                        {
+                            "type": "Reinforcements",
+                            "node": "B27",
+                            "id": "g5_b27"
+                        },
+                        {
+                            "type": "Damage Per Second",
+                            "node": "B30",
+                            "id": "g5_b30"
+                        }
+                    ]
+                },
+                {
+                    "id": "g5_b31",
+                    "name": "B31",
+                    "color": "pink",
+                    "boss": true,
+                    "hazard": [
+                        {
+                            "type": "Reinforcements",
+                            "node": "B31",
+                            "id": "g5_b31"
+                        }
+                    ]
+                },
+                {
+                    "id": "g5_b32",
+                    "name": "B32",
+                    "color": "red",
+                    "hazard": [
+                        {
+                            "type": "Reinforcements",
+                            "node": "B31",
+                            "id": "g5_b31"
+                        }
+                    ]
+                },
+                {
+                    "id": "g5_b33",
+                    "name": "B33",
+                    "color": "red",
+                    "hazard": [
+                        {
+                            "type": "Reinforcements",
+                            "node": "B31",
+                            "id": "g5_b31"
+                        }
+                    ]
+                },
+                {
+                    "id": "g5_b34",
+                    "name": "B34",
+                    "color": "red"
+                },
+                {
+                    "id": "g5_b35",
+                    "name": "B35",
+                    "color": "white",
+                    "boss": true,
+                    "hazard": [
+                        {
+                            "type": "Laser Volley",
+                            "node": "B35",
+                            "id": "g5_b35"
+                        },
+                        {
+                            "type": "Reinforcements",
+                            "node": "B35",
+                            "id": "g5_b35"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "id": "g6",
+            "name": "Galaxy 6",
+            "step": 0.25,
+            "maxStats": 4.25,
+            "minStats": 1,
+            "battles": [
+                {
+                    "id": "g6_b1",
+                    "name": "B1",
+                    "color": "red"
+                },
+                {
+                    "id": "g6_b2",
+                    "name": "B2",
+                    "color": "red"
+                },
+                {
+                    "id": "g6_b3",
+                    "name": "B3",
+                    "color": "red",
+                    "hazard": [
+                        {
+                            "type": "Laser Volley",
+                            "node": "F1",
+                            "id": "g6_bu_damage1"
+                        }
+                    ]
+                },
+                {
+                    "id": "g6_b4",
+                    "name": "B4",
+                    "color": "red",
+                    "hazard": [
+                        {
+                            "type": "Laser Volley",
+                            "node": "F1",
+                            "id": "g6_bu_damage1"
+                        }
+                    ]
+                },
+                {
+                    "id": "g6_b5",
+                    "name": "B5",
+                    "color": "red",
+                    "hazard": [
+                        {
+                            "type": "Laser Volley",
+                            "node": "F1",
+                            "id": "g6_bu_damage1"
+                        }
+                    ]
+                },
+                {
+                    "id": "g6_b6",
+                    "name": "B6",
+                    "color": "red"
+                },
+                {
+                    "id": "g6_b7",
+                    "name": "B7",
+                    "color": "red",
+                    "hazard": [
+                        {
+                            "type": "Reinforcements",
+                            "node": "F2",
+                            "id": "g6_bu_reinforce1"
+                        }
+                    ]
+                },
+                {
+                    "id": "g6_b8",
+                    "name": "B8",
+                    "color": "red",
+                    "hazard": [
+                        {
+                            "type": "Reinforcements",
+                            "node": "F2",
+                            "id": "g6_bu_reinforce1"
+                        },
+                        {
+                            "type": "Laser Volley",
+                            "node": "B10",
+                            "id": "g6_b10"
+                        }
+                    ]
+                },
+                {
+                    "id": "g6_b9",
+                    "name": "B9",
+                    "color": "red",
+                    "hazard": [
+                        {
+                            "type": "Reinforcements",
+                            "node": "F2",
+                            "id": "g6_bu_reinforce1"
+                        },
+                        {
+                            "type": "Laser Volley",
+                            "node": "B10",
+                            "id": "g6_b10"
+                        }
+                    ]
+                },
+                {
+                    "id": "g6_b10",
+                    "name": "B10",
+                    "color": "pink",
+                    "boss": true,
+                    "hazard": [
+                        {
+                            "type": "Reinforcements",
+                            "node": "F2",
+                            "id": "g6_bu_reinforce1"
+                        },
+                        {
+                            "type": "Laser Volley",
+                            "node": "B10",
+                            "id": "g6_b10"
+                        }
+                    ]
+                },
+                {
+                    "id": "g6_b11",
+                    "name": "B11",
+                    "color": "red",
+                    "hazard": [
+                        {
+                            "type": "Laser Volley",
+                            "node": "B10",
+                            "id": "g6_b10"
+                        },
+                        {
+                            "type": "Laser Volley",
+                            "node": "F3",
+                            "id": "g6_bu_damage2"
+                        }
+                    ]
+                },
+                {
+                    "id": "g6_bb1",
+                    "name": "BB1",
+                    "color": "red",
+                    "hazard": [
+                        {
+                            "type": "Laser Volley",
+                            "node": "F3",
+                            "id": "g6_bu_damage2"
+                        },
+                        {
+                            "type": "Reinforcements",
+                            "node": "BB1",
+                            "id": "g6_bb1"
+                        }
+                    ]
+                },
+                {
+                    "id": "g6_b12",
+                    "name": "B12",
+                    "color": "red",
+                    "hazard": [
+                        {
+                            "type": "Laser Volley",
+                            "node": "F3",
+                            "id": "g6_bu_damage2"
+                        }
+                    ]
+                },
+                {
+                    "id": "g6_b13",
+                    "name": "B13",
+                    "color": "red"
+                },
+                {
+                    "id": "g6_b14",
+                    "name": "B14",
+                    "color": "red",
+                    "hazard": [
+                        {
+                            "type": "Reinforcements",
+                            "node": "B16",
+                            "id": "g6_b16"
+                        }
+                    ]
+                },
+                {
+                    "id": "g6_b15",
+                    "name": "B15",
+                    "color": "red",
+                    "hazard": [
+                        {
+                            "type": "Reinforcements",
+                            "node": "B16",
+                            "id": "g6_b16"
+                        }
+                    ]
+                },
+                {
+                    "id": "g6_b16",
+                    "name": "B16",
+                    "color": "pink",
+                    "boss": true,
+                    "hazard": [
+                        {
+                            "type": "Reinforcements",
+                            "node": "B16",
+                            "id": "g6_b16"
+                        }
+                    ]
+                },
+                {
+                    "id": "g6_b17",
+                    "name": "B17",
+                    "color": "red",
+                    "hazard": [
+                        {
+                            "type": "Damage Per Second",
+                            "node": "B17",
+                            "id": "g6_b17"
+                        }
+                    ]
+                },
+                {
+                    "id": "g6_b18",
+                    "name": "B18",
+                    "color": "red"
+                },
+                {
+                    "id": "g6_b19",
+                    "name": "B19",
+                    "color": "red"
+                },
+                {
+                    "id": "g6_heavy_cruiser_beam_unlock",
+                    "name": "BE",
+                    "color": "red"
+                },
+                {
+                    "id": "g6_b20",
+                    "name": "B20",
+                    "color": "red",
+                    "hazard": [
+                        {
+                            "type": "Reinforcements",
+                            "node": "B21",
+                            "id": "g6_b21"
+                        }
+                    ]
+                },
+                {
+                    "id": "g6_b21",
+                    "name": "B21",
+                    "color": "pink",
+                    "boss": true,
+                    "hazard": [
+                        {
+                            "type": "Laser Volley",
+                            "node": "F3",
+                            "id": "g6_bu_damage2"
+                        },
+                        {
+                            "type": "Reinforcements",
+                            "node": "B21",
+                            "id": "g6_b21"
+                        }
+                    ]
+                },
+                {
+                    "id": "g6_b22",
+                    "name": "B22",
+                    "color": "pink",
+                    "boss": true,
+                    "hazard": [
+                        {
+                            "type": "Reinforcements",
+                            "node": "B21",
+                            "id": "g6_b21"
+                        },
+                        {
+                            "type": "Laser Volley",
+                            "node": "B22",
+                            "id": "g6_b22"
+                        }
+                    ]
+                },
+                {
+                    "id": "g6_b23",
+                    "name": "B23",
+                    "color": "red",
+                    "hazard": [
+                        {
+                            "type": "Laser Volley",
+                            "node": "F3",
+                            "id": "g6_bu_damage2"
+                        },
+                        {
+                            "type": "Laser Volley",
+                            "node": "B22",
+                            "id": "g6_b22"
+                        }
+                    ]
+                },
+                {
+                    "id": "g6_b24",
+                    "name": "B24",
+                    "color": "red"
+                },
+                {
+                    "id": "g6_b25",
+                    "name": "B25",
+                    "color": "red",
+                    "hazard": [
+                        {
+                            "type": "Damage Per Second",
+                            "node": "F4",
+                            "id": "g6_bu_void1"
+                        }
+                    ]
+                },
+                {
+                    "id": "g6_b26",
+                    "name": "B26",
+                    "color": "red",
+                    "hazard": [
+                        {
+                            "type": "Damage Per Second",
+                            "node": "F4",
+                            "id": "g6_bu_void1"
+                        },
+                        {
+                            "type": "Damage Per Second",
+                            "node": "B26",
+                            "id": "g6_b26"
+                        }
+                    ]
+                },
+                {
+                    "id": "g6_bb2",
+                    "name": "BB2",
+                    "color": "white",
+                    "boss": true,
+                    "hazard": [
+                        {
+                            "type": "Laser Volley",
+                            "node": "F1",
+                            "id": "g6_bu_damage1"
+                        },
+                        {
+                            "type": "Damage Per Second",
+                            "node": "F4",
+                            "id": "g6_bu_void1"
+                        },
+                        {
+                            "type": "Damage Per Second",
+                            "node": "BB2",
+                            "id": "g6_bb2"
+                        }
+                    ]
+                },
+                {
+                    "id": "g6_b27",
+                    "name": "B27",
+                    "color": "red"
+                },
+                {
+                    "id": "g6_b28",
+                    "name": "B28",
+                    "color": "red",
+                    "hazard": [
+                        {
+                            "type": "Grid Buff",
+                            "node": "B33",
+                            "id": "g6_b33"
+                        }
+                    ]
+                },
+                {
+                    "id": "g6_b29",
+                    "name": "B29",
+                    "color": "red",
+                    "hazard": [
+                        {
+                            "type": "Grid Buff",
+                            "node": "B33",
+                            "id": "g6_b33"
+                        }
+                    ]
+                },
+                {
+                    "id": "g6_b30",
+                    "name": "B30",
+                    "color": "red",
+                    "hazard": [
+                        {
+                            "type": "Grid Buff",
+                            "node": "F5",
+                            "id": "g6_bu_gb1"
+                        },
+                        {
+                            "type": "Grid Buff",
+                            "node": "B33",
+                            "id": "g6_b33"
+                        }
+                    ]
+                },
+                {
+                    "id": "g6_b31",
+                    "name": "B31",
+                    "color": "red",
+                    "hazard": [
+                        {
+                            "type": "Grid Buff",
+                            "node": "F5",
+                            "id": "g6_bu_gb1"
+                        },
+                        {
+                            "type": "Grid Buff",
+                            "node": "B33",
+                            "id": "g6_b33"
+                        }
+                    ]
+                },
+                {
+                    "id": "g6_b32",
+                    "name": "B32",
+                    "color": "red",
+                    "hazard": [
+                        {
+                            "type": "Grid Buff",
+                            "node": "F5",
+                            "id": "g6_bu_gb1"
+                        },
+                        {
+                            "type": "Grid Buff",
+                            "node": "B33",
+                            "id": "g6_b33"
+                        }
+                    ]
+                },
+                {
+                    "id": "g6_b33",
+                    "name": "B33",
+                    "color": "pink",
+                    "boss": true,
+                    "hazard": [
+                        {
+                            "type": "Grid Buff",
+                            "node": "F5",
+                            "id": "g6_bu_gb1"
+                        },
+                        {
+                            "type": "Grid Buff",
+                            "node": "B33",
+                            "id": "g6_b33"
+                        }
+                    ]
+                },
+                {
+                    "id": "g6_b34",
+                    "name": "B34",
+                    "color": "red"
+                },
+                {
+                    "id": "g6_b35",
+                    "name": "B35",
+                    "color": "red"
+                },
+                {
+                    "id": "g6_b36",
+                    "name": "B36",
+                    "color": "red"
+                },
+                {
+                    "id": "g6_b37",
+                    "name": "B37",
+                    "color": "red",
+                    "hazard": [
+                        {
+                            "type": "Laser Volley",
+                            "node": "F6",
+                            "id": "g6_bu_m1"
+                        }
+                    ]
+                },
+                {
+                    "id": "g6_b38",
+                    "name": "B38",
+                    "color": "red",
+                    "hazard": [
+                        {
+                            "type": "Reinforcements",
+                            "node": "F6",
+                            "id": "g6_bu_m1"
+                        }
+                    ]
+                },
+                {
+                    "id": "g6_b39",
+                    "name": "B39",
+                    "color": "red"
+                },
+                {
+                    "id": "g6_bb3",
+                    "name": "BB3",
+                    "color": "red",
+                    "hazard": [
+                        {
+                            "type": "Grid Buff",
+                            "node": "F6",
+                            "id": "g6_bu_m1"
+                        },
+                        {
+                            "type": "Grid Buff",
+                            "node": "BB3",
+                            "id": "g6_bb3"
+                        }
+                    ]
+                },
+                {
+                    "id": "g6_b40",
+                    "name": "B40",
+                    "color": "red",
+                    "hazard": [
+                        {
+                            "type": "Grid Buff",
+                            "node": "B41",
+                            "id": "g6_b41"
+                        }
+                    ]
+                },
+                {
+                    "id": "g6_b41",
+                    "name": "B41",
+                    "color": "pink",
+                    "boss": true,
+                    "hazard": [
+                        {
+                            "type": "Grid Buff",
+                            "node": "B41",
+                            "id": "g6_b41"
+                        }
+                    ]
+                },
+                {
+                    "id": "g6_b42",
+                    "name": "B42",
+                    "color": "red",
+                    "hazard": [
+                        {
+                            "type": "Grid Buff",
+                            "node": "F6",
+                            "id": "g6_bu_m1"
+                        },
+                        {
+                            "type": "Grid Buff",
+                            "node": "B41",
+                            "id": "g6_b41"
+                        },
+                        {
+                            "type": "Damage Per Second",
+                            "node": "B42",
+                            "id": "g6_b42"
+                        }
+                    ]
+                },
+                {
+                    "id": "g6_b43",
+                    "name": "B43",
+                    "color": "pink",
+                    "boss": true,
+                    "hazard": [
+                        {
+                            "type": "Grid Buff",
+                            "node": "F7",
+                            "id": "g6_bu_gb2"
+                        },
+                        {
+                            "type": "Laser Volley",
+                            "node": "B43",
+                            "id": "g6_b43"
+                        }
+                    ]
+                },
+                {
+                    "id": "g6_b44",
+                    "name": "B44",
+                    "color": "red"
+                },
+                {
+                    "id": "g6_b45",
+                    "name": "B45",
+                    "color": "red"
+                },
+                {
+                    "id": "g6_b46",
+                    "name": "B46",
+                    "color": "white",
+                    "boss": true,
+                    "hazard": [
+                        {
+                            "type": "Grid Buff",
+                            "node": "F8",
+                            "id": "g6_bu_gb3"
+                        },
+                        {
+                            "type": "Grid Buff",
+                            "node": "B46",
+                            "id": "g6_b46"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "id": "g7",
+            "name": "Galaxy 7",
+            "step": 0.25,
+            "maxStats": 1.5,
+            "minStats": 1,
+            "battles": [
+                {
+                    "id": "g7_b1",
+                    "name": "B1",
+                    "color": "red"
+                },
+                {
+                    "id": "g7_b2a",
+                    "name": "B2A",
+                    "color": "red"
+                },
+                {
+                    "id": "g7_b2b",
+                    "name": "B2B",
+                    "color": "red"
+                },
+                {
+                    "id": "g7_b2c",
+                    "name": "B2C",
+                    "color": "red"
+                },
+                {
+                    "id": "g7_bb1",
+                    "name": "BB1",
+                    "color": "white",
+                    "boss": true,
+                    "hazard": [
+                        {
+                            "type": "Laser Volley",
+                            "node": "F1",
+                            "id": "g7_support_1"
+                        }
+                    ]
+                },
+                {
+                    "id": "g7_b3a",
+                    "name": "B3A",
+                    "color": "red"
+                },
+                {
+                    "id": "g7_b3c",
+                    "name": "B3C",
+                    "color": "red"
+                },
+                {
+                    "id": "g7_b3d",
+                    "name": "B3D",
+                    "color": "red"
+                },
+                {
+                    "id": "g7_b4a",
+                    "name": "B4A",
+                    "color": "red",
+                    "hazard": [
+                        {
+                            "type": "Grid Buff",
+                            "node": "B6",
+                            "id": "g7_b6"
+                        }
+                    ]
+                },
+                {
+                    "id": "g7_b4b",
+                    "name": "B4B",
+                    "color": "red"
+                },
+                {
+                    "id": "g7_b4c",
+                    "name": "B4C",
+                    "color": "red",
+                    "hazard": [
+                        {
+                            "type": "Grid Buff",
+                            "node": "B6",
+                            "id": "g7_b6"
+                        }
+                    ]
+                },
+                {
+                    "id": "g7_b5",
+                    "name": "B5",
+                    "color": "red",
+                    "hazard": [
+                        {
+                            "type": "Reinforcements",
+                            "node": "F1",
+                            "id": "g7_support_1"
+                        },
+                        {
+                            "type": "Reinforcements",
+                            "node": "B6",
+                            "id": "g7_b6"
+                        }
+                    ]
+                },
+                {
+                    "id": "g7_b5d",
+                    "name": "B5D",
+                    "color": "red"
+                },
+                {
+                    "id": "g7_b6",
+                    "name": "B6",
+                    "color": "pink",
+                    "boss": true,
+                    "hazard": [
+                        {
+                            "type": "Reinforcements",
+                            "node": "B6",
+                            "id": "g7_b6"
+                        }
+                    ]
+                },
+                {
+                    "id": "g7_b7",
+                    "name": "B7",
+                    "color": "white"
+                }
+            ]
+        },
+        {
+            "id": "g8",
+            "name": "Galaxy 8",
+            "step": 0.25,
+            "maxStats": 2,
+            "minStats": 1,
+            "battles": [
+                {
+                    "id": "g8_b1",
+                    "name": "B1",
+                    "color": "red"
+                },
+                {
+                    "id": "g8_b2",
+                    "name": "B2",
+                    "color": "red"
+                },
+                {
+                    "id": "g8_bb1",
+                    "name": "BB1",
+                    "color": "white"
+                },
+                {
+                    "id": "g8_b3",
+                    "name": "B3",
+                    "color": "red"
+                },
+                {
+                    "id": "g8_b4",
+                    "name": "B4",
+                    "color": "red",
+                    "hazard": [
+                        {
+                            "type": "Laser Volley",
+                            "node": "B5",
+                            "id": "g8_b5"
+                        }
+                    ]
+                },
+                {
+                    "id": "g8_b5",
+                    "name": "B5",
+                    "color": "pink",
+                    "boss": true,
+                    "hazard": [
+                        {
+                            "type": "Laser Volley",
+                            "node": "B5",
+                            "id": "g8_b5"
+                        }
+                    ]
+                },
+                {
+                    "id": "g8_b6",
+                    "name": "B6",
+                    "color": "red",
+                    "hazard": [
+                        {
+                            "type": "Laser Volley",
+                            "node": "B5",
+                            "id": "g8_b5"
+                        }
+                    ]
+                },
+                {
+                    "id": "g8_b7",
+                    "name": "B7",
+                    "color": "red",
+                    "hazard": [
+                        {
+                            "type": "Damage Per Second",
+                            "node": "B11",
+                            "id": "g8_b11"
+                        }
+                    ]
+                },
+                {
+                    "id": "g8_b8",
+                    "name": "B8",
+                    "color": "red"
+                },
+                {
+                    "id": "g8_b9",
+                    "name": "B9",
+                    "color": "red"
+                },
+                {
+                    "id": "g8_b10",
+                    "name": "B10",
+                    "color": "red",
+                    "hazard": [
+                        {
+                            "type": "Grid Buff",
+                            "node": "B13",
+                            "id": "g8_b13"
+                        }
+                    ]
+                },
+                {
+                    "id": "g8_b11",
+                    "name": "B11",
+                    "color": "pink",
+                    "boss": true,
+                    "hazard": [
+                        {
+                            "type": "Damage Per Second",
+                            "node": "B11",
+                            "id": "g8_b11"
+                        }
+                    ]
+                },
+                {
+                    "id": "g8_b12",
+                    "name": "B12",
+                    "color": "red",
+                    "hazard": [
+                        {
+                            "type": "Grid Buff",
+                            "node": "B13",
+                            "id": "g8_b13"
+                        }
+                    ]
+                },
+                {
+                    "id": "g8_b13",
+                    "name": "B13",
+                    "color": "pink",
+                    "boss": true,
+                    "hazard": [
+                        {
+                            "type": "Grid Buff",
+                            "node": "B13",
+                            "id": "g8_b13"
+                        }
+                    ]
+                },
+                {
+                    "id": "g8_b14",
+                    "name": "B14",
+                    "color": "red",
+                    "hazard": [
+                        {
+                            "type": "Damage Per Second",
+                            "node": "B14",
+                            "id": "g8_b14"
+                        }
+                    ]
+                },
+                {
+                    "id": "g8_b15",
+                    "name": "B15",
+                    "color": "red",
+                    "hazard": [
+                        {
+                            "type": "Laser Volley",
+                            "node": "F1",
+                            "id": "g8_support_1"
+                        }
+                    ]
+                },
+                {
+                    "id": "g8_b16",
+                    "name": "B16",
+                    "color": "red",
+                    "hazard": [
+                        {
+                            "type": "Reinforcements",
+                            "node": "F1",
+                            "id": "g8_support_1"
+                        }
+                    ]
+                },
+                {
+                    "id": "g8_b17",
+                    "name": "B17",
+                    "color": "white",
+                    "boss": true,
+                    "hazard": [
+                        {
+                            "type": "Grid Buff",
+                            "node": "F1",
+                            "id": "g8_support_1"
+                        },
+                        {
+                            "type": "Grid Buff",
+                            "node": "B17",
+                            "id": "g8_b17"
+                        }
+                    ]
+                }
+            ]
+        }
     ]
 }

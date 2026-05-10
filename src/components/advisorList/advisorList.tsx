@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { clsx } from 'clsx';
-import { ParsedAdvisor, shipImage, shipNameToClass } from '../../lib/wiki';
+import { ParsedAdvisor, shipImage, shipNameToClass } from '../../lib/advisor';
 import { Button } from '../button/button';
 import styles from './advisorList.module.scss';
 

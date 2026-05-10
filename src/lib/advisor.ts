@@ -1,5 +1,3 @@
-const GALAXIES_URL =
-    "https://raw.githubusercontent.com/StuntHacks/usi-wiki/refs/heads/master/js/galaxies.json";
 const API_URL = "https://api.spaceidle.xyz/suggest_fleet_battle/";
 const SHIP_BASE =
     "https://raw.githubusercontent.com/StuntHacks/usi-wiki/refs/heads/master/png/ships/";
@@ -23,24 +21,24 @@ export const MOD_MAP: Record<string, { name: string; icon: string }> = {
     HeavyCruiserBeamMod:     { name: "Heavy Cruiser Beam Laser", icon: "PowerMode" },
 };
 
-export interface WikiHazard {
+export interface Hazard {
     id: string;
     node: string;
     type: string;
 }
 
-export interface WikiBattle {
+export interface Battle {
     id: string;
     name: string;
     color?: string;
-    hazard?: WikiHazard[];
+    hazard?: Hazard[];
     boss?: unknown;
 }
 
-export interface WikiGalaxy {
+export interface Galaxy {
     id: string;
     name: string;
-    battles: WikiBattle[];
+    battles: Battle[];
     minStats: number;
     maxStats: number;
     step: number;
@@ -57,11 +55,6 @@ export interface ParsedAdvisor {
     fr_committed: number;
     boss_damage?: number;
     ships: AdvisorShip[];
-}
-
-export async function fetchWikiGalaxies(): Promise<WikiGalaxy[]> {
-    const response = await fetch(GALAXIES_URL);
-    return response.json() as Promise<WikiGalaxy[]>;
 }
 
 export async function fetchAdvisors(params: {

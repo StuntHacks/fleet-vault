@@ -1,0 +1,33 @@
+.dropzone {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--color-text);
+    border: 5px dashed currentColor;
+    border-radius: 8px;
+    padding: 2rem;
+    cursor: pointer;
+    user-select: none;
+    transition: background-color 150ms, color 150ms;
+
+    &.dragging {
+        background-color: rgba(255, 255, 255, 0.08);
+        color: var(--color-primary, #6c8ebf);
+    }
+}
+
+.hiddenInput {
+    display: none;
+}
+
+.text {
+    pointer-events: none;
+}
+
+.preview {
+    max-width: 100%;
+    max-height: 300px;
+    object-fit: contain;
+    pointer-events: none;
+    border-radius: 4px;
+}

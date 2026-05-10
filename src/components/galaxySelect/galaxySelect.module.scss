@@ -33,11 +33,19 @@
         &::after {
             transform: translateY(-50%) rotate(225deg);
             margin-top: 5px;
+            z-index: 11;
         }
 
         .dropdown {
             opacity: 1;
             pointer-events: auto;
+            z-index: 10;
+            transition: opacity 150ms, z-index 0ms;
+        }
+
+        .current {
+            z-index: 11;
+            transition: z-index 0ms;
         }
     }
 
@@ -50,14 +58,14 @@
         border-radius: 10px;
         opacity: 0;
         pointer-events: none;
-        transition: opacity 150ms;
+        transition: opacity 150ms, z-index 0ms 150ms;
         padding: 0.25rem 0;
         margin: 0;
         left: -15px;
         min-width: calc(100% + 25px);
-        z-index: -1;
         padding-top: 37px;
         top: -5px;
+        z-index: 1;
 
         a {
             white-space: nowrap;
@@ -73,5 +81,11 @@
                 color: var(--color-text);
             }
         }
+    }
+
+    .current {
+        z-index: 1;
+        position: relative;
+        transition: z-index 0ms 150ms;
     }
 }

@@ -2,11 +2,22 @@ import { Link, useMatch, useParams } from 'react-router-dom';
 import { clsx } from "clsx"
 import styles from './galaxySelect.module.scss';
 import data from '../../data.json';
-import { useState } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { useAdminSession } from '../../lib/hooks';
 
-export default function GalaxySelect() {
+export default function GalaxySelect({ className, isSelect, selected, callback }: { className?: string; isSelect?: boolean; selected?: number; callback?: (galaxyId: number) => void }) {
   const [shown, setShown] = useState(false);
+  const ref = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const handleClickOutside = (e: MouseEvent) => {
+      if (ref.current && !ref.current.contains(e.target as Node)) {
+        setShown(false);
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
   const isAdmin = !!useAdminSession();
 
   const isAdvisorPage = !!useMatch('/advisors');
@@ -17,19 +28,30 @@ export default function GalaxySelect() {
     id = 1;
   }
 
+  const handleCallback = (e: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
+    const galaxyId = parseInt(e.currentTarget.getAttribute('data-id') || "1", 10);
+    if (callback) {
+      callback(galaxyId);
+      e.preventDefault();
+    }
+    setShown(false);
+  }
+
   return (
     <div
-      className={clsx(styles.galaxySelect, { [styles.shown]: shown })}
+      ref={ref}
+      className={clsx(styles.galaxySelect, className, { [styles.shown]: shown })}
       onClick={() => setShown(!shown)}
     >
-      {isAdvisorPage ? 'Advisor Explorer' : `Galaxy ${id}`}
+      {isSelect && <span className={styles.current}>{selected ? `Galaxy ${selected}` : 'Select Galaxy'}</span>}
+      {!isSelect && <span className={styles.current}>{isAdvisorPage ? 'Advisor Explorer' : `Galaxy ${id}`}</span>}
       <div className={styles.dropdown}>
-        {data.galaxies.map((g, index) => !isAdvisorPage && index + 1 === id ? undefined : (
-          <Link key={index} to={`/g/${index + 1}`} className={styles.dropdownItem}>
+        {data.galaxies.map((g, index) => (isSelect && index + 1 === selected) || (!isSelect && !isAdvisorPage && index + 1 === id) ? undefined : (
+          <Link data-id={index + 1} key={index} to={`/g/${index + 1}`} className={styles.dropdownItem} onClick={(e) => handleCallback(e)}>
             Galaxy {index + 1}
           </Link>
         ))}
-        {isAdmin && !isAdvisorPage && (
+        {isAdmin && !isAdvisorPage && !isSelect && (
           <Link to="/advisors" className={styles.dropdownItem}>
             Advisor Explorer
           </Link>

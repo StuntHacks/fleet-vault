@@ -6,14 +6,16 @@ import { Button } from "../components/button/button";
 import { FleetGrid } from "../components/fleetGrid/fleetGrid";
 import { HazardSelect } from "../components/hazardSelect/hazardSelect";
 import { useAdminSession } from "../lib/hooks";
-import { fetchAdvisors, fetchWikiGalaxies, ParsedAdvisor, WikiGalaxy } from "../lib/wiki";
+import { fetchAdvisors, Galaxy, ParsedAdvisor } from "../lib/advisor";
+import galaxyData from "../data.json";
 import styles from "./advisor.module.scss";
+
+const galaxies: Galaxy[] = galaxyData.galaxies as Galaxy[];
 
 export default function AdvisorView() {
     const session = useAdminSession();
     const navigate = useNavigate();
 
-    const [galaxies, setGalaxies] = useState<WikiGalaxy[] | null>(null);
     const [selectedGalaxyId, setSelectedGalaxyId] = useState("");
     const [selectedBattleId, setSelectedBattleId] = useState("");
     const [statValue, setStatValue] = useState("");
@@ -28,10 +30,6 @@ export default function AdvisorView() {
     useEffect(() => {
         if (session === null) navigate('/');
     }, [session, navigate]);
-
-    useEffect(() => {
-        fetchWikiGalaxies().then(setGalaxies);
-    }, []);
 
     const findAdvisors = useCallback(async () => {
         const stat = parseFloat(statValue).toFixed(3);
@@ -62,7 +60,7 @@ export default function AdvisorView() {
 
     if (session === undefined || session === null) return null;
 
-    const galaxy = galaxies?.find((g) => g.id === selectedGalaxyId);
+    const galaxy = galaxies?.find((g: Galaxy) => g.id === selectedGalaxyId);
     const battleData = galaxy?.battles.find((b) => b.id === selectedBattleId);
 
     const resetResults = () => {

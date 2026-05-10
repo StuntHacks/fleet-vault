@@ -1,0 +1,28 @@
+.galaxySelect {
+    max-width: 200px;
+    flex-grow: 0;
+    height: fit-content;
+}
+
+.form {
+    width: 600px;
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    padding: 2rem 2rem 0;
+    margin: 0 auto;
+    box-sizing: border-box;
+    max-width: 100%;
+
+    .field {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        transition: opacity 150ms;
+
+        &.hidden {
+            opacity: 0;
+             pointer-events: none;
+        }
+    }
+}

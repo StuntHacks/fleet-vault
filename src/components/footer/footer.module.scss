@@ -15,6 +15,10 @@
     .version {
         flex-grow: 1;
         text-align: right;
+
+        @media screen and (max-width: 359px) {
+            display: none;
+        }
     }
 
     .darkMode {
@@ -25,6 +29,12 @@
 
         input {
             margin-top: 5px;
+        }
+    }
+
+    .footnote {
+        @media screen and (max-width: 674px) {
+            display: none;
         }
     }
 }

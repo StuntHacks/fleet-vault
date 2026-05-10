@@ -22,10 +22,10 @@
           params[kv[0]] = kv.slice(1).join('=');
         });
         if (!params.p) return;
-        var path = params.p.replace(/~and~/g, '&');
+        var path = (params.p ? '/' + params.p : '').replace(/~and~/g, '&');
         var query = params.q ? '?' + params.q.replace(/~and~/g, '&') : '';
         var hash = window.location.hash;
-        window.history.replaceState(null, null, window.location.pathname + path + query + hash);
+        window.history.replaceState(null, null, window.location.pathname.replace(/\/$/, '') + path + query + hash);
       })();
     </script>
   </head>

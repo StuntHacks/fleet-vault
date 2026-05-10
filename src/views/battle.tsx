@@ -35,6 +35,19 @@ export default function BattleView() {
                         ))}
                     </ul>
                     <h1>Obsolete</h1>
+                    {solutions.obsolete.map((s) => (
+                        <li key={s.id}>
+                            <a href={s.screenshot_url!} target="_blank" rel="noopener noreferrer">
+                                <img src={s.screenshot_url!} alt="screenshot" style={{ maxWidth: "300px" }} />
+                            </a>
+                            <p>Combat Stats: {s.combat_stats}</p>
+                            <p>FR Used: {s.fr_used}</p>
+                            {s.fr_committed && <p>FR Committed: {s.fr_committed}</p>}
+                            {s.support && <p>Support</p>}
+                            {s.hazards && <p>Hazard</p>}
+                            {s.notes && <p>Notes: {s.notes}</p>}
+                        </li>
+                    ))}
                 </>
             )}
         </BaseLayout>

@@ -19,13 +19,16 @@ export default function GalaxyView() {
                 <>
                     {!battles.battles.length && <p>No solutions submitted yet</p>}
                     <ul>
-                        {battles.battles.filter((b) => data.galaxies[id - 1].battles[b] !== undefined).map((b) => (
-                            <li key={data.galaxies[id - 1].battles[b].id}>
-                                <Link to={`/g/${id}/b/${b}`}>
-                                    {data.galaxies[id - 1].battles[b].name}
-                                </Link>
-                            </li>
-                        ))}
+                        {battles.battles.filter((b) => data.galaxies[id - 1].battles[b] !== undefined).map((b) => {
+                            console.log(b); return (
+                            
+                                <li key={data.galaxies[id - 1].battles[b - 1].id}>
+                                    <Link to={`/g/${id}/b/${b - 1}`}>
+                                        {data.galaxies[id - 1].battles[b - 1].name}
+                                    </Link>
+                                </li>
+                            )
+                        })}
                     </ul>
                 </>
             )}

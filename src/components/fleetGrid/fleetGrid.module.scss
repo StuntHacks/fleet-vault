@@ -94,7 +94,11 @@
     padding: 0;
     font-size: 1rem;
     display: flex;
-    align-items: center;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
+    margin-top: 0.5rem;
 }
 
 .modIcon {

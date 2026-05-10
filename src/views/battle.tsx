@@ -10,7 +10,8 @@ export default function BattleView() {
     if (isNaN(id)) {
         id = 1;
     }
-    const solutions = useSolutions(id, parseInt(battle || "1", 10));
+
+    const solutions = useSolutions(id, parseInt(battle || "1", 10) + 1);
     return (
         <BaseLayout>
             {solutions.loading && <p>Loading...</p>}

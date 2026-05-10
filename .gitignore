@@ -26,3 +26,7 @@ yarn-error.log*
 tokens.txt
 tokens.js
 verify.js
+convert_battles.js
+output.json
+game_data.json
+TODO.md

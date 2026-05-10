@@ -5,6 +5,7 @@ import ShieldRegenStart from './ShieldRegenStart.svg';
 import ArmorDamageSynergy from './ArmorDamageSynergy.svg';
 import PristineArmor from './PristineArmor.svg';
 import PowerMode from './PowerMode.svg';
+import ParticleCannon from './ParticleCannon.svg';
 
 const icons: Record<string, string> = {
     Datacore,
@@ -14,6 +15,7 @@ const icons: Record<string, string> = {
     ArmorDamageSynergy,
     PristineArmor,
     PowerMode,
+    ParticleCannon,
 };
 
 export default icons;

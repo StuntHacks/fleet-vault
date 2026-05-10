@@ -37,7 +37,8 @@
     "eject": "react-scripts eject",
     "predeploy": "npm run build",
     "deploy": "gh-pages -d build",
-    "deploy-login": "npx supabase functions deploy admin-login --no-verify-jwt"
+    "deploy-login": "npx supabase functions deploy admin-login --no-verify-jwt",
+    "convert-battles": "node convert_battles.js game_data.json src/data.json"
   },
   "eslintConfig": {
     "extends": [

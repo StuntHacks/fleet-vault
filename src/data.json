@@ -48,69 +48,69 @@
             "minStats": 1,
             "battles": [
                 {
-                    "id": "g2_1_b1",
                     "name": "B1",
+                    "id": "g2_1_b1",
                     "color": "red"
                 },
                 {
-                    "id": "g2_2_b2",
                     "name": "B2",
+                    "id": "g2_2_b2",
                     "color": "red"
                 },
                 {
-                    "id": "g2_3_bb1",
                     "name": "BB1",
+                    "id": "g2_3_bb1",
                     "color": "white",
                     "boss": true
                 },
                 {
-                    "id": "g2_3_b3a",
                     "name": "B3A",
+                    "id": "g2_3_b3a",
                     "color": "red"
                 },
                 {
-                    "id": "g2_3_b3b",
                     "name": "B3B",
+                    "id": "g2_3_b3b",
                     "color": "red"
                 },
                 {
-                    "id": "g2_4_b4a",
                     "name": "B4A",
+                    "id": "g2_4_b4a",
                     "color": "red"
                 },
                 {
-                    "id": "g2_4_b4b",
                     "name": "B4B",
+                    "id": "g2_4_b4b",
                     "color": "red"
                 },
                 {
-                    "id": "g2_4_b5",
                     "name": "B5",
+                    "id": "g2_4_b5",
                     "color": "red"
                 },
                 {
-                    "id": "g2_6_b6a",
                     "name": "B6A",
+                    "id": "g2_6_b6a",
                     "color": "red"
                 },
                 {
-                    "id": "g2_6_b6b",
                     "name": "B6B",
+                    "id": "g2_6_b6b",
                     "color": "red"
                 },
                 {
-                    "id": "g2_7_b7",
                     "name": "B7",
+                    "id": "g2_7_b7",
                     "color": "red"
                 },
                 {
-                    "id": "g2_8_b8",
                     "name": "B8",
+                    "id": "g2_8_b8",
                     "color": "red"
                 },
                 {
-                    "id": "g2_10_b9",
                     "name": "B9",
+                    "id": "g2_10_b9",
                     "color": "white",
                     "boss": true
                 }
@@ -124,89 +124,89 @@
             "minStats": 1,
             "battles": [
                 {
-                    "id": "g3_1_b1",
                     "name": "B1",
+                    "id": "g3_1_b1",
                     "color": "red"
                 },
                 {
-                    "id": "g3_3_b2a",
                     "name": "B2A",
+                    "id": "g3_3_b2a",
                     "color": "red"
                 },
                 {
-                    "id": "g3_3_b3a",
                     "name": "B3A",
+                    "id": "g3_3_b3a",
                     "color": "red"
                 },
                 {
-                    "id": "g3_3_b2b",
                     "name": "B2B",
+                    "id": "g3_3_b2b",
                     "color": "red"
                 },
                 {
-                    "id": "g3_3_b3b",
                     "name": "B3B",
+                    "id": "g3_3_b3b",
                     "color": "red"
                 },
                 {
-                    "id": "g3_4_b4a",
                     "name": "B4A",
+                    "id": "g3_4_b4a",
                     "color": "red"
                 },
                 {
-                    "id": "g3_4_b4b",
                     "name": "B4B",
+                    "id": "g3_4_b4b",
                     "color": "red"
                 },
                 {
-                    "id": "g3_4_bb1",
                     "name": "BB1",
+                    "id": "g3_4_bb1",
                     "color": "white",
                     "boss": true
                 },
                 {
-                    "id": "g3_5_b5a",
                     "name": "B5A",
+                    "id": "g3_5_b5a",
                     "color": "red"
                 },
                 {
-                    "id": "g3_5_b5b",
                     "name": "B5B",
+                    "id": "g3_5_b5b",
                     "color": "red"
                 },
                 {
-                    "id": "g3_6_b6a",
                     "name": "B6A",
+                    "id": "g3_6_b6a",
                     "color": "red"
                 },
                 {
-                    "id": "g3_6_b7a",
                     "name": "B7A",
+                    "id": "g3_6_b7a",
                     "color": "red"
                 },
                 {
-                    "id": "g3_6_b6b",
                     "name": "B6B",
+                    "id": "g3_6_b6b",
                     "color": "red"
                 },
                 {
-                    "id": "g3_6_b7b",
                     "name": "B7B",
+                    "id": "g3_6_b7b",
                     "color": "red"
                 },
                 {
-                    "id": "g3_6_b8",
                     "name": "B8",
+                    "id": "g3_6_b8",
                     "color": "red"
                 },
                 {
-                    "id": "g3_7_b9",
                     "name": "B9",
+                    "id": "g3_7_b9",
                     "color": "red"
                 },
                 {
-                    "id": "g3_9_b10",
                     "name": "B10",
+                    "id": "g3_9_b10",
                     "color": "white",
                     "boss": true
                 }
@@ -220,130 +220,130 @@
             "minStats": 1,
             "battles": [
                 {
-                    "id": "g4_b1",
                     "name": "B1",
+                    "id": "g4_b1",
                     "color": "red"
                 },
                 {
-                    "id": "g4_b2",
                     "name": "B2",
+                    "id": "g4_b2",
                     "color": "red"
                 },
                 {
-                    "id": "g4_b3",
                     "name": "B3",
+                    "id": "g4_b3",
                     "color": "red"
                 },
                 {
-                    "id": "g4_b4",
                     "name": "B4",
+                    "id": "g4_b4",
                     "color": "red"
                 },
                 {
-                    "id": "g4_b5",
                     "name": "B5",
+                    "id": "g4_b5",
                     "color": "red"
                 },
                 {
-                    "id": "g4_b6",
                     "name": "B6",
+                    "id": "g4_b6",
                     "color": "red"
                 },
                 {
-                    "id": "g4_b7",
                     "name": "B7",
+                    "id": "g4_b7",
                     "color": "red"
                 },
                 {
-                    "id": "g4_b8",
                     "name": "B8",
+                    "id": "g4_b8",
                     "color": "red"
                 },
                 {
-                    "id": "g4_bb1",
                     "name": "BB1",
+                    "id": "g4_bb1",
                     "color": "white",
                     "boss": true
                 },
                 {
-                    "id": "g4_b9",
                     "name": "B9",
+                    "id": "g4_b9",
                     "color": "red"
                 },
                 {
-                    "id": "g4_b10",
                     "name": "B10",
+                    "id": "g4_b10",
                     "color": "red"
                 },
                 {
-                    "id": "g4_b11",
                     "name": "B11",
+                    "id": "g4_b11",
                     "color": "red"
                 },
                 {
-                    "id": "g4_b12",
                     "name": "B12",
+                    "id": "g4_b12",
                     "color": "red"
                 },
                 {
-                    "id": "g4_b13",
                     "name": "B13",
+                    "id": "g4_b13",
                     "color": "red"
                 },
                 {
-                    "id": "g4_b14",
                     "name": "B14",
+                    "id": "g4_b14",
                     "color": "red"
                 },
                 {
-                    "id": "g4_b15",
                     "name": "B15",
+                    "id": "g4_b15",
                     "color": "red"
                 },
                 {
-                    "id": "g4_bb2",
                     "name": "BB2",
+                    "id": "g4_bb2",
                     "color": "white",
                     "boss": true
                 },
                 {
-                    "id": "g4_b16",
                     "name": "B16",
+                    "id": "g4_b16",
                     "color": "red"
                 },
                 {
-                    "id": "g4_b17",
                     "name": "B17",
+                    "id": "g4_b17",
                     "color": "red"
                 },
                 {
-                    "id": "g4_b18",
                     "name": "B18",
+                    "id": "g4_b18",
                     "color": "red"
                 },
                 {
-                    "id": "g4_b19",
                     "name": "B19",
+                    "id": "g4_b19",
                     "color": "red"
                 },
                 {
-                    "id": "g4_b20",
                     "name": "B20",
+                    "id": "g4_b20",
                     "color": "red"
                 },
                 {
-                    "id": "g4_b21",
                     "name": "B21",
+                    "id": "g4_b21",
                     "color": "red"
                 },
                 {
-                    "id": "g4_b22",
                     "name": "B22",
+                    "id": "g4_b22",
                     "color": "red"
                 },
                 {
-                    "id": "g4_b23",
                     "name": "B23",
+                    "id": "g4_b23",
                     "color": "white",
                     "boss": true
                 }
@@ -357,556 +357,561 @@
             "minStats": 1,
             "battles": [
                 {
-                    "id": "g5_b1",
                     "name": "B1",
+                    "id": "g5_b1",
                     "color": "red"
                 },
                 {
-                    "id": "g5_b2",
                     "name": "B2",
+                    "id": "g5_b2",
                     "color": "red"
                 },
                 {
-                    "id": "g5_bb1",
                     "name": "BB1",
+                    "id": "g5_bb1",
                     "color": "white",
                     "boss": true,
                     "hazard": [
                         {
                             "type": "Reinforcements",
-                            "node": "B6A",
-                            "id": "g5a_b6"
+                            "id": "g5a_b6",
+                            "node": "B6A"
                         },
                         {
                             "type": "Reinforcements",
-                            "node": "B6B",
-                            "id": "g5b_b6"
+                            "id": "g5b_b6",
+                            "node": "B6B"
                         }
                     ]
                 },
                 {
-                    "id": "g5a_b3",
                     "name": "B3A",
+                    "id": "g5a_b3",
                     "color": "red",
                     "hazard": [
                         {
                             "type": "Reinforcements",
-                            "node": "B6A",
-                            "id": "g5a_b6"
+                            "id": "g5a_b6",
+                            "node": "B6A"
                         }
                     ]
                 },
                 {
-                    "id": "g5a_b4",
                     "name": "B4A",
+                    "id": "g5a_b4",
                     "color": "red",
                     "hazard": [
                         {
                             "type": "Reinforcements",
-                            "node": "B6A",
-                            "id": "g5a_b6"
+                            "id": "g5a_b6",
+                            "node": "B6A"
                         }
                     ]
                 },
                 {
-                    "id": "g5a_b5",
                     "name": "B5A",
+                    "id": "g5a_b5",
                     "color": "red",
                     "hazard": [
                         {
                             "type": "Reinforcements",
-                            "node": "B6A",
-                            "id": "g5a_b6"
+                            "id": "g5a_b6",
+                            "node": "B6A"
                         }
                     ]
                 },
                 {
-                    "id": "g5a_b6",
                     "name": "B6A",
+                    "id": "g5a_b6",
                     "color": "pink",
                     "boss": true,
                     "hazard": [
                         {
                             "type": "Reinforcements",
-                            "node": "B6A",
-                            "id": "g5a_b6"
+                            "id": "g5a_b6",
+                            "node": "B6A"
                         }
                     ]
                 },
                 {
-                    "id": "g5a_b7",
                     "name": "B7A",
+                    "id": "g5a_b7",
                     "color": "red"
                 },
                 {
-                    "id": "g5a_b8",
                     "name": "B8A",
+                    "id": "g5a_b8",
                     "color": "red"
                 },
                 {
-                    "id": "g5a_b9",
                     "name": "B9A",
+                    "id": "g5a_b9",
                     "color": "red",
                     "hazard": [
                         {
                             "type": "Laser Volley",
-                            "node": "B11A",
-                            "id": "g5a_b11"
+                            "id": "g5a_b11",
+                            "node": "B11A"
                         }
                     ]
                 },
                 {
-                    "id": "g5a_b10",
                     "name": "B10A",
+                    "id": "g5a_b10",
                     "color": "red",
                     "hazard": [
                         {
                             "type": "Laser Volley",
-                            "node": "B11A",
-                            "id": "g5a_b11"
+                            "id": "g5a_b11",
+                            "node": "B11A"
                         }
                     ]
                 },
                 {
-                    "id": "g5a_b11",
                     "name": "B11A",
+                    "id": "g5a_b11",
                     "color": "pink",
                     "boss": true,
                     "hazard": [
                         {
                             "type": "Laser Volley",
-                            "node": "B11A",
-                            "id": "g5a_b11"
+                            "id": "g5a_b11",
+                            "node": "B11A"
                         }
                     ]
                 },
                 {
-                    "id": "g5a_b12",
                     "name": "B12A",
+                    "id": "g5a_b12",
                     "color": "red"
                 },
                 {
-                    "id": "g5b_b3",
                     "name": "B3B",
+                    "id": "g5b_b3",
                     "color": "red",
                     "hazard": [
                         {
                             "type": "Reinforcements",
-                            "node": "B6B",
-                            "id": "g5b_b6"
+                            "id": "g5b_b6",
+                            "node": "B6B"
                         }
                     ]
                 },
                 {
-                    "id": "g5b_b4",
                     "name": "B4B",
+                    "id": "g5b_b4",
                     "color": "red",
                     "hazard": [
                         {
                             "type": "Reinforcements",
-                            "node": "B6B",
-                            "id": "g5b_b6"
+                            "id": "g5b_b6",
+                            "node": "B6B"
                         }
                     ]
                 },
                 {
-                    "id": "g5b_b5",
                     "name": "B5B",
+                    "id": "g5b_b5",
                     "color": "red",
                     "hazard": [
                         {
                             "type": "Reinforcements",
-                            "node": "B6B",
-                            "id": "g5b_b6"
+                            "id": "g5b_b6",
+                            "node": "B6B"
                         }
                     ]
                 },
                 {
-                    "id": "g5b_b6",
                     "name": "B6B",
+                    "id": "g5b_b6",
                     "color": "pink",
                     "boss": true,
                     "hazard": [
                         {
                             "type": "Reinforcements",
-                            "node": "B6B",
-                            "id": "g5b_b6"
+                            "id": "g5b_b6",
+                            "node": "B6B"
                         }
                     ]
                 },
                 {
-                    "id": "g5b_b7",
                     "name": "B7B",
+                    "id": "g5b_b7",
                     "color": "red"
                 },
                 {
-                    "id": "g5b_b8",
                     "name": "B8B",
+                    "id": "g5b_b8",
                     "color": "red"
                 },
                 {
-                    "id": "g5b_b9",
                     "name": "B9B",
+                    "id": "g5b_b9",
                     "color": "red",
                     "hazard": [
                         {
                             "type": "Laser Volley",
-                            "node": "B11B",
-                            "id": "g5b_b11"
+                            "id": "g5b_b11",
+                            "node": "B11B"
                         }
                     ]
                 },
                 {
-                    "id": "g5b_b10",
                     "name": "B10B",
+                    "id": "g5b_b10",
                     "color": "red",
                     "hazard": [
                         {
                             "type": "Laser Volley",
-                            "node": "B11B",
-                            "id": "g5b_b11"
+                            "id": "g5b_b11",
+                            "node": "B11B"
                         }
                     ]
                 },
                 {
-                    "id": "g5b_b11",
                     "name": "B11B",
+                    "id": "g5b_b11",
                     "color": "pink",
                     "boss": true,
                     "hazard": [
                         {
                             "type": "Laser Volley",
-                            "node": "B11B",
-                            "id": "g5b_b11"
+                            "id": "g5b_b11",
+                            "node": "B11B"
                         }
                     ]
                 },
                 {
-                    "id": "g5b_b12",
                     "name": "B12B",
+                    "id": "g5b_b12",
                     "color": "red"
                 },
                 {
-                    "id": "g5_b13",
                     "name": "B13",
+                    "id": "g5_b13",
                     "color": "red",
                     "hazard": [
                         {
                             "type": "Laser Volley",
-                            "node": "B11A",
-                            "id": "g5a_b11"
+                            "id": "g5a_b11",
+                            "node": "B11A"
                         },
                         {
                             "type": "Laser Volley",
-                            "node": "B11B",
-                            "id": "g5b_b11"
+                            "id": "g5b_b11",
+                            "node": "B11B"
                         }
                     ]
                 },
                 {
-                    "id": "g5_b14",
                     "name": "B14",
+                    "id": "g5_b14",
                     "color": "red",
                     "hazard": [
                         {
                             "type": "Laser Volley",
-                            "node": "B11A",
-                            "id": "g5a_b11"
+                            "id": "g5a_b11",
+                            "node": "B11A"
                         },
                         {
                             "type": "Laser Volley",
-                            "node": "B11B",
-                            "id": "g5b_b11"
+                            "id": "g5b_b11",
+                            "node": "B11B"
                         }
                     ]
                 },
                 {
-                    "id": "g5_b15",
                     "name": "B15",
+                    "id": "g5_b15",
                     "color": "red"
                 },
                 {
-                    "id": "g5_b16",
                     "name": "B16",
-                    "color": "red",
+                    "id": "g5_b16",
+                    "color": "pink",
+                    "boss": true,
                     "hazard": [
                         {
                             "type": "Damage Per Second",
-                            "node": "B16",
-                            "id": "g5_b16"
+                            "id": "g5_b16",
+                            "node": "B16"
                         }
                     ]
                 },
                 {
-                    "id": "g5_b17",
                     "name": "B17",
-                    "color": "red",
+                    "id": "g5_b17",
+                    "color": "pink",
+                    "boss": true,
                     "hazard": [
                         {
                             "type": "Damage Per Second",
-                            "node": "B17",
-                            "id": "g5_b17"
+                            "id": "g5_b17",
+                            "node": "B17"
                         }
                     ]
                 },
                 {
-                    "id": "g5_b18",
                     "name": "B18",
+                    "id": "g5_b18",
                     "color": "red"
                 },
                 {
-                    "id": "g5_b19",
                     "name": "B19",
+                    "id": "g5_b19",
                     "color": "red"
                 },
                 {
-                    "id": "g5_bb2",
                     "name": "BB2",
-                    "color": "white"
+                    "id": "g5_bb2",
+                    "color": "white",
+                    "boss": true
                 },
                 {
-                    "id": "g5_b20",
                     "name": "B20",
+                    "id": "g5_b20",
                     "color": "red"
                 },
                 {
-                    "id": "g5_b21",
                     "name": "B21",
+                    "id": "g5_b21",
                     "color": "red",
                     "hazard": [
                         {
                             "type": "Laser Volley",
-                            "node": "B23",
-                            "id": "g5_b23"
+                            "id": "g5_b23",
+                            "node": "B23"
                         },
                         {
                             "type": "Laser Volley",
-                            "node": "B25",
-                            "id": "g5_b25"
+                            "id": "g5_b25",
+                            "node": "B25"
                         }
                     ]
                 },
                 {
-                    "id": "g5_b22",
                     "name": "B22",
+                    "id": "g5_b22",
                     "color": "red",
                     "hazard": [
                         {
                             "type": "Laser Volley",
-                            "node": "B23",
-                            "id": "g5_b23"
+                            "id": "g5_b23",
+                            "node": "B23"
                         }
                     ]
                 },
                 {
-                    "id": "g5_b23",
                     "name": "B23",
+                    "id": "g5_b23",
                     "color": "pink",
                     "boss": true,
                     "hazard": [
                         {
                             "type": "Laser Volley",
-                            "node": "B23",
-                            "id": "g5_b23"
+                            "id": "g5_b23",
+                            "node": "B23"
                         },
                         {
                             "type": "Reinforcements",
-                            "node": "B27",
-                            "id": "g5_b27"
+                            "id": "g5_b27",
+                            "node": "B27"
                         }
                     ]
                 },
                 {
-                    "id": "g5_b24",
                     "name": "B24",
+                    "id": "g5_b24",
                     "color": "red",
                     "hazard": [
                         {
                             "type": "Laser Volley",
-                            "node": "B25",
-                            "id": "g5_b25"
+                            "id": "g5_b25",
+                            "node": "B25"
                         }
                     ]
                 },
                 {
-                    "id": "g5_b25",
                     "name": "B25",
+                    "id": "g5_b25",
                     "color": "pink",
                     "boss": true,
                     "hazard": [
                         {
                             "type": "Laser Volley",
-                            "node": "B25",
-                            "id": "g5_b25"
+                            "id": "g5_b25",
+                            "node": "B25"
                         },
                         {
                             "type": "Reinforcements",
-                            "node": "B27",
-                            "id": "g5_b27"
+                            "id": "g5_b27",
+                            "node": "B27"
                         }
                     ]
                 },
                 {
-                    "id": "g5_b26",
                     "name": "B26",
+                    "id": "g5_b26",
                     "color": "red",
                     "hazard": [
                         {
                             "type": "Laser Volley",
-                            "node": "B23",
-                            "id": "g5_b23"
+                            "id": "g5_b23",
+                            "node": "B23"
                         },
                         {
                             "type": "Laser Volley",
-                            "node": "B25",
-                            "id": "g5_b25"
+                            "id": "g5_b25",
+                            "node": "B25"
                         },
                         {
                             "type": "Reinforcements",
-                            "node": "B27",
-                            "id": "g5_b27"
+                            "id": "g5_b27",
+                            "node": "B27"
                         }
                     ]
                 },
                 {
-                    "id": "g5_b27",
                     "name": "B27",
+                    "id": "g5_b27",
                     "color": "pink",
                     "boss": true,
                     "hazard": [
                         {
                             "type": "Laser Volley",
-                            "node": "B23",
-                            "id": "g5_b23"
+                            "id": "g5_b23",
+                            "node": "B23"
                         },
                         {
                             "type": "Laser Volley",
-                            "node": "B25",
-                            "id": "g5_b25"
+                            "id": "g5_b25",
+                            "node": "B25"
                         },
                         {
                             "type": "Reinforcements",
-                            "node": "B27",
-                            "id": "g5_b27"
+                            "id": "g5_b27",
+                            "node": "B27"
                         }
                     ]
                 },
                 {
-                    "id": "g5_bb3",
                     "name": "BB3",
+                    "id": "g5_bb3",
                     "color": "white",
                     "boss": true,
                     "hazard": [
                         {
                             "type": "Damage Per Second",
-                            "node": "BB3",
-                            "id": "g5_bb3"
+                            "id": "g5_bb3",
+                            "node": "BB3"
                         }
                     ]
                 },
                 {
-                    "id": "g5_b28",
                     "name": "B28",
+                    "id": "g5_b28",
                     "color": "red",
                     "hazard": [
                         {
                             "type": "Reinforcements",
-                            "node": "B27",
-                            "id": "g5_b27"
+                            "id": "g5_b27",
+                            "node": "B27"
                         }
                     ]
                 },
                 {
-                    "id": "g5_b29",
                     "name": "B29",
-                    "color": "red",
-                    "hazard": [
-                        {
-                            "type": "Reinforcements",
-                            "node": "B27",
-                            "id": "g5_b27"
-                        },
-                        {
-                            "type": "Damage Per Second",
-                            "node": "B29",
-                            "id": "g5_b29"
-                        }
-                    ]
-                },
-                {
-                    "id": "g5_b30",
-                    "name": "B30",
-                    "color": "red",
-                    "hazard": [
-                        {
-                            "type": "Reinforcements",
-                            "node": "B27",
-                            "id": "g5_b27"
-                        },
-                        {
-                            "type": "Damage Per Second",
-                            "node": "B30",
-                            "id": "g5_b30"
-                        }
-                    ]
-                },
-                {
-                    "id": "g5_b31",
-                    "name": "B31",
+                    "id": "g5_b29",
                     "color": "pink",
                     "boss": true,
                     "hazard": [
                         {
                             "type": "Reinforcements",
-                            "node": "B31",
-                            "id": "g5_b31"
+                            "id": "g5_b27",
+                            "node": "B27"
+                        },
+                        {
+                            "type": "Damage Per Second",
+                            "id": "g5_b29",
+                            "node": "B29"
                         }
                     ]
                 },
                 {
-                    "id": "g5_b32",
+                    "name": "B30",
+                    "id": "g5_b30",
+                    "color": "pink",
+                    "boss": true,
+                    "hazard": [
+                        {
+                            "type": "Reinforcements",
+                            "id": "g5_b27",
+                            "node": "B27"
+                        },
+                        {
+                            "type": "Damage Per Second",
+                            "id": "g5_b30",
+                            "node": "B30"
+                        }
+                    ]
+                },
+                {
+                    "name": "B31",
+                    "id": "g5_b31",
+                    "color": "pink",
+                    "boss": true,
+                    "hazard": [
+                        {
+                            "type": "Reinforcements",
+                            "id": "g5_b31",
+                            "node": "B31"
+                        }
+                    ]
+                },
+                {
                     "name": "B32",
+                    "id": "g5_b32",
                     "color": "red",
                     "hazard": [
                         {
                             "type": "Reinforcements",
-                            "node": "B31",
-                            "id": "g5_b31"
+                            "id": "g5_b31",
+                            "node": "B31"
                         }
                     ]
                 },
                 {
-                    "id": "g5_b33",
                     "name": "B33",
+                    "id": "g5_b33",
                     "color": "red",
                     "hazard": [
                         {
                             "type": "Reinforcements",
-                            "node": "B31",
-                            "id": "g5_b31"
+                            "id": "g5_b31",
+                            "node": "B31"
                         }
                     ]
                 },
                 {
-                    "id": "g5_b34",
                     "name": "B34",
+                    "id": "g5_b34",
                     "color": "red"
                 },
                 {
-                    "id": "g5_b35",
                     "name": "B35",
+                    "id": "g5_b35",
                     "color": "white",
                     "boss": true,
                     "hazard": [
                         {
                             "type": "Laser Volley",
-                            "node": "B35",
-                            "id": "g5_b35"
+                            "id": "g5_b35",
+                            "node": "B35"
                         },
                         {
                             "type": "Reinforcements",
-                            "node": "B35",
-                            "id": "g5_b35"
+                            "id": "g5_b35",
+                            "node": "B35"
                         }
                     ]
                 }
@@ -920,606 +925,606 @@
             "minStats": 1,
             "battles": [
                 {
-                    "id": "g6_b1",
                     "name": "B1",
+                    "id": "g6_b1",
                     "color": "red"
                 },
                 {
-                    "id": "g6_b2",
                     "name": "B2",
+                    "id": "g6_b2",
                     "color": "red"
                 },
                 {
-                    "id": "g6_b3",
                     "name": "B3",
+                    "id": "g6_b3",
                     "color": "red",
                     "hazard": [
                         {
                             "type": "Laser Volley",
-                            "node": "F1",
-                            "id": "g6_bu_damage1"
+                            "id": "g6_bu_damage1",
+                            "node": "F1"
                         }
                     ]
                 },
                 {
-                    "id": "g6_b4",
                     "name": "B4",
+                    "id": "g6_b4",
                     "color": "red",
                     "hazard": [
                         {
                             "type": "Laser Volley",
-                            "node": "F1",
-                            "id": "g6_bu_damage1"
+                            "id": "g6_bu_damage1",
+                            "node": "F1"
                         }
                     ]
                 },
                 {
-                    "id": "g6_b5",
                     "name": "B5",
+                    "id": "g6_b5",
                     "color": "red",
                     "hazard": [
                         {
                             "type": "Laser Volley",
-                            "node": "F1",
-                            "id": "g6_bu_damage1"
+                            "id": "g6_bu_damage1",
+                            "node": "F1"
                         }
                     ]
                 },
                 {
-                    "id": "g6_b6",
                     "name": "B6",
+                    "id": "g6_b6",
                     "color": "red"
                 },
                 {
-                    "id": "g6_b7",
                     "name": "B7",
+                    "id": "g6_b7",
                     "color": "red",
                     "hazard": [
                         {
                             "type": "Reinforcements",
-                            "node": "F2",
-                            "id": "g6_bu_reinforce1"
+                            "id": "g6_bu_reinforce1",
+                            "node": "F2"
                         }
                     ]
                 },
                 {
-                    "id": "g6_b8",
                     "name": "B8",
+                    "id": "g6_b8",
                     "color": "red",
                     "hazard": [
                         {
                             "type": "Reinforcements",
-                            "node": "F2",
-                            "id": "g6_bu_reinforce1"
+                            "id": "g6_bu_reinforce1",
+                            "node": "F2"
                         },
                         {
                             "type": "Laser Volley",
-                            "node": "B10",
-                            "id": "g6_b10"
+                            "id": "g6_b10",
+                            "node": "B10"
                         }
                     ]
                 },
                 {
-                    "id": "g6_b9",
                     "name": "B9",
+                    "id": "g6_b9",
                     "color": "red",
                     "hazard": [
                         {
                             "type": "Reinforcements",
-                            "node": "F2",
-                            "id": "g6_bu_reinforce1"
+                            "id": "g6_bu_reinforce1",
+                            "node": "F2"
                         },
                         {
                             "type": "Laser Volley",
-                            "node": "B10",
-                            "id": "g6_b10"
+                            "id": "g6_b10",
+                            "node": "B10"
                         }
                     ]
                 },
                 {
-                    "id": "g6_b10",
                     "name": "B10",
+                    "id": "g6_b10",
                     "color": "pink",
                     "boss": true,
                     "hazard": [
                         {
                             "type": "Reinforcements",
-                            "node": "F2",
-                            "id": "g6_bu_reinforce1"
+                            "id": "g6_bu_reinforce1",
+                            "node": "F2"
                         },
                         {
                             "type": "Laser Volley",
-                            "node": "B10",
-                            "id": "g6_b10"
+                            "id": "g6_b10",
+                            "node": "B10"
                         }
                     ]
                 },
                 {
-                    "id": "g6_b11",
                     "name": "B11",
+                    "id": "g6_b11",
                     "color": "red",
                     "hazard": [
                         {
                             "type": "Laser Volley",
-                            "node": "B10",
-                            "id": "g6_b10"
+                            "id": "g6_b10",
+                            "node": "B10"
                         },
                         {
                             "type": "Laser Volley",
-                            "node": "F3",
-                            "id": "g6_bu_damage2"
+                            "id": "g6_bu_damage2",
+                            "node": "F3"
                         }
                     ]
                 },
                 {
-                    "id": "g6_bb1",
                     "name": "BB1",
-                    "color": "red",
+                    "id": "g6_bb1",
+                    "color": "white",
+                    "boss": true,
                     "hazard": [
                         {
                             "type": "Laser Volley",
-                            "node": "F3",
-                            "id": "g6_bu_damage2"
+                            "id": "g6_bu_damage2",
+                            "node": "F3"
                         },
                         {
                             "type": "Reinforcements",
-                            "node": "BB1",
-                            "id": "g6_bb1"
+                            "id": "g6_bb1",
+                            "node": "BB1"
                         }
                     ]
                 },
                 {
-                    "id": "g6_b12",
                     "name": "B12",
+                    "id": "g6_b12",
                     "color": "red",
                     "hazard": [
                         {
                             "type": "Laser Volley",
-                            "node": "F3",
-                            "id": "g6_bu_damage2"
+                            "id": "g6_bu_damage2",
+                            "node": "F3"
                         }
                     ]
                 },
                 {
-                    "id": "g6_b13",
                     "name": "B13",
+                    "id": "g6_b13",
                     "color": "red"
                 },
                 {
-                    "id": "g6_b14",
                     "name": "B14",
+                    "id": "g6_b14",
                     "color": "red",
                     "hazard": [
                         {
                             "type": "Reinforcements",
-                            "node": "B16",
-                            "id": "g6_b16"
+                            "id": "g6_b16",
+                            "node": "B16"
                         }
                     ]
                 },
                 {
-                    "id": "g6_b15",
                     "name": "B15",
+                    "id": "g6_b15",
                     "color": "red",
                     "hazard": [
                         {
                             "type": "Reinforcements",
-                            "node": "B16",
-                            "id": "g6_b16"
+                            "id": "g6_b16",
+                            "node": "B16"
                         }
                     ]
                 },
                 {
-                    "id": "g6_b16",
                     "name": "B16",
+                    "id": "g6_b16",
                     "color": "pink",
                     "boss": true,
                     "hazard": [
                         {
                             "type": "Reinforcements",
-                            "node": "B16",
-                            "id": "g6_b16"
+                            "id": "g6_b16",
+                            "node": "B16"
                         }
                     ]
                 },
                 {
-                    "id": "g6_b17",
                     "name": "B17",
-                    "color": "red",
+                    "id": "g6_b17",
+                    "color": "pink",
+                    "boss": true,
                     "hazard": [
                         {
                             "type": "Damage Per Second",
-                            "node": "B17",
-                            "id": "g6_b17"
+                            "id": "g6_b17",
+                            "node": "B17"
                         }
                     ]
                 },
                 {
-                    "id": "g6_b18",
                     "name": "B18",
+                    "id": "g6_b18",
                     "color": "red"
                 },
                 {
-                    "id": "g6_b19",
                     "name": "B19",
+                    "id": "g6_b19",
                     "color": "red"
                 },
                 {
-                    "id": "g6_heavy_cruiser_beam_unlock",
-                    "name": "BE",
-                    "color": "red"
-                },
-                {
-                    "id": "g6_b20",
                     "name": "B20",
+                    "id": "g6_b20",
                     "color": "red",
                     "hazard": [
                         {
                             "type": "Reinforcements",
-                            "node": "B21",
-                            "id": "g6_b21"
+                            "id": "g6_b21",
+                            "node": "B21"
                         }
                     ]
                 },
                 {
-                    "id": "g6_b21",
                     "name": "B21",
+                    "id": "g6_b21",
                     "color": "pink",
                     "boss": true,
                     "hazard": [
                         {
                             "type": "Laser Volley",
-                            "node": "F3",
-                            "id": "g6_bu_damage2"
+                            "id": "g6_bu_damage2",
+                            "node": "F3"
                         },
                         {
                             "type": "Reinforcements",
-                            "node": "B21",
-                            "id": "g6_b21"
+                            "id": "g6_b21",
+                            "node": "B21"
                         }
                     ]
                 },
                 {
-                    "id": "g6_b22",
                     "name": "B22",
+                    "id": "g6_b22",
                     "color": "pink",
                     "boss": true,
                     "hazard": [
                         {
                             "type": "Reinforcements",
-                            "node": "B21",
-                            "id": "g6_b21"
+                            "id": "g6_b21",
+                            "node": "B21"
                         },
                         {
                             "type": "Laser Volley",
-                            "node": "B22",
-                            "id": "g6_b22"
+                            "id": "g6_b22",
+                            "node": "B22"
                         }
                     ]
                 },
                 {
-                    "id": "g6_b23",
                     "name": "B23",
+                    "id": "g6_b23",
                     "color": "red",
                     "hazard": [
                         {
                             "type": "Laser Volley",
-                            "node": "F3",
-                            "id": "g6_bu_damage2"
+                            "id": "g6_bu_damage2",
+                            "node": "F3"
                         },
                         {
                             "type": "Laser Volley",
-                            "node": "B22",
-                            "id": "g6_b22"
+                            "id": "g6_b22",
+                            "node": "B22"
                         }
                     ]
                 },
                 {
-                    "id": "g6_b24",
                     "name": "B24",
+                    "id": "g6_b24",
                     "color": "red"
                 },
                 {
-                    "id": "g6_b25",
                     "name": "B25",
+                    "id": "g6_b25",
                     "color": "red",
                     "hazard": [
                         {
                             "type": "Damage Per Second",
-                            "node": "F4",
-                            "id": "g6_bu_void1"
+                            "id": "g6_bu_void1",
+                            "node": "F4"
                         }
                     ]
                 },
                 {
-                    "id": "g6_b26",
                     "name": "B26",
-                    "color": "red",
+                    "id": "g6_b26",
+                    "color": "pink",
+                    "boss": true,
                     "hazard": [
                         {
                             "type": "Damage Per Second",
-                            "node": "F4",
-                            "id": "g6_bu_void1"
+                            "id": "g6_bu_void1",
+                            "node": "F4"
                         },
                         {
                             "type": "Damage Per Second",
-                            "node": "B26",
-                            "id": "g6_b26"
+                            "id": "g6_b26",
+                            "node": "B26"
                         }
                     ]
                 },
                 {
-                    "id": "g6_bb2",
                     "name": "BB2",
+                    "id": "g6_bb2",
                     "color": "white",
                     "boss": true,
                     "hazard": [
                         {
                             "type": "Laser Volley",
-                            "node": "F1",
-                            "id": "g6_bu_damage1"
+                            "id": "g6_bu_damage1",
+                            "node": "F1"
                         },
                         {
                             "type": "Damage Per Second",
-                            "node": "F4",
-                            "id": "g6_bu_void1"
+                            "id": "g6_bu_void1",
+                            "node": "F4"
                         },
                         {
                             "type": "Damage Per Second",
-                            "node": "BB2",
-                            "id": "g6_bb2"
+                            "id": "g6_bb2",
+                            "node": "BB2"
                         }
                     ]
                 },
                 {
-                    "id": "g6_b27",
                     "name": "B27",
+                    "id": "g6_b27",
                     "color": "red"
                 },
                 {
-                    "id": "g6_b28",
                     "name": "B28",
+                    "id": "g6_b28",
                     "color": "red",
                     "hazard": [
                         {
                             "type": "Grid Buff",
-                            "node": "B33",
-                            "id": "g6_b33"
+                            "id": "g6_b33",
+                            "node": "B33"
                         }
                     ]
                 },
                 {
-                    "id": "g6_b29",
                     "name": "B29",
+                    "id": "g6_b29",
                     "color": "red",
                     "hazard": [
                         {
                             "type": "Grid Buff",
-                            "node": "B33",
-                            "id": "g6_b33"
+                            "id": "g6_b33",
+                            "node": "B33"
                         }
                     ]
                 },
                 {
-                    "id": "g6_b30",
                     "name": "B30",
+                    "id": "g6_b30",
                     "color": "red",
                     "hazard": [
                         {
                             "type": "Grid Buff",
-                            "node": "F5",
-                            "id": "g6_bu_gb1"
+                            "id": "g6_bu_gb1",
+                            "node": "F5"
                         },
                         {
                             "type": "Grid Buff",
-                            "node": "B33",
-                            "id": "g6_b33"
+                            "id": "g6_b33",
+                            "node": "B33"
                         }
                     ]
                 },
                 {
-                    "id": "g6_b31",
                     "name": "B31",
+                    "id": "g6_b31",
                     "color": "red",
                     "hazard": [
                         {
                             "type": "Grid Buff",
-                            "node": "F5",
-                            "id": "g6_bu_gb1"
+                            "id": "g6_bu_gb1",
+                            "node": "F5"
                         },
                         {
                             "type": "Grid Buff",
-                            "node": "B33",
-                            "id": "g6_b33"
+                            "id": "g6_b33",
+                            "node": "B33"
                         }
                     ]
                 },
                 {
-                    "id": "g6_b32",
                     "name": "B32",
+                    "id": "g6_b32",
                     "color": "red",
                     "hazard": [
                         {
                             "type": "Grid Buff",
-                            "node": "F5",
-                            "id": "g6_bu_gb1"
+                            "id": "g6_bu_gb1",
+                            "node": "F5"
                         },
                         {
                             "type": "Grid Buff",
-                            "node": "B33",
-                            "id": "g6_b33"
+                            "id": "g6_b33",
+                            "node": "B33"
                         }
                     ]
                 },
                 {
-                    "id": "g6_b33",
                     "name": "B33",
+                    "id": "g6_b33",
                     "color": "pink",
                     "boss": true,
                     "hazard": [
                         {
                             "type": "Grid Buff",
-                            "node": "F5",
-                            "id": "g6_bu_gb1"
+                            "id": "g6_bu_gb1",
+                            "node": "F5"
                         },
                         {
                             "type": "Grid Buff",
-                            "node": "B33",
-                            "id": "g6_b33"
+                            "id": "g6_b33",
+                            "node": "B33"
                         }
                     ]
                 },
                 {
-                    "id": "g6_b34",
                     "name": "B34",
+                    "id": "g6_b34",
                     "color": "red"
                 },
                 {
-                    "id": "g6_b35",
                     "name": "B35",
+                    "id": "g6_b35",
                     "color": "red"
                 },
                 {
-                    "id": "g6_b36",
                     "name": "B36",
+                    "id": "g6_b36",
                     "color": "red"
                 },
                 {
-                    "id": "g6_b37",
                     "name": "B37",
+                    "id": "g6_b37",
                     "color": "red",
                     "hazard": [
                         {
                             "type": "Laser Volley",
-                            "node": "F6",
-                            "id": "g6_bu_m1"
+                            "id": "g6_bu_m1",
+                            "node": "F6"
                         }
                     ]
                 },
                 {
-                    "id": "g6_b38",
                     "name": "B38",
+                    "id": "g6_b38",
                     "color": "red",
                     "hazard": [
                         {
                             "type": "Reinforcements",
-                            "node": "F6",
-                            "id": "g6_bu_m1"
+                            "id": "g6_bu_m1",
+                            "node": "F6"
                         }
                     ]
                 },
                 {
-                    "id": "g6_b39",
                     "name": "B39",
+                    "id": "g6_b39",
                     "color": "red"
                 },
                 {
-                    "id": "g6_bb3",
                     "name": "BB3",
-                    "color": "red",
-                    "hazard": [
-                        {
-                            "type": "Grid Buff",
-                            "node": "F6",
-                            "id": "g6_bu_m1"
-                        },
-                        {
-                            "type": "Grid Buff",
-                            "node": "BB3",
-                            "id": "g6_bb3"
-                        }
-                    ]
-                },
-                {
-                    "id": "g6_b40",
-                    "name": "B40",
-                    "color": "red",
-                    "hazard": [
-                        {
-                            "type": "Grid Buff",
-                            "node": "B41",
-                            "id": "g6_b41"
-                        }
-                    ]
-                },
-                {
-                    "id": "g6_b41",
-                    "name": "B41",
-                    "color": "pink",
-                    "boss": true,
-                    "hazard": [
-                        {
-                            "type": "Grid Buff",
-                            "node": "B41",
-                            "id": "g6_b41"
-                        }
-                    ]
-                },
-                {
-                    "id": "g6_b42",
-                    "name": "B42",
-                    "color": "red",
-                    "hazard": [
-                        {
-                            "type": "Grid Buff",
-                            "node": "F6",
-                            "id": "g6_bu_m1"
-                        },
-                        {
-                            "type": "Grid Buff",
-                            "node": "B41",
-                            "id": "g6_b41"
-                        },
-                        {
-                            "type": "Damage Per Second",
-                            "node": "B42",
-                            "id": "g6_b42"
-                        }
-                    ]
-                },
-                {
-                    "id": "g6_b43",
-                    "name": "B43",
-                    "color": "pink",
-                    "boss": true,
-                    "hazard": [
-                        {
-                            "type": "Grid Buff",
-                            "node": "F7",
-                            "id": "g6_bu_gb2"
-                        },
-                        {
-                            "type": "Laser Volley",
-                            "node": "B43",
-                            "id": "g6_b43"
-                        }
-                    ]
-                },
-                {
-                    "id": "g6_b44",
-                    "name": "B44",
-                    "color": "red"
-                },
-                {
-                    "id": "g6_b45",
-                    "name": "B45",
-                    "color": "red"
-                },
-                {
-                    "id": "g6_b46",
-                    "name": "B46",
+                    "id": "g6_bb3",
                     "color": "white",
                     "boss": true,
                     "hazard": [
                         {
                             "type": "Grid Buff",
-                            "node": "F8",
-                            "id": "g6_bu_gb3"
+                            "id": "g6_bu_m1",
+                            "node": "F6"
                         },
                         {
                             "type": "Grid Buff",
-                            "node": "B46",
-                            "id": "g6_b46"
+                            "id": "g6_bb3",
+                            "node": "BB3"
+                        }
+                    ]
+                },
+                {
+                    "name": "B40",
+                    "id": "g6_b40",
+                    "color": "red",
+                    "hazard": [
+                        {
+                            "type": "Grid Buff",
+                            "id": "g6_b41",
+                            "node": "B41"
+                        }
+                    ]
+                },
+                {
+                    "name": "B41",
+                    "id": "g6_b41",
+                    "color": "pink",
+                    "boss": true,
+                    "hazard": [
+                        {
+                            "type": "Grid Buff",
+                            "id": "g6_b41",
+                            "node": "B41"
+                        }
+                    ]
+                },
+                {
+                    "name": "B42",
+                    "id": "g6_b42",
+                    "color": "pink",
+                    "boss": true,
+                    "hazard": [
+                        {
+                            "type": "Grid Buff",
+                            "id": "g6_bu_m1",
+                            "node": "F6"
+                        },
+                        {
+                            "type": "Grid Buff",
+                            "id": "g6_b41",
+                            "node": "B41"
+                        },
+                        {
+                            "type": "Damage Per Second",
+                            "id": "g6_b42",
+                            "node": "B42"
+                        }
+                    ]
+                },
+                {
+                    "name": "B43",
+                    "id": "g6_b43",
+                    "color": "pink",
+                    "boss": true,
+                    "hazard": [
+                        {
+                            "type": "Grid Buff",
+                            "id": "g6_bu_gb2",
+                            "node": "F7"
+                        },
+                        {
+                            "type": "Laser Volley",
+                            "id": "g6_b43",
+                            "node": "B43"
+                        }
+                    ]
+                },
+                {
+                    "name": "B44",
+                    "id": "g6_b44",
+                    "color": "red"
+                },
+                {
+                    "name": "B45",
+                    "id": "g6_b45",
+                    "color": "red"
+                },
+                {
+                    "name": "B46",
+                    "id": "g6_b46",
+                    "color": "white",
+                    "boss": true,
+                    "hazard": [
+                        {
+                            "type": "Grid Buff",
+                            "id": "g6_bu_gb3",
+                            "node": "F8"
+                        },
+                        {
+                            "type": "Grid Buff",
+                            "id": "g6_b46",
+                            "node": "B46"
                         }
                     ]
                 }
@@ -1533,121 +1538,122 @@
             "minStats": 1,
             "battles": [
                 {
-                    "id": "g7_b1",
                     "name": "B1",
+                    "id": "g7_b1",
                     "color": "red"
                 },
                 {
-                    "id": "g7_b2a",
                     "name": "B2A",
+                    "id": "g7_b2a",
                     "color": "red"
                 },
                 {
-                    "id": "g7_b2b",
                     "name": "B2B",
+                    "id": "g7_b2b",
                     "color": "red"
                 },
                 {
-                    "id": "g7_b2c",
                     "name": "B2C",
+                    "id": "g7_b2c",
                     "color": "red"
                 },
                 {
-                    "id": "g7_bb1",
                     "name": "BB1",
+                    "id": "g7_bb1",
                     "color": "white",
                     "boss": true,
                     "hazard": [
                         {
                             "type": "Laser Volley",
-                            "node": "F1",
-                            "id": "g7_support_1"
+                            "id": "g7_support_1",
+                            "node": "F1"
                         }
                     ]
                 },
                 {
-                    "id": "g7_b3a",
                     "name": "B3A",
+                    "id": "g7_b3a",
                     "color": "red"
                 },
                 {
-                    "id": "g7_b3c",
                     "name": "B3C",
+                    "id": "g7_b3c",
                     "color": "red"
                 },
                 {
-                    "id": "g7_b3d",
                     "name": "B3D",
+                    "id": "g7_b3d",
                     "color": "red"
                 },
                 {
-                    "id": "g7_b4a",
                     "name": "B4A",
+                    "id": "g7_b4a",
                     "color": "red",
                     "hazard": [
                         {
                             "type": "Grid Buff",
-                            "node": "B6",
-                            "id": "g7_b6"
+                            "id": "g7_b6",
+                            "node": "B6"
                         }
                     ]
                 },
                 {
-                    "id": "g7_b4b",
                     "name": "B4B",
+                    "id": "g7_b4b",
                     "color": "red"
                 },
                 {
-                    "id": "g7_b4c",
                     "name": "B4C",
+                    "id": "g7_b4c",
                     "color": "red",
                     "hazard": [
                         {
                             "type": "Grid Buff",
-                            "node": "B6",
-                            "id": "g7_b6"
+                            "id": "g7_b6",
+                            "node": "B6"
                         }
                     ]
                 },
                 {
-                    "id": "g7_b5",
                     "name": "B5",
+                    "id": "g7_b5",
                     "color": "red",
                     "hazard": [
                         {
                             "type": "Reinforcements",
-                            "node": "F1",
-                            "id": "g7_support_1"
+                            "id": "g7_support_1",
+                            "node": "F1"
                         },
                         {
                             "type": "Reinforcements",
-                            "node": "B6",
-                            "id": "g7_b6"
+                            "id": "g7_b6",
+                            "node": "B6"
                         }
                     ]
                 },
                 {
-                    "id": "g7_b5d",
                     "name": "B5D",
+                    "id": "g7_b5d",
                     "color": "red"
                 },
                 {
-                    "id": "g7_b6",
                     "name": "B6",
+                    "id": "g7_b6",
                     "color": "pink",
                     "boss": true,
                     "hazard": [
                         {
                             "type": "Reinforcements",
-                            "node": "B6",
-                            "id": "g7_b6"
+                            "id": "g7_b6",
+                            "node": "B6"
                         }
                     ]
                 },
                 {
-                    "id": "g7_b7",
                     "name": "B7",
-                    "color": "white"
+                    "id": "g7_b7",
+                    "color": "white",
+                    "boss": true
                 }
             ]
         },
@@ -1659,185 +1665,631 @@
             "minStats": 1,
             "battles": [
                 {
-                    "id": "g8_b1",
                     "name": "B1",
+                    "id": "g8_b1",
                     "color": "red"
                 },
                 {
-                    "id": "g8_b2",
                     "name": "B2",
+                    "id": "g8_b2",
                     "color": "red"
                 },
                 {
-                    "id": "g8_bb1",
                     "name": "BB1",
-                    "color": "white"
+                    "id": "g8_bb1",
+                    "color": "white",
+                    "boss": true
                 },
                 {
-                    "id": "g8_b3",
                     "name": "B3",
+                    "id": "g8_b3",
                     "color": "red"
                 },
                 {
-                    "id": "g8_b4",
                     "name": "B4",
+                    "id": "g8_b4",
                     "color": "red",
                     "hazard": [
                         {
                             "type": "Laser Volley",
-                            "node": "B5",
-                            "id": "g8_b5"
+                            "id": "g8_b5",
+                            "node": "B5"
                         }
                     ]
                 },
                 {
-                    "id": "g8_b5",
                     "name": "B5",
+                    "id": "g8_b5",
                     "color": "pink",
                     "boss": true,
                     "hazard": [
                         {
                             "type": "Laser Volley",
-                            "node": "B5",
-                            "id": "g8_b5"
+                            "id": "g8_b5",
+                            "node": "B5"
                         }
                     ]
                 },
                 {
-                    "id": "g8_b6",
                     "name": "B6",
+                    "id": "g8_b6",
                     "color": "red",
                     "hazard": [
                         {
                             "type": "Laser Volley",
-                            "node": "B5",
-                            "id": "g8_b5"
+                            "id": "g8_b5",
+                            "node": "B5"
                         }
                     ]
                 },
                 {
-                    "id": "g8_b7",
                     "name": "B7",
+                    "id": "g8_b7",
                     "color": "red",
                     "hazard": [
                         {
                             "type": "Damage Per Second",
-                            "node": "B11",
-                            "id": "g8_b11"
+                            "id": "g8_b11",
+                            "node": "B11"
                         }
                     ]
                 },
                 {
-                    "id": "g8_b8",
                     "name": "B8",
+                    "id": "g8_b8",
                     "color": "red"
                 },
                 {
-                    "id": "g8_b9",
                     "name": "B9",
+                    "id": "g8_b9",
                     "color": "red"
                 },
                 {
-                    "id": "g8_b10",
                     "name": "B10",
+                    "id": "g8_b10",
                     "color": "red",
                     "hazard": [
                         {
                             "type": "Grid Buff",
-                            "node": "B13",
-                            "id": "g8_b13"
+                            "id": "g8_b13",
+                            "node": "B13"
                         }
                     ]
                 },
                 {
-                    "id": "g8_b11",
                     "name": "B11",
+                    "id": "g8_b11",
                     "color": "pink",
                     "boss": true,
                     "hazard": [
                         {
                             "type": "Damage Per Second",
-                            "node": "B11",
-                            "id": "g8_b11"
+                            "id": "g8_b11",
+                            "node": "B11"
                         }
                     ]
                 },
                 {
-                    "id": "g8_b12",
                     "name": "B12",
+                    "id": "g8_b12",
                     "color": "red",
                     "hazard": [
                         {
                             "type": "Grid Buff",
-                            "node": "B13",
-                            "id": "g8_b13"
+                            "id": "g8_b13",
+                            "node": "B13"
                         }
                     ]
                 },
                 {
-                    "id": "g8_b13",
                     "name": "B13",
+                    "id": "g8_b13",
                     "color": "pink",
                     "boss": true,
                     "hazard": [
                         {
                             "type": "Grid Buff",
-                            "node": "B13",
-                            "id": "g8_b13"
+                            "id": "g8_b13",
+                            "node": "B13"
                         }
                     ]
                 },
                 {
-                    "id": "g8_b14",
                     "name": "B14",
-                    "color": "red",
+                    "id": "g8_b14",
+                    "color": "pink",
+                    "boss": true,
                     "hazard": [
                         {
                             "type": "Damage Per Second",
-                            "node": "B14",
-                            "id": "g8_b14"
+                            "id": "g8_b14",
+                            "node": "B14"
                         }
                     ]
                 },
                 {
-                    "id": "g8_b15",
                     "name": "B15",
+                    "id": "g8_b15",
                     "color": "red",
                     "hazard": [
                         {
                             "type": "Laser Volley",
-                            "node": "F1",
-                            "id": "g8_support_1"
+                            "id": "g8_support_1",
+                            "node": "F1"
                         }
                     ]
                 },
                 {
-                    "id": "g8_b16",
                     "name": "B16",
+                    "id": "g8_b16",
                     "color": "red",
                     "hazard": [
                         {
                             "type": "Reinforcements",
-                            "node": "F1",
-                            "id": "g8_support_1"
+                            "id": "g8_support_1",
+                            "node": "F1"
                         }
                     ]
                 },
                 {
-                    "id": "g8_b17",
                     "name": "B17",
+                    "id": "g8_b17",
                     "color": "white",
                     "boss": true,
                     "hazard": [
                         {
                             "type": "Grid Buff",
-                            "node": "F1",
-                            "id": "g8_support_1"
+                            "id": "g8_support_1",
+                            "node": "F1"
                         },
                         {
                             "type": "Grid Buff",
-                            "node": "B17",
-                            "id": "g8_b17"
+                            "id": "g8_b17",
+                            "node": "B17"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "id": "g9",
+            "name": "Galaxy 9",
+            "step": 0.25,
+            "maxStats": 1.75,
+            "minStats": 1,
+            "battles": [
+                {
+                    "name": "B1",
+                    "id": "g9_b1",
+                    "color": "red"
+                },
+                {
+                    "name": "B2",
+                    "id": "g9_b2",
+                    "color": "red"
+                },
+                {
+                    "name": "B3",
+                    "id": "g9_b3",
+                    "color": "red",
+                    "hazard": [
+                        {
+                            "type": "Laser Volley",
+                            "id": "g9_support_1",
+                            "node": "F1"
+                        }
+                    ]
+                },
+                {
+                    "name": "B4",
+                    "id": "g9_b4",
+                    "color": "red",
+                    "hazard": [
+                        {
+                            "type": "Laser Volley",
+                            "id": "g9_support_1",
+                            "node": "F1"
+                        }
+                    ]
+                },
+                {
+                    "name": "B5",
+                    "id": "g9_b5",
+                    "color": "red"
+                },
+                {
+                    "name": "B6",
+                    "id": "g9_b6",
+                    "color": "red",
+                    "hazard": [
+                        {
+                            "type": "Reinforcements",
+                            "id": "g9_b7",
+                            "node": "B7"
+                        }
+                    ]
+                },
+                {
+                    "name": "B7",
+                    "id": "g9_b7",
+                    "color": "pink",
+                    "boss": true,
+                    "hazard": [
+                        {
+                            "type": "Reinforcements",
+                            "id": "g9_b7",
+                            "node": "B7"
+                        }
+                    ]
+                },
+                {
+                    "name": "B8",
+                    "id": "g9_b8",
+                    "color": "red"
+                },
+                {
+                    "name": "B9",
+                    "id": "g9_b9",
+                    "color": "red",
+                    "hazard": [
+                        {
+                            "type": "Reinforcements",
+                            "id": "g9_b7",
+                            "node": "B7"
+                        }
+                    ]
+                },
+                {
+                    "name": "B10",
+                    "id": "g9_b10",
+                    "color": "red"
+                },
+                {
+                    "name": "B11",
+                    "id": "g9_b11",
+                    "color": "pink",
+                    "boss": true,
+                    "hazard": [
+                        {
+                            "type": "Damage Per Second",
+                            "id": "g9_b11",
+                            "node": "B11"
+                        }
+                    ]
+                },
+                {
+                    "name": "B12",
+                    "id": "g9_b12",
+                    "color": "red"
+                },
+                {
+                    "name": "B13",
+                    "id": "g9_b13",
+                    "color": "pink",
+                    "boss": true,
+                    "hazard": [
+                        {
+                            "type": "Grid Buff",
+                            "id": "g9_b13",
+                            "node": "B13"
+                        }
+                    ]
+                },
+                {
+                    "name": "B14",
+                    "id": "g9_b14",
+                    "color": "red",
+                    "hazard": [
+                        {
+                            "type": "Grid Buff",
+                            "id": "g9_b13",
+                            "node": "B13"
+                        }
+                    ]
+                },
+                {
+                    "name": "B15",
+                    "id": "g9_b15",
+                    "color": "red",
+                    "hazard": [
+                        {
+                            "type": "Reinforcements",
+                            "id": "g9_support_2",
+                            "node": "F2"
+                        }
+                    ]
+                },
+                {
+                    "name": "B16",
+                    "id": "g9_b16",
+                    "color": "red",
+                    "hazard": [
+                        {
+                            "type": "Laser Volley",
+                            "id": "g9_support_2",
+                            "node": "F2"
+                        }
+                    ]
+                },
+                {
+                    "name": "B17",
+                    "id": "g9_b17",
+                    "color": "pink",
+                    "boss": true,
+                    "hazard": [
+                        {
+                            "type": "Grid Buff",
+                            "id": "g9_support_2",
+                            "node": "F2"
+                        },
+                        {
+                            "type": "Laser Volley",
+                            "id": "g9_b17",
+                            "node": "B17"
+                        }
+                    ]
+                },
+                {
+                    "name": "B18",
+                    "id": "g9_b18",
+                    "color": "red",
+                    "hazard": [
+                        {
+                            "type": "Laser Volley",
+                            "id": "g9_b17",
+                            "node": "B17"
+                        }
+                    ]
+                },
+                {
+                    "name": "B19",
+                    "id": "g9_b19",
+                    "color": "white",
+                    "boss": true
+                },
+                {
+                    "name": "BB1",
+                    "id": "g9_bb1",
+                    "color": "white",
+                    "boss": true
+                }
+            ]
+        },
+        {
+            "id": "g10",
+            "name": "Galaxy 10",
+            "step": 0.25,
+            "maxStats": 2.25,
+            "minStats": 1,
+            "battles": [
+                {
+                    "name": "B1",
+                    "id": "g10_b1",
+                    "color": "red"
+                },
+                {
+                    "name": "B2",
+                    "id": "g10_b2",
+                    "color": "red"
+                },
+                {
+                    "name": "B3",
+                    "id": "g10_b3",
+                    "color": "pink",
+                    "boss": true,
+                    "hazard": [
+                        {
+                            "type": "Reinforcements",
+                            "id": "g10_b3",
+                            "node": "B3"
+                        }
+                    ]
+                },
+                {
+                    "name": "B4",
+                    "id": "g10_b4",
+                    "color": "red"
+                },
+                {
+                    "name": "B5",
+                    "id": "g10_b5",
+                    "color": "red"
+                },
+                {
+                    "name": "B6",
+                    "id": "g10_b6",
+                    "color": "pink",
+                    "boss": true,
+                    "hazard": [
+                        {
+                            "type": "Damage Per Second",
+                            "id": "g10_b6",
+                            "node": "B6"
+                        }
+                    ]
+                },
+                {
+                    "name": "B7",
+                    "id": "g10_b7",
+                    "color": "red"
+                },
+                {
+                    "name": "B8",
+                    "id": "g10_b8",
+                    "color": "red"
+                },
+                {
+                    "name": "B9",
+                    "id": "g10_b9",
+                    "color": "pink",
+                    "boss": true,
+                    "hazard": [
+                        {
+                            "type": "Laser Volley",
+                            "id": "g10_b9",
+                            "node": "B9"
+                        }
+                    ]
+                },
+                {
+                    "name": "B10",
+                    "id": "g10_b10",
+                    "color": "pink",
+                    "boss": true,
+                    "hazard": [
+                        {
+                            "type": "Damage Per Second",
+                            "id": "g10_b10",
+                            "node": "B10"
+                        }
+                    ]
+                },
+                {
+                    "name": "B11",
+                    "id": "g10_b11",
+                    "color": "red"
+                },
+                {
+                    "name": "B12",
+                    "id": "g10_b12",
+                    "color": "pink",
+                    "boss": true,
+                    "hazard": [
+                        {
+                            "type": "Damage Per Second",
+                            "id": "g10_b12",
+                            "node": "B12"
+                        }
+                    ]
+                },
+                {
+                    "name": "B13",
+                    "id": "g10_b13",
+                    "color": "red"
+                },
+                {
+                    "name": "B14",
+                    "id": "g10_b14",
+                    "color": "red"
+                },
+                {
+                    "name": "B15",
+                    "id": "g10_b15",
+                    "color": "pink",
+                    "boss": true,
+                    "hazard": [
+                        {
+                            "type": "Reinforcements",
+                            "id": "g10_b15",
+                            "node": "B15"
+                        }
+                    ]
+                },
+                {
+                    "name": "BB1",
+                    "id": "g10_bb1",
+                    "color": "white",
+                    "boss": true
+                },
+                {
+                    "name": "B16",
+                    "id": "g10_b16",
+                    "color": "red",
+                    "hazard": [
+                        {
+                            "type": "Reinforcements",
+                            "id": "g10_b3",
+                            "node": "B3"
+                        },
+                        {
+                            "type": "Damage Per Second",
+                            "id": "g10_b6",
+                            "node": "B6"
+                        },
+                        {
+                            "type": "Laser Volley",
+                            "id": "g10_b9",
+                            "node": "B9"
+                        },
+                        {
+                            "type": "Damage Per Second",
+                            "id": "g10_b12",
+                            "node": "B12"
+                        },
+                        {
+                            "type": "Reinforcements",
+                            "id": "g10_b15",
+                            "node": "B15"
+                        }
+                    ]
+                },
+                {
+                    "name": "B17",
+                    "id": "g10_b17",
+                    "color": "red"
+                },
+                {
+                    "name": "B18",
+                    "id": "g10_b18",
+                    "color": "red"
+                },
+                {
+                    "name": "B19",
+                    "id": "g10_b19",
+                    "color": "pink",
+                    "boss": true,
+                    "hazard": [
+                        {
+                            "type": "Reinforcements",
+                            "id": "g10_support_1",
+                            "node": "F1"
+                        },
+                        {
+                            "type": "Damage Per Second",
+                            "id": "g10_b19",
+                            "node": "B19"
+                        }
+                    ]
+                },
+                {
+                    "name": "B20",
+                    "id": "g10_b20",
+                    "color": "red",
+                    "hazard": [
+                        {
+                            "type": "Laser Volley",
+                            "id": "g10_support_1",
+                            "node": "F1"
+                        }
+                    ]
+                },
+                {
+                    "name": "B21",
+                    "id": "g10_b21",
+                    "color": "red",
+                    "hazard": [
+                        {
+                            "type": "Reinforcements",
+                            "id": "g10_support_2",
+                            "node": "F2"
+                        }
+                    ]
+                },
+                {
+                    "name": "B22",
+                    "id": "g10_b22",
+                    "color": "white",
+                    "boss": true,
+                    "hazard": [
+                        {
+                            "type": "Grid Buff",
+                            "id": "g10_support_2",
+                            "node": "F2"
+                        },
+                        {
+                            "type": "Grid Buff",
+                            "id": "g10_b22",
+                            "node": "B22"
                         }
                     ]
                 }

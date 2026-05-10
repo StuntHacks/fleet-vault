@@ -9,6 +9,7 @@ interface FileUploadProps {
     dragText?: string;
     idleText?: string;
     preview?: boolean;
+    file?: File;
 }
 
 export function FileUpload(props: FileUploadProps) {
@@ -19,28 +20,24 @@ export function FileUpload(props: FileUploadProps) {
         dragText = "Drop file here",
         idleText = "Click or drag a file to upload",
         preview = false,
+        file,
     } = props;
 
     const [isDragging, setIsDragging] = useState(false);
     const [previewUrl, setPreviewUrl] = useState<string | undefined>(undefined);
     const inputRef = useRef<HTMLInputElement>(null);
 
-    const handleFile = (file: File) => {
-        if (preview && file.type.startsWith("image/")) {
-            const url = URL.createObjectURL(file);
-            setPreviewUrl((prev) => {
-                if (prev) URL.revokeObjectURL(prev);
-                return url;
-            });
-        }
-        onFileSelected(file);
-    };
-
     useEffect(() => {
-        return () => {
-            if (previewUrl) URL.revokeObjectURL(previewUrl);
-        };
-    }, [previewUrl]);
+        if (!preview) return;
+        if (!file) {
+            setPreviewUrl((prev) => { if (prev) URL.revokeObjectURL(prev); return undefined; });
+            return;
+        }
+        if (file.type.startsWith("image/")) {
+            const url = URL.createObjectURL(file);
+            setPreviewUrl((prev) => { if (prev) URL.revokeObjectURL(prev); return url; });
+        }
+    }, [file, preview]);
 
     const onDragOver = (e: React.DragEvent) => {
         e.preventDefault();
@@ -56,7 +53,7 @@ export function FileUpload(props: FileUploadProps) {
         e.preventDefault();
         setIsDragging(false);
         const file = e.dataTransfer.files[0];
-        if (file) handleFile(file);
+        if (file) onFileSelected(file);
     };
 
     const onClick = () => {
@@ -65,7 +62,7 @@ export function FileUpload(props: FileUploadProps) {
 
     const onInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0];
-        if (file) handleFile(file);
+        if (file) onFileSelected(file);
         e.target.value = "";
     };
 
@@ -86,6 +83,7 @@ export function FileUpload(props: FileUploadProps) {
                 accept={accept}
                 className={styles.hiddenInput}
                 onChange={onInputChange}
+                name="screenshot"
             />
             {preview && previewUrl ? (
                 <img src={previewUrl} alt="Preview" className={styles.preview} />

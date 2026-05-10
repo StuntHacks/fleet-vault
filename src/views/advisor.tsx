@@ -5,6 +5,7 @@ import { BaseLayout } from "../components/baselayout/baselayout";
 import { Button } from "../components/button/button";
 import { FleetGrid } from "../components/fleetGrid/fleetGrid";
 import { HazardSelect } from "../components/hazardSelect/hazardSelect";
+import { CombatStatInput } from "../components/combatStatInput/combatStatInput";
 import { useAdminSession } from "../lib/hooks";
 import { fetchAdvisors, Galaxy, ParsedAdvisor } from "../lib/advisor";
 import galaxyData from "../data.json";
@@ -87,28 +88,7 @@ export default function AdvisorView() {
         resetResults();
     };
 
-    const handleStatChange = (raw: string) => {
-        if (raw === "" || raw === "-") { setStatValue(raw); return; }
-        setStatValue(raw);
-    };
-
-    const validateStat = () => {
-        if (!galaxy) return;
-        let v = parseFloat(statValue);
-        if (isNaN(v)) v = galaxy.minStats;
-        if (v < galaxy.minStats) v = galaxy.minStats;
-        if (v > galaxy.maxStats) v = galaxy.maxStats;
-        setStatValue(v.toFixed(3));
-    };
-
-    const stepStat = (dir: number) => {
-        if (!galaxy) return;
-        let v = parseFloat(statValue) || galaxy.minStats;
-        v = parseFloat((v + dir * galaxy.step).toFixed(3));
-        if (v < galaxy.minStats) v = galaxy.minStats;
-        if (v > galaxy.maxStats) v = galaxy.maxStats;
-        setStatValue(v.toFixed(3));
-    };
+    const handleStatChange = (raw: string) => setStatValue(raw);
 
     const handleHazardChange = (id: string, checked: boolean) => {
         setHazardIds((prev) => checked ? [...prev, id] : prev.filter((h) => h !== id));
@@ -144,33 +124,14 @@ export default function AdvisorView() {
                             ))}
                         </select>
 
-                        <div className={styles.statControl}>
-                            <button
-                                className={styles.stepBtn}
-                                onClick={() => stepStat(-1)}
-                                disabled={!selectedGalaxyId}
-                            >
-                                −
-                            </button>
-                            <input
-                                className={styles.statInput}
-                                type="number"
-                                value={statValue}
-                                onChange={(e) => handleStatChange(e.target.value)}
-                                onBlur={validateStat}
-                                disabled={!selectedGalaxyId}
-                                step={galaxy?.step}
-                                min={galaxy?.minStats}
-                                max={galaxy?.maxStats}
-                            />
-                            <button
-                                className={styles.stepBtn}
-                                onClick={() => stepStat(1)}
-                                disabled={!selectedGalaxyId}
-                            >
-                                +
-                            </button>
-                        </div>
+                        <CombatStatInput
+                            value={statValue}
+                            onChange={handleStatChange}
+                            min={galaxy?.minStats ?? 1}
+                            max={galaxy?.maxStats ?? 1}
+                            step={galaxy?.step ?? 0.025}
+                            disabled={!selectedGalaxyId}
+                        />
 
                         <select
                             className={`${styles.select} ${styles.battleSelect}`}

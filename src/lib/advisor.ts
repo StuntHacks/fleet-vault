@@ -19,6 +19,7 @@ export const MOD_MAP: Record<string, { name: string; icon: string }> = {
     FighterMiniRailgunMod:   { name: "Fighter Mini Railgun",     icon: "ArmorDamageSynergy" },
     CruiserSingleArmorTank:  { name: "Single Armored Cruiser",   icon: "PristineArmor" },
     HeavyCruiserBeamMod:     { name: "Heavy Cruiser Beam Laser", icon: "PowerMode" },
+    CruiserParticleCannonMod:  { name: "Cruiser Particle Cannon",   icon: "ParticleCannon" },
 };
 
 export interface Hazard {

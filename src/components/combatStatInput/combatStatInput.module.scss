@@ -1,0 +1,55 @@
+.statControl {
+    display: flex;
+    align-items: center;
+}
+
+.hidden {
+    visibility: hidden;
+}
+
+.statInput {
+    width: 80px;
+    text-align: center;
+    margin: 0 8px;
+    background-color: var(--color-background);
+    border: 2px solid var(--color-primary);
+    height: 30px;
+    border-radius: 10px;
+    padding: 0 0.5rem;
+    -moz-appearance: textfield;
+
+    &::-webkit-outer-spin-button,
+    &::-webkit-inner-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
+    }
+
+    &:focus {
+        outline: none;
+        border-color: var(--color-primary-active);
+    }
+}
+
+.stepBtn {
+    width: 28px;
+    height: 28px;
+    cursor: pointer;
+    font-size: 1.1rem;
+    line-height: 1;
+    padding: 0;
+    background-color: var(--color-primary);
+    border: 2px solid var(--color-primary);
+    color: white;
+    border-radius: 6px;
+    transition: background-color 150ms, border-color 150ms;
+
+    &:hover:not(:disabled) {
+        background-color: var(--color-primary-hover);
+        border-color: var(--color-primary-hover);
+    }
+
+    &:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+    }
+}

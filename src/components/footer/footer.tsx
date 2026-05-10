@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { useAdminSession, useUsername } from "../../lib/hooks";
+import { Checkbox } from "../checkbox/checkbox";
 import styles from './footer.module.scss';
 
 export default function Footer() {
@@ -25,10 +26,9 @@ export default function Footer() {
   
   return (
     <div className={styles.footer}>
-      <label className={styles.darkMode}>
-        <input type="checkbox" checked={darkMode} onChange={() => setDarkMode((d) => !d)} />
+      <Checkbox className={styles.darkMode} name="darkMode" checked={darkMode} onChange={setDarkMode}>
         Dark Mode
-      </label>
+      </Checkbox>
       {username && !!session ? `| Logged in as ${username}` : ''}
       <span className={styles.version}>
         v{process.env.REACT_APP_VERSION}

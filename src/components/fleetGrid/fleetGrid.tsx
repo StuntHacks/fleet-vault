@@ -17,6 +17,7 @@ interface FleetGridProps {
 }
 
 export function FleetGrid({ ships, label }: FleetGridProps) {
+    console.log("Rendering FleetGrid with ships:", ships);
     const slotMap: Record<string, string> = {};
     for (const ship of ships) {
         const key = `${ship.position.x};${ship.position.y}`;

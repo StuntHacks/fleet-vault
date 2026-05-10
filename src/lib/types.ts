@@ -4,6 +4,7 @@ export interface Solution {
   galaxy_id: number;
   combat_stats: number;
   fr_used: number;
+  fr_committed: number | null;
   notes: string | null;
   screenshot_url: string | null;
   advanced_solution: string | null;

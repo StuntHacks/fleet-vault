@@ -46,6 +46,7 @@ export async function submitSolution(params: {
   battleId: number;
   combatStats: number;
   frUsed: number;
+  frCommitted?: number;
   notes: string;
   submittedBy: string;
   screenshot?: File;
@@ -69,6 +70,7 @@ export async function submitSolution(params: {
     battle_id: params.battleId,
     combat_stats: params.combatStats,
     fr_used: params.frUsed,
+    fr_committed: params.frCommitted ?? null,
     notes: params.notes,
     submitted_by: params.submittedBy,
     screenshot_url: screenshotUrl,

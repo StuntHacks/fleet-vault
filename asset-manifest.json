@@ -1,7 +1,7 @@
 {
   "files": {
     "main.css": "/fleet-vault/static/css/main.648083be.css",
-    "main.js": "/fleet-vault/static/js/main.bd81c66a.js",
+    "main.js": "/fleet-vault/static/js/main.bfdcc2f6.js",
     "static/js/453.fc2f17c8.chunk.js": "/fleet-vault/static/js/453.fc2f17c8.chunk.js",
     "static/media/ArmorPiercing.svg": "/fleet-vault/static/media/ArmorPiercing.3207ef73e7ff2aa6edd0a1f6da6f29c5.svg",
     "static/media/ParticleCannon.svg": "/fleet-vault/static/media/ParticleCannon.6336b9e6551034966b66a9c3dd582f95.svg",
@@ -13,11 +13,11 @@
     "static/media/ArmorDamageSynergy.svg": "/fleet-vault/static/media/ArmorDamageSynergy.ac614ff2b953eaefcaa114255e409d4f.svg",
     "static/media/PristineArmor.svg": "/fleet-vault/static/media/PristineArmor.5ea7eb4950647ac0b5a0689fee661c21.svg",
     "main.648083be.css.map": "/fleet-vault/static/css/main.648083be.css.map",
-    "main.bd81c66a.js.map": "/fleet-vault/static/js/main.bd81c66a.js.map",
+    "main.bfdcc2f6.js.map": "/fleet-vault/static/js/main.bfdcc2f6.js.map",
     "453.fc2f17c8.chunk.js.map": "/fleet-vault/static/js/453.fc2f17c8.chunk.js.map"
   },
   "entrypoints": [
     "static/css/main.648083be.css",
-    "static/js/main.bd81c66a.js"
+    "static/js/main.bfdcc2f6.js"
   ]
 }

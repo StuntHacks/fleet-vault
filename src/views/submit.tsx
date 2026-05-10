@@ -45,11 +45,20 @@ export default function SubmitView() {
                 />
                 <div className={styles.field}>
                     <span className={styles.label}>Galaxy</span>
-                    <GalaxySelect isSelect selected={selectedGalaxy} className={styles.galaxySelect} callback={(galaxyId) => setSelectedGalaxy(galaxyId)} />
+                    <GalaxySelect isSelect selected={selectedGalaxy} className={styles.galaxySelect} callback={(galaxyId) => { setSelectedGalaxy(galaxyId); setSelectedBattle(undefined); }} />
                 </div>
                 <div className={clsx(styles.field, {[styles.hidden]: !selectedGalaxy})}>
                     <span className={styles.label}>Battle</span>
-                    <GalaxySelect isSelect selected={selectedBattle} className={styles.galaxySelect} callback={(battleId) => setSelectedBattle(battleId)} />
+                    <GalaxySelect
+                        isSelect
+                        selected={selectedBattle}
+                        className={styles.galaxySelect}
+                        placeholder="Select Battle"
+                        items={selectedGalaxy
+                            ? galaxyData.galaxies[selectedGalaxy - 1]?.battles.map((b, i) => ({ label: b.name, value: i + 1 }))
+                            : []}
+                        callback={(battleId) => setSelectedBattle(battleId)}
+                    />
                 </div>
             </div>
         </BaseLayout>

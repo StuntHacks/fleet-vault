@@ -12,6 +12,22 @@
     <link rel="apple-touch-icon" href="%PUBLIC_URL%/apple-touch-icon.png" />
     <link rel="manifest" href="%PUBLIC_URL%/manifest.json" />
     <title>Unnamed Space Idle FleetVault</title>
+    <script>
+      (function () {
+        var redirect = window.location.search.slice(1);
+        if (!redirect) return;
+        var params = {};
+        redirect.split('&').forEach(function (pair) {
+          var kv = pair.split('=');
+          params[kv[0]] = kv.slice(1).join('=');
+        });
+        if (!params.p) return;
+        var path = params.p.replace(/~and~/g, '&');
+        var query = params.q ? '?' + params.q.replace(/~and~/g, '&') : '';
+        var hash = window.location.hash;
+        window.history.replaceState(null, null, window.location.pathname + path + query + hash);
+      })();
+    </script>
   </head>
   <body>
     <noscript>You need to enable JavaScript to run this app.</noscript>

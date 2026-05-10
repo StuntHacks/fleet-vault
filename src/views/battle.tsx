@@ -27,7 +27,10 @@ export default function BattleView() {
                                 </a>
                                 <p>Combat Stats: {s.combat_stats}</p>
                                 <p>FR Used: {s.fr_used}</p>
-                                <p>FR Committed: {s.fr_committed}</p>
+                                {s.fr_committed && <p>FR Committed: {s.fr_committed}</p>}
+                                {s.support && <p>Support</p>}
+                                {s.hazards && <p>Hazard</p>}
+                                {s.notes && <p>Notes: {s.notes}</p>}
                             </li>
                         ))}
                     </ul>

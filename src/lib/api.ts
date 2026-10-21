@@ -1,19 +1,18 @@
 import { supabase } from './supabase';
 import { Galaxy, Solution } from './types';
 
-export async function getBattlesForGalaxy(galaxyId: number): Promise<number[]> {
+export async function getBattlesForGalaxy(galaxyId: number): Promise<string[]> {
   const { data, error } = await supabase
-    .from('solutions')
+    .from('solution_battles')
     .select('battle_id')
-    .eq('galaxy_id', galaxyId)
-    .order('battle_id');
+    .eq('galaxy_id', galaxyId);
 
   if (error) throw error;
 
-  return [...new Set(data.map(r => r.battle_id))];
+  return data.map(r => r.battle_id);
 }
 
-export async function getSolutionsForBattle(galaxyId: number, battleId: number) {
+export async function getSolutionsForBattle(galaxyId: number, battleId: string) {
   const { data, error } = await supabase
     .from('solutions_ranked')
     .select('*')
@@ -24,10 +23,12 @@ export async function getSolutionsForBattle(galaxyId: number, battleId: number) 
 
   if (error) throw error;
 
-  const best = data.filter(s => s.rank_in_group === 1);
-  const obsolete = data.filter(s => s.rank_in_group > 1);
+  const solutions = data as Solution[];
+  const best = solutions.filter(s => s.rank_in_group === 1);
+  const obsolete = solutions.filter(s => s.rank_in_group != null && s.rank_in_group > 1);
+  const flagged = solutions.filter(s => s.flagged);
 
-  return { best, obsolete };
+  return { best, obsolete, flagged };
 }
 
 export async function getGalaxy(galaxyId: number): Promise<Galaxy> {
@@ -41,9 +42,16 @@ export async function getGalaxy(galaxyId: number): Promise<Galaxy> {
   return data;
 }
 
+const IMAGE_EXTENSIONS: Record<string, string> = {
+  'image/png': 'png',
+  'image/jpeg': 'jpg',
+  'image/webp': 'webp',
+  'image/gif': 'gif',
+};
+
 export async function submitSolution(params: {
   galaxyId: number;
-  battleId: number;
+  battleId: string;
   combatStats: number;
   frUsed: number;
   frCommitted?: number;
@@ -52,12 +60,16 @@ export async function submitSolution(params: {
   screenshot?: File;
   advancedSolution?: string;
   hazards: boolean;
+  hazardNodes: string[];
   support: boolean;
+  supportNodes: string[];
+  bossAlive: boolean | null;
 }): Promise<void> {
   let screenshotUrl: string | null = null;
 
   if (params.screenshot) {
-    const path = `${params.galaxyId}/${params.battleId}/${Date.now()}.png`;
+    const ext = IMAGE_EXTENSIONS[params.screenshot.type] ?? 'png';
+    const path = `${params.galaxyId}/${params.battleId}/${Date.now()}.${ext}`;
     const { data: upload, error: uploadError } = await supabase.storage
       .from('screenshots')
       .upload(path, params.screenshot);
@@ -70,13 +82,16 @@ export async function submitSolution(params: {
     battle_id: params.battleId,
     combat_stats: params.combatStats,
     fr_used: params.frUsed,
-    fr_committed: params.frCommitted ?? null,
+    fr_committed: Number.isFinite(params.frCommitted) ? params.frCommitted : null,
     notes: params.notes,
     submitted_by: params.submittedBy,
     screenshot_url: screenshotUrl,
     advanced_solution: params.advancedSolution ?? null,
     hazards: params.hazards,
+    hazard_nodes: params.hazardNodes,
     support: params.support,
+    support_nodes: params.supportNodes,
+    boss_alive: params.bossAlive,
   });
 
   if (error) throw error;

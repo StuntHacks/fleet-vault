@@ -1,6 +1,6 @@
 export interface Solution {
   id: number;
-  battle_id: number;
+  battle_id: string;
   galaxy_id: number;
   combat_stats: number;
   fr_used: number;
@@ -11,9 +11,12 @@ export interface Solution {
   flagged: boolean;
   submitted_by: string | null;
   submitted_at: string;
-  rank_in_group?: number;
+  rank_in_group?: number | null;
   hazards: boolean;
+  hazard_nodes: string[];
   support: boolean;
+  support_nodes: string[];
+  boss_alive: boolean | null;
 }
 
 export interface Galaxy {

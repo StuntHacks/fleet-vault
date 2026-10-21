@@ -24,7 +24,7 @@ export function useUsername(): string | null {
 }
 
 export function useBattles(galaxyId: number) {
-  const [battles, setBattles] = useState<number[]>([]);
+  const [battles, setBattles] = useState<string[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<Error | null>(null);
 
@@ -39,21 +39,22 @@ export function useBattles(galaxyId: number) {
   return { battles, loading, error };
 }
 
-export function useSolutions(galaxyId: number, battleId: number) {
+export function useSolutions(galaxyId: number, battleId: string) {
   const [best, setBest] = useState<Solution[]>([]);
   const [obsolete, setObsolete] = useState<Solution[]>([]);
+  const [flagged, setFlagged] = useState<Solution[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<Error | null>(null);
 
   useEffect(() => {
     setLoading(true);
     getSolutionsForBattle(galaxyId, battleId)
-      .then(({ best, obsolete }) => { setBest(best); setObsolete(obsolete); })
+      .then(({ best, obsolete, flagged }) => { setBest(best); setObsolete(obsolete); setFlagged(flagged); })
       .catch(setError)
       .finally(() => setLoading(false));
   }, [galaxyId, battleId]);
 
-  return { best, obsolete, loading, error };
+  return { best, obsolete, flagged, loading, error };
 }
 
 export function useGalaxy(galaxyId: number) {

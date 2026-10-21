@@ -34,3 +34,4 @@ TODO.md
 supabase/schema.sql
 supabase/export_schema.sql
 import-staging/
+supabase/local/

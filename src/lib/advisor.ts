@@ -12,14 +12,14 @@ export const GRID_IMAGES: Record<string, string> = {
 };
 
 export const MOD_MAP: Record<string, { name: string; icon: string }> = {
-    CorvetteChargeLaserMod:  { name: "Corvette Charge Laser",    icon: "Datacore" },
-    ShieldMod:               { name: "Shield (reduced damage)",   icon: "CorvetteShieldMod" },
-    FrigateMissileMod:       { name: "Frigate Missiles",         icon: "ArmorPiercing" },
-    ArmorMod:                { name: "Armor (reduced damage)",    icon: "ShieldRegenStart" },
-    FighterMiniRailgunMod:   { name: "Fighter Mini Railgun",     icon: "ArmorDamageSynergy" },
-    CruiserSingleArmorTank:  { name: "Single Armored Cruiser",   icon: "PristineArmor" },
-    HeavyCruiserBeamMod:     { name: "Heavy Cruiser Beam Laser", icon: "PowerMode" },
-    CruiserParticleCannonMod:  { name: "Cruiser Particle Cannon",   icon: "ParticleCannon" },
+    CorvetteChargeLaserMod:   { name: "Corvette Charge Laser", icon: "Datacore" },
+    ShieldMod:                { name: "Shield (reduced damage)", icon: "CorvetteShieldMod" },
+    FrigateMissileMod:        { name: "Frigate Missiles", icon: "ArmorPiercing" },
+    ArmorMod:                 { name: "Armor (reduced damage)", icon: "ShieldRegenStart" },
+    FighterMiniRailgunMod:    { name: "Fighter Mini Railgun", icon: "ArmorDamageSynergy" },
+    CruiserSingleArmorTank:   { name: "Single Armored Cruiser", icon: "PristineArmor" },
+    HeavyCruiserBeamMod:      { name: "Heavy Cruiser Beam Laser", icon: "PowerMode" },
+    CruiserParticleCannonMod: { name: "Cruiser Particle Cannon", icon: "ParticleCannon" },
 };
 
 export interface Hazard {
@@ -133,10 +133,10 @@ function parseAdvisor(input: string): ParsedAdvisor {
 
 export function shipNameToClass(name: string): string {
     const map: Record<string, string> = {
-        Corvette:     "corvette",
-        Frigate:      "frigate",
-        Fighter:      "fighters",
-        Cruiser:      "cruiser",
+        Corvette: "corvette",
+        Frigate: "frigate",
+        Fighter: "fighters",
+        Cruiser: "cruiser",
         HeavyCruiser: "heavy_cruiser",
     };
     return map[name] ?? "";
@@ -149,10 +149,10 @@ export function shipNameToDisplayName(name: string): string {
 
 export function shipImage(cls: string): string | null {
     const map: Record<string, string> = {
-        corvette:      "Ship_Basic.png",
-        frigate:       "Ship_Frigate.png",
-        fighters:      "Ship_Fighter.png",
-        cruiser:       "Ship_Cruiser.png",
+        corvette: "Ship_Basic.png",
+        frigate: "Ship_Frigate.png",
+        fighters: "Ship_Fighter.png",
+        cruiser: "Ship_Cruiser.png",
         heavy_cruiser: "Ship_HeavyCruiser.png",
     };
     return map[cls] ? SHIP_BASE + map[cls] : null;

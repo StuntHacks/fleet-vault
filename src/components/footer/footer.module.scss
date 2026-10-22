@@ -36,5 +36,9 @@
         @media screen and (max-width: 674px) {
             display: none;
         }
+
+        a {
+            color: inherit;
+        }
     }
 }

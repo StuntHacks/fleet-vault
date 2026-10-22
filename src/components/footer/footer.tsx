@@ -32,7 +32,7 @@ export default function Footer() {
       {username && !!session ? `| Logged in as ${username}` : ''}
       <span className={styles.version}>
         v{process.env.REACT_APP_VERSION}
-        <span className={styles.footnote}> - report bugs in #wiki-stuff on the discord</span>
+        <span className={styles.footnote}> - report bugs & feedback in <a href="https://discord.com/channels/1023372620705566740/1223829273668751381" target="_blank" rel="noreferrer">#wiki-stuff</a> on the discord</span>
       </span>
     </div>
   );

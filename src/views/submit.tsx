@@ -11,6 +11,16 @@ import clsx from "clsx";
 import { useParams, useLocation, useNavigate } from "react-router-dom";
 import { Button } from "../components/button/button";
 
+const SCREENSHOT_TYPES = ["image/png", "image/jpeg", "image/webp"];
+const MAX_SCREENSHOT_MB = 10;
+
+function screenshotError(file: File | undefined): string | null {
+    if (!file) return null;
+    if (!SCREENSHOT_TYPES.includes(file.type)) return "Screenshots must be PNG, JPEG or WebP";
+    if (file.size > MAX_SCREENSHOT_MB * 1024 * 1024) return `Screenshots can be at most ${MAX_SCREENSHOT_MB} MB`;
+    return null;
+}
+
 function selectedNodes(active: boolean, options: ConditionNode[], chosen: string[]): string[] {
     if (!active) return [];
     if (options.length === 1) return [options[0].id];
@@ -82,6 +92,7 @@ export default function SubmitView() {
     const frTotalValue = parseFloat(frTotal.replace(",", "."));
     const bossDamageValue = parseFloat(bossDamage.replace(",", "."));
     const frTotalTooLow = multiShot && !isNaN(frUsedValue) && !isNaN(frTotalValue) && frTotalValue < frUsedValue;
+    const screenshotProblem = screenshotError(screenshot);
 
     const toggleNode = (setter: (update: (prev: string[]) => string[]) => void) => (nodeId: string, checked: boolean) =>
         setter((prev) => checked ? [...prev, nodeId] : prev.filter((n) => n !== nodeId));
@@ -122,13 +133,16 @@ export default function SubmitView() {
         <BaseLayout>
             <div className={styles.form}>
                 <FileUpload
-                    accept="image/*"
+                    accept={SCREENSHOT_TYPES.join(",")}
                     preview
                     file={screenshot}
                     className={styles.fileUpload}
                     onFileSelected={(file) => setScreenshot(file)}
                     idleText={screenshot ? screenshot.name : "Click or drag a screenshot to upload"}
                 />
+                {screenshotProblem && (
+                    <span className={styles.error}>{screenshotProblem}</span>
+                )}
                 <div className={styles.field}>
                     <span className={styles.label}>Galaxy</span>
                     <GalaxySelect isSelect selected={selectedGalaxy} className={styles.galaxySelect} callback={(galaxyId) => { setSelectedGalaxy(galaxyId); setSelectedBattle(undefined); setCombatStats("1"); setUnlocks([]); setPurchases({}); }} />
@@ -294,6 +308,7 @@ export default function SubmitView() {
                     frCommittedTooLow ||
                     frTotalTooLow ||
                     !screenshot ||
+                    !!screenshotProblem ||
                     !selectedGalaxy ||
                     !selectedBattle ||
                     !combatStats

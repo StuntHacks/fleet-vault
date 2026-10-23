@@ -23,12 +23,44 @@ export async function getSolutionsForBattle(galaxyId: number, battleId: string) 
 
   if (error) throw error;
 
-  const solutions = data as Solution[];
-  const best = solutions.filter(s => s.rank_in_group === 1);
-  const obsolete = solutions.filter(s => s.rank_in_group != null && s.rank_in_group > 1);
-  const flagged = solutions.filter(s => s.flagged);
+  return splitRanked(data as Solution[]);
+}
 
-  return { best, obsolete, flagged };
+export interface RankedSolutions {
+  best: Solution[];
+  obsolete: Solution[];
+  flagged: Solution[];
+}
+
+function splitRanked(solutions: Solution[]): RankedSolutions {
+  return {
+    best: solutions.filter(s => s.rank_in_group === 1),
+    obsolete: solutions.filter(s => s.rank_in_group != null && s.rank_in_group > 1),
+    flagged: solutions.filter(s => s.flagged),
+  };
+}
+
+export async function getSolutionsForGalaxy(galaxyId: number): Promise<Record<string, RankedSolutions>> {
+  const PAGE = 1000;
+  const solutions: Solution[] = [];
+  for (let from = 0; ; from += PAGE) {
+    const { data, error } = await supabase
+      .from('solutions_ranked')
+      .select('*')
+      .eq('galaxy_id', galaxyId)
+      .order('battle_id')
+      .order('combat_stats')
+      .order('rank_in_group')
+      .order('id')
+      .range(from, from + PAGE - 1);
+    if (error) throw error;
+    solutions.push(...(data as Solution[]));
+    if (data.length < PAGE) break;
+  }
+
+  const byBattle: Record<string, Solution[]> = {};
+  for (const s of solutions) (byBattle[s.battle_id] ??= []).push(s);
+  return Object.fromEntries(Object.entries(byBattle).map(([battleId, list]) => [battleId, splitRanked(list)]));
 }
 
 export async function getGalaxy(galaxyId: number): Promise<Galaxy> {

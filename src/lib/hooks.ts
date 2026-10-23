@@ -1,7 +1,8 @@
 import { useEffect, useState } from 'react';
 import { Session } from '@supabase/supabase-js';
 import { supabase } from './supabase';
-import { getSolutionsForBattle, getBattlesForGalaxy, getGalaxy } from './api';
+import { getSolutionsForBattle, getSolutionsForGalaxy, getBattlesForGalaxy, getGalaxy } from './api';
+import type { RankedSolutions } from './api';
 import type { Solution, Galaxy } from './types';
 
 const isAdminSession = (s: Session | null) => !!s?.user?.app_metadata?.fleetvault_admin;
@@ -57,6 +58,28 @@ export function useBattles(galaxyId: number) {
   }, [galaxyId]);
 
   return { battles, loading, error };
+}
+
+const NO_SOLUTIONS: RankedSolutions = { best: [], obsolete: [], flagged: [] };
+
+export function useGalaxySolutions(galaxyId: number) {
+  const [byBattle, setByBattle] = useState<Record<string, RankedSolutions>>({});
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<Error | null>(null);
+
+  useEffect(() => {
+    let current = true;
+    setLoading(true);
+    setError(null);
+    getSolutionsForGalaxy(galaxyId)
+      .then((result) => { if (current) setByBattle(result); })
+      .catch((e) => { if (current) setError(e); })
+      .finally(() => { if (current) setLoading(false); });
+    return () => { current = false; };
+  }, [galaxyId]);
+
+  const forBattle = (battleId: string) => byBattle[battleId] ?? NO_SOLUTIONS;
+  return { byBattle, forBattle, loading, error };
 }
 
 export function useSolutions(galaxyId: number, battleId: string) {

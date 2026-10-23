@@ -1,0 +1,49 @@
+.info {
+    color: var(--color-text-secondary);
+    padding: 0 1rem;
+}
+.error {
+    color: var(--color-error);
+    padding: 0 1rem;
+}
+
+.scrollable {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: grab;
+    padding: 0.35rem 1rem 0.5rem;
+    margin: 0 0.5rem;
+    border-radius: 0.5rem;
+    color: var(--color-text-secondary);
+    background: var(--color-glass);
+    backdrop-filter: var(--glass-blur);
+    position: relative;
+}
+
+.battles {
+    scrollbar-width: thin;
+    overflow-x: auto;
+    display: flex;
+    height: 100%;
+    flex-grow: 1;
+    gap: 0.5rem;
+    padding: 0.5rem;
+
+    .battle {
+        background: var(--color-glass);
+        backdrop-filter: var(--glass-blur);
+        padding: 0.5rem 1rem;
+        width: 300px;
+        min-width: 300px;
+        border-radius: 0.5rem;
+        box-shadow: 0 0 6px rgba(0, 0, 0, 0.1);
+
+        .battleName {
+            font-weight: bold;
+            padding: 0.5rem 0 1rem;
+            border-bottom: 1px solid var(--color-text-tertiary);
+            color: var(--color-text);
+        }
+    }
+}

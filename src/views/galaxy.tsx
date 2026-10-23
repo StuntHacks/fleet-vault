@@ -2,6 +2,8 @@ import { Link, useParams } from "react-router-dom";
 import { BaseLayout } from "../components/baselayout/baselayout";
 import { useBattles } from "../lib/hooks";
 import { galaxies } from "../lib/battles";
+import styles from "./galaxy.module.scss";
+import { useRef } from "react";
 
 export default function GalaxyView() {
     const { galaxy } = useParams();
@@ -11,21 +13,31 @@ export default function GalaxyView() {
         id = 1;
     }
     const battles = useBattles(id);
-    const withSolutions = galaxies[id - 1].battles.filter((b) => battles.battles.includes(b.id));
+    const listRef = useRef<HTMLDivElement>(null);
+
+    const handleScroll = (e: React.WheelEvent<HTMLDivElement>) => {
+        if (e.deltaY === 0) return;
+        e.preventDefault();
+        if (!listRef.current) return;
+        listRef.current.scrollLeft += e.deltaY * 1.0;
+    }
+
     return (
         <BaseLayout>
-            {battles.loading && <p>Loading...</p>}
-            {battles.error && <p>Error loading battles</p>}
+            {battles.loading && <p className={styles.info}>Loading...</p>}
+            {battles.error && <p className={styles.error}>Error loading battles</p>}
             {!battles.loading && !battles.error && (
                 <>
-                    {!withSolutions.length && <p>No solutions submitted yet</p>}
-                    <ul>
-                        {withSolutions.map((b) => (
-                            <li key={b.id}>
-                                <Link to={`/g/${id}/b/${b.id}`}>{b.name}</Link>
-                            </li>
+                    <div className={styles.scrollable} onWheel={handleScroll}>
+                        ← Scroll here →
+                    </div>
+                    <div className={styles.battles} ref={listRef}>
+                        {galaxies[id - 1].battles.map((b) => (
+                            <div className={styles.battle} key={b.id}>
+                                <div className={styles.battleName}>{b.name}</div>
+                            </div>
                         ))}
-                    </ul>
+                    </div>
                 </>
             )}
         </BaseLayout>

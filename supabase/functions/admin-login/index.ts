@@ -16,27 +16,23 @@ Deno.serve(async (req) => {
     return new Response('ok', { headers: corsHeaders });
   }
 
-  console.log('Request received');
-  const raw = await req.text();
-  console.log('Raw body:', raw);
-
-  const { token } = JSON.parse(raw);
-  if (!token) return new Response('Missing token', { status: 400, headers: corsHeaders });
+  let token: unknown;
+  try {
+    ({ token } = await req.json());
+  } catch {
+    return new Response('Invalid request', { status: 400, headers: corsHeaders });
+  }
+  if (typeof token !== 'string' || !token) return new Response('Missing token', { status: 400, headers: corsHeaders });
 
   const hash = createHash('sha256').update(token).digest('hex');
 
-  console.log('Received token:', token);
-  console.log('Computed hash:', hash);
-
   const { data, error } = await serviceClient
     .from('admins')
-    .select('id, label, token_hash')
+    .select('id, label')
     .eq('token_hash', hash)
-    .single();
+    .maybeSingle();
 
-  console.log('DB row:', JSON.stringify(data));
-  console.log('DB error:', JSON.stringify(error));
-
+  if (error) console.error('Admin lookup failed:', error.code, error.message);
   if (error || !data) return new Response('Invalid token', { status: 401, headers: corsHeaders });
 
   const { data: auth, error: authError } = await serviceClient.auth.signInWithPassword({

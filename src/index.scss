@@ -5,11 +5,18 @@
   --color-glass: #fff5;
   --color-flat: #fff;
   --color-background: #f4f6fb;
+  --color-background-secondary: #fff;
   --color-text: #1a1a2e;
   --color-text-secondary: #555;
   --color-text-tertiary: #888;
+  --bg-color-support: rgba(3, 150, 3, 0.479);
+  --color-support: rgb(26, 95, 26);
+  --bg-color-hazard: rgba(151, 40, 40, 0.356);
+  --color-hazard: rgb(167, 26, 26);
+  --color-error: #ff4d4f;
   --color-error: #d13c3e;
   --color-grid-slot: rgb(152, 187, 189);
+  --color-border: #d1d5db;
 }
 
 @mixin dark-theme {
@@ -19,11 +26,17 @@
   --color-glass: #1f2f3a99;
   --color-flat: #0f1418;
   --color-background: #131920;
+  --color-background-secondary: #0F1418;
   --color-text: #e8eaf6;
   --color-text-secondary: #aaa;
   --color-text-tertiary: #888;
+  --bg-color-support: rgba(40, 151, 40, 0.356);
+  --color-support: rgb(51, 202, 51);
+  --bg-color-hazard: rgba(151, 40, 40, 0.356);
+  --color-hazard: rgb(238, 75, 75);
   --color-error: #ff4d4f;
   --color-grid-slot: #163f42;
+  --color-border: #22303d;
 }
 
 :root {

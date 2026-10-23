@@ -26,6 +26,19 @@ export interface Solution {
   source: "site" | "spreadsheet";
 }
 
+export interface SolutionFlag {
+  id: number;
+  solution_id: number;
+  reason: string | null;
+  created_at: string;
+  resolved_at: string | null;
+  resolved_by: string | null;
+}
+
+export interface FlaggedSolution extends Solution {
+  solution_flags: SolutionFlag[];
+}
+
 export interface Galaxy {
   id: number;
   notes: string | null;

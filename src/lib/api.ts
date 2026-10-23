@@ -1,5 +1,5 @@
 import { supabase } from './supabase';
-import { Galaxy, Solution } from './types';
+import { FlaggedSolution, Galaxy, Solution, SolutionFlag } from './types';
 
 export async function getBattlesForGalaxy(galaxyId: number): Promise<string[]> {
   const { data, error } = await supabase
@@ -118,8 +118,8 @@ export async function updateGalaxyNotes(galaxyId: number, notes: string): Promis
   if (error) throw error;
 }
 
-export async function flagSolution(id: number): Promise<void> {
-  const { error } = await supabase.rpc('flag_solution', { solution_id: id });
+export async function flagSolution(id: number, reason?: string): Promise<void> {
+  const { error } = await supabase.rpc('flag_solution', { solution_id: id, reason: reason?.trim() || null });
   if (error) throw error;
 }
 
@@ -131,12 +131,24 @@ export async function unflagSolution(id: number): Promise<void> {
   if (error) throw error;
 }
 
-export async function getFlaggedSolutions(): Promise<Solution[]> {
+export async function getFlaggedSolutions(): Promise<FlaggedSolution[]> {
   const { data, error } = await supabase
     .from('solutions')
-    .select('*')
+    .select('*, solution_flags(*)')
     .eq('flagged', true)
-    .order('submitted_at');
+    .is('solution_flags.resolved_at', null)
+    .order('submitted_at')
+    .order('created_at', { referencedTable: 'solution_flags' });
+  if (error) throw error;
+  return data as FlaggedSolution[];
+}
+
+export async function getSolutionFlags(solutionId: number): Promise<SolutionFlag[]> {
+  const { data, error } = await supabase
+    .from('solution_flags')
+    .select('*')
+    .eq('solution_id', solutionId)
+    .order('created_at', { ascending: false });
   if (error) throw error;
   return data;
 }

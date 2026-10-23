@@ -18,7 +18,7 @@ function Entry({ solution, obsolete = false }: { solution: Solution, obsolete?: 
 }
 
 function Solutions({ solutions }: { solutions: RankedSolutions }) {
-    if (!solutions.best.length) return <p>No solutions yet</p>;
+    if (!solutions.best.length) return <p className={styles.info}>No solutions yet</p>;
     return (
         <>
             {solutions.best.map((s) => (

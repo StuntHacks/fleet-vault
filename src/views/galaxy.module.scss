@@ -19,6 +19,10 @@
     background: var(--color-glass);
     backdrop-filter: var(--glass-blur);
     position: relative;
+
+    @media screen and (pointer: coarse) {
+        display: none;
+    }
 }
 
 .battles {

@@ -1,11 +1,41 @@
 import galaxyData from "../data.json";
-import { Battle, Galaxy } from "./advisor";
+import { Battle, Galaxy, PurchaseNode } from "./advisor";
 
 export const galaxies = galaxyData.galaxies as Galaxy[];
 
 export interface ConditionNode {
     id: string;
     label: string;
+}
+
+export interface Unlock {
+    code: string;
+    name: string;
+}
+
+const GALAXY_UNLOCKS: Record<number, Unlock[]> = {
+    1: [{ code: "FP", name: "Starting Frigate" }],
+    2: [{ code: "CL", name: "Charge Laser" }, { code: "MI", name: "Missiles" }],
+    3: [{ code: "AR", name: "Frigate Armor" }, { code: "SH", name: "Corvette Shield" }],
+    4: [{ code: "MR", name: "Mini Railgun" }, { code: "FP", name: "Starting Fighter" }],
+    5: [{ code: "AT", name: "Cruiser Armor Tank" }, { code: "CP", name: "Starting Cruiser" }],
+    6: [{ code: "BE", name: "Heavy Cruiser Beam" }, { code: "SHC", name: "Starting Heavy Cruiser" }],
+    8: [{ code: "SHC", name: "Starting Heavy Cruiser" }, { code: "SC", name: "Starting Cruiser" }],
+    9: [{ code: "PC", name: "Particle Cannon" }],
+    11: [{ code: "CRF", name: "Corvette Rapid Fire" }, { code: "TM", name: "Temporary Corvette Burst" }],
+};
+
+export const SHIPS_BY_CLASS: Record<PurchaseNode["class"], string[]> = {
+    light: ["Corvette", "Frigate", "Fighter"],
+    medium: ["Cruiser", "Heavy Cruiser"],
+};
+
+export function getGalaxyPurchases(galaxyId: number | undefined): PurchaseNode[] {
+    return galaxyId ? getGalaxyData(galaxyId)?.purchases ?? [] : [];
+}
+
+export function getGalaxyUnlocks(galaxyId: number | undefined): Unlock[] {
+    return galaxyId ? GALAXY_UNLOCKS[galaxyId] ?? [] : [];
 }
 
 export function getGalaxyData(galaxyId: number): Galaxy | undefined {
@@ -22,9 +52,10 @@ export function getConditionNodes(battle: Battle | undefined): { hazards: Condit
     const types: Record<string, string[]> = {};
 
     for (const h of battle?.hazard ?? []) {
+        if (h.id === battle?.id) continue;
         if (!types[h.id]) {
             types[h.id] = [];
-            (h.node.startsWith("F") ? supports : hazards).push({ id: h.id, label: h.node });
+            (h.support ? supports : hazards).push({ id: h.id, label: h.node });
         }
         types[h.id].push(h.type);
     }

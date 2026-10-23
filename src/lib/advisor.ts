@@ -26,6 +26,7 @@ export interface Hazard {
     id: string;
     node: string;
     type: string;
+    support?: boolean;
 }
 
 export interface Battle {
@@ -36,10 +37,18 @@ export interface Battle {
     boss?: unknown;
 }
 
+export interface PurchaseNode {
+    id: string;
+    name: string;
+    kind: "buy" | "patrol";
+    class: "light" | "medium";
+}
+
 export interface Galaxy {
     id: string;
     name: string;
     battles: Battle[];
+    purchases?: PurchaseNode[];
     minStats: number;
     maxStats: number;
     step: number;

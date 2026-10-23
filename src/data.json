@@ -6,6 +6,14 @@
             "step": 0.025,
             "maxStats": 2.75,
             "minStats": 1,
+            "purchases": [
+                {
+                    "id": "g1_1_fr_lsc",
+                    "name": "L1",
+                    "kind": "buy",
+                    "class": "light"
+                }
+            ],
             "battles": [
                 {
                     "name": "B1",
@@ -46,6 +54,20 @@
             "step": 0.025,
             "maxStats": 3.85,
             "minStats": 1,
+            "purchases": [
+                {
+                    "id": "g2_1_fr_lsc",
+                    "name": "L1",
+                    "kind": "buy",
+                    "class": "light"
+                },
+                {
+                    "id": "g2_4_fr_lsc",
+                    "name": "L2",
+                    "kind": "buy",
+                    "class": "light"
+                }
+            ],
             "battles": [
                 {
                     "name": "B1",
@@ -122,6 +144,26 @@
             "step": 0.025,
             "maxStats": 3.85,
             "minStats": 1,
+            "purchases": [
+                {
+                    "id": "g3_1_fr_lsc",
+                    "name": "L1",
+                    "kind": "buy",
+                    "class": "light"
+                },
+                {
+                    "id": "g3_4_fr_lsc",
+                    "name": "L2",
+                    "kind": "buy",
+                    "class": "light"
+                },
+                {
+                    "id": "g3_6_fr_msc",
+                    "name": "M1",
+                    "kind": "buy",
+                    "class": "medium"
+                }
+            ],
             "battles": [
                 {
                     "name": "B1",
@@ -218,6 +260,26 @@
             "step": 0.15,
             "maxStats": 3.1,
             "minStats": 1,
+            "purchases": [
+                {
+                    "id": "g4_fr_lsc",
+                    "name": "L1",
+                    "kind": "buy",
+                    "class": "light"
+                },
+                {
+                    "id": "g4_fr_lsc2",
+                    "name": "L2",
+                    "kind": "buy",
+                    "class": "light"
+                },
+                {
+                    "id": "g4_fr_msc",
+                    "name": "M1",
+                    "kind": "buy",
+                    "class": "medium"
+                }
+            ],
             "battles": [
                 {
                     "name": "B1",
@@ -355,6 +417,38 @@
             "step": 0.05,
             "maxStats": 3.25,
             "minStats": 1,
+            "purchases": [
+                {
+                    "id": "g5_fr_lsc1",
+                    "name": "L1",
+                    "kind": "buy",
+                    "class": "light"
+                },
+                {
+                    "id": "g5a_fr_msc1",
+                    "name": "M1A",
+                    "kind": "buy",
+                    "class": "medium"
+                },
+                {
+                    "id": "g5b_fr_msc1",
+                    "name": "M1B",
+                    "kind": "buy",
+                    "class": "medium"
+                },
+                {
+                    "id": "g5_fr_lsc2",
+                    "name": "L2",
+                    "kind": "buy",
+                    "class": "light"
+                },
+                {
+                    "id": "g5_fr_msc2",
+                    "name": "M2",
+                    "kind": "buy",
+                    "class": "medium"
+                }
+            ],
             "battles": [
                 {
                     "name": "B1",
@@ -628,8 +722,7 @@
                 {
                     "name": "B16",
                     "id": "g5_b16",
-                    "color": "pink",
-                    "boss": true,
+                    "color": "red",
                     "hazard": [
                         {
                             "type": "Damage Per Second",
@@ -641,8 +734,7 @@
                 {
                     "name": "B17",
                     "id": "g5_b17",
-                    "color": "pink",
-                    "boss": true,
+                    "color": "red",
                     "hazard": [
                         {
                             "type": "Damage Per Second",
@@ -822,8 +914,7 @@
                 {
                     "name": "B29",
                     "id": "g5_b29",
-                    "color": "pink",
-                    "boss": true,
+                    "color": "red",
                     "hazard": [
                         {
                             "type": "Reinforcements",
@@ -840,8 +931,7 @@
                 {
                     "name": "B30",
                     "id": "g5_b30",
-                    "color": "pink",
-                    "boss": true,
+                    "color": "red",
                     "hazard": [
                         {
                             "type": "Reinforcements",
@@ -923,6 +1013,26 @@
             "step": 0.25,
             "maxStats": 4.25,
             "minStats": 1,
+            "purchases": [
+                {
+                    "id": "g6_fr_lsc1",
+                    "name": "L1",
+                    "kind": "buy",
+                    "class": "light"
+                },
+                {
+                    "id": "g6_fr_msc1",
+                    "name": "M1",
+                    "kind": "buy",
+                    "class": "medium"
+                },
+                {
+                    "id": "g6_fr_lsc2",
+                    "name": "L2",
+                    "kind": "buy",
+                    "class": "light"
+                }
+            ],
             "battles": [
                 {
                     "name": "B1",
@@ -942,7 +1052,8 @@
                         {
                             "type": "Laser Volley",
                             "id": "g6_bu_damage1",
-                            "node": "F1"
+                            "node": "F1",
+                            "support": true
                         }
                     ]
                 },
@@ -954,7 +1065,8 @@
                         {
                             "type": "Laser Volley",
                             "id": "g6_bu_damage1",
-                            "node": "F1"
+                            "node": "F1",
+                            "support": true
                         }
                     ]
                 },
@@ -966,7 +1078,8 @@
                         {
                             "type": "Laser Volley",
                             "id": "g6_bu_damage1",
-                            "node": "F1"
+                            "node": "F1",
+                            "support": true
                         }
                     ]
                 },
@@ -983,7 +1096,8 @@
                         {
                             "type": "Reinforcements",
                             "id": "g6_bu_reinforce1",
-                            "node": "F2"
+                            "node": "F2",
+                            "support": true
                         }
                     ]
                 },
@@ -995,7 +1109,8 @@
                         {
                             "type": "Reinforcements",
                             "id": "g6_bu_reinforce1",
-                            "node": "F2"
+                            "node": "F2",
+                            "support": true
                         },
                         {
                             "type": "Laser Volley",
@@ -1012,7 +1127,8 @@
                         {
                             "type": "Reinforcements",
                             "id": "g6_bu_reinforce1",
-                            "node": "F2"
+                            "node": "F2",
+                            "support": true
                         },
                         {
                             "type": "Laser Volley",
@@ -1030,7 +1146,8 @@
                         {
                             "type": "Reinforcements",
                             "id": "g6_bu_reinforce1",
-                            "node": "F2"
+                            "node": "F2",
+                            "support": true
                         },
                         {
                             "type": "Laser Volley",
@@ -1052,7 +1169,8 @@
                         {
                             "type": "Laser Volley",
                             "id": "g6_bu_damage2",
-                            "node": "F3"
+                            "node": "F3",
+                            "support": true
                         }
                     ]
                 },
@@ -1065,7 +1183,8 @@
                         {
                             "type": "Laser Volley",
                             "id": "g6_bu_damage2",
-                            "node": "F3"
+                            "node": "F3",
+                            "support": true
                         },
                         {
                             "type": "Reinforcements",
@@ -1082,7 +1201,8 @@
                         {
                             "type": "Laser Volley",
                             "id": "g6_bu_damage2",
-                            "node": "F3"
+                            "node": "F3",
+                            "support": true
                         }
                     ]
                 },
@@ -1131,8 +1251,7 @@
                 {
                     "name": "B17",
                     "id": "g6_b17",
-                    "color": "pink",
-                    "boss": true,
+                    "color": "red",
                     "hazard": [
                         {
                             "type": "Damage Per Second",
@@ -1172,7 +1291,8 @@
                         {
                             "type": "Laser Volley",
                             "id": "g6_bu_damage2",
-                            "node": "F3"
+                            "node": "F3",
+                            "support": true
                         },
                         {
                             "type": "Reinforcements",
@@ -1207,7 +1327,8 @@
                         {
                             "type": "Laser Volley",
                             "id": "g6_bu_damage2",
-                            "node": "F3"
+                            "node": "F3",
+                            "support": true
                         },
                         {
                             "type": "Laser Volley",
@@ -1229,20 +1350,21 @@
                         {
                             "type": "Damage Per Second",
                             "id": "g6_bu_void1",
-                            "node": "F4"
+                            "node": "F4",
+                            "support": true
                         }
                     ]
                 },
                 {
                     "name": "B26",
                     "id": "g6_b26",
-                    "color": "pink",
-                    "boss": true,
+                    "color": "red",
                     "hazard": [
                         {
                             "type": "Damage Per Second",
                             "id": "g6_bu_void1",
-                            "node": "F4"
+                            "node": "F4",
+                            "support": true
                         },
                         {
                             "type": "Damage Per Second",
@@ -1260,12 +1382,14 @@
                         {
                             "type": "Laser Volley",
                             "id": "g6_bu_damage1",
-                            "node": "F1"
+                            "node": "F1",
+                            "support": true
                         },
                         {
                             "type": "Damage Per Second",
                             "id": "g6_bu_void1",
-                            "node": "F4"
+                            "node": "F4",
+                            "support": true
                         },
                         {
                             "type": "Damage Per Second",
@@ -1311,7 +1435,8 @@
                         {
                             "type": "Grid Buff",
                             "id": "g6_bu_gb1",
-                            "node": "F5"
+                            "node": "F5",
+                            "support": true
                         },
                         {
                             "type": "Grid Buff",
@@ -1328,7 +1453,8 @@
                         {
                             "type": "Grid Buff",
                             "id": "g6_bu_gb1",
-                            "node": "F5"
+                            "node": "F5",
+                            "support": true
                         },
                         {
                             "type": "Grid Buff",
@@ -1345,7 +1471,8 @@
                         {
                             "type": "Grid Buff",
                             "id": "g6_bu_gb1",
-                            "node": "F5"
+                            "node": "F5",
+                            "support": true
                         },
                         {
                             "type": "Grid Buff",
@@ -1363,7 +1490,8 @@
                         {
                             "type": "Grid Buff",
                             "id": "g6_bu_gb1",
-                            "node": "F5"
+                            "node": "F5",
+                            "support": true
                         },
                         {
                             "type": "Grid Buff",
@@ -1395,7 +1523,8 @@
                         {
                             "type": "Laser Volley",
                             "id": "g6_bu_m1",
-                            "node": "F6"
+                            "node": "F6",
+                            "support": true
                         }
                     ]
                 },
@@ -1407,7 +1536,8 @@
                         {
                             "type": "Reinforcements",
                             "id": "g6_bu_m1",
-                            "node": "F6"
+                            "node": "F6",
+                            "support": true
                         }
                     ]
                 },
@@ -1425,7 +1555,8 @@
                         {
                             "type": "Grid Buff",
                             "id": "g6_bu_m1",
-                            "node": "F6"
+                            "node": "F6",
+                            "support": true
                         },
                         {
                             "type": "Grid Buff",
@@ -1462,13 +1593,13 @@
                 {
                     "name": "B42",
                     "id": "g6_b42",
-                    "color": "pink",
-                    "boss": true,
+                    "color": "red",
                     "hazard": [
                         {
                             "type": "Grid Buff",
                             "id": "g6_bu_m1",
-                            "node": "F6"
+                            "node": "F6",
+                            "support": true
                         },
                         {
                             "type": "Grid Buff",
@@ -1485,13 +1616,13 @@
                 {
                     "name": "B43",
                     "id": "g6_b43",
-                    "color": "pink",
-                    "boss": true,
+                    "color": "red",
                     "hazard": [
                         {
                             "type": "Grid Buff",
                             "id": "g6_bu_gb2",
-                            "node": "F7"
+                            "node": "F7",
+                            "support": true
                         },
                         {
                             "type": "Laser Volley",
@@ -1519,7 +1650,8 @@
                         {
                             "type": "Grid Buff",
                             "id": "g6_bu_gb3",
-                            "node": "F8"
+                            "node": "F8",
+                            "support": true
                         },
                         {
                             "type": "Grid Buff",
@@ -1536,6 +1668,7 @@
             "step": 0.25,
             "maxStats": 1.5,
             "minStats": 1,
+            "purchases": [],
             "battles": [
                 {
                     "name": "B1",
@@ -1566,7 +1699,8 @@
                         {
                             "type": "Laser Volley",
                             "id": "g7_support_1",
-                            "node": "F1"
+                            "node": "F1",
+                            "support": true
                         }
                     ]
                 },
@@ -1622,7 +1756,8 @@
                         {
                             "type": "Reinforcements",
                             "id": "g7_support_1",
-                            "node": "F1"
+                            "node": "F1",
+                            "support": true
                         },
                         {
                             "type": "Reinforcements",
@@ -1663,6 +1798,38 @@
             "step": 0.25,
             "maxStats": 2,
             "minStats": 1,
+            "purchases": [
+                {
+                    "id": "g8_patrol1",
+                    "name": "PL1",
+                    "kind": "patrol",
+                    "class": "light"
+                },
+                {
+                    "id": "g8_patrol2",
+                    "name": "PL2",
+                    "kind": "patrol",
+                    "class": "light"
+                },
+                {
+                    "id": "g8_patrol3",
+                    "name": "PM1",
+                    "kind": "patrol",
+                    "class": "medium"
+                },
+                {
+                    "id": "g8_patrol4",
+                    "name": "PM2",
+                    "kind": "patrol",
+                    "class": "medium"
+                },
+                {
+                    "id": "g8_fr_lsc1",
+                    "name": "L1",
+                    "kind": "buy",
+                    "class": "light"
+                }
+            ],
             "battles": [
                 {
                     "name": "B1",
@@ -1797,8 +1964,7 @@
                 {
                     "name": "B14",
                     "id": "g8_b14",
-                    "color": "pink",
-                    "boss": true,
+                    "color": "red",
                     "hazard": [
                         {
                             "type": "Damage Per Second",
@@ -1815,7 +1981,8 @@
                         {
                             "type": "Laser Volley",
                             "id": "g8_support_1",
-                            "node": "F1"
+                            "node": "F1",
+                            "support": true
                         }
                     ]
                 },
@@ -1827,7 +1994,8 @@
                         {
                             "type": "Reinforcements",
                             "id": "g8_support_1",
-                            "node": "F1"
+                            "node": "F1",
+                            "support": true
                         }
                     ]
                 },
@@ -1840,7 +2008,8 @@
                         {
                             "type": "Grid Buff",
                             "id": "g8_support_1",
-                            "node": "F1"
+                            "node": "F1",
+                            "support": true
                         },
                         {
                             "type": "Grid Buff",
@@ -1857,6 +2026,26 @@
             "step": 0.25,
             "maxStats": 1.75,
             "minStats": 1,
+            "purchases": [
+                {
+                    "id": "g9_fr_msc1",
+                    "name": "M1",
+                    "kind": "buy",
+                    "class": "medium"
+                },
+                {
+                    "id": "g9_patrol_l1",
+                    "name": "PL1",
+                    "kind": "patrol",
+                    "class": "light"
+                },
+                {
+                    "id": "g9_patrol_m1",
+                    "name": "PM1",
+                    "kind": "patrol",
+                    "class": "medium"
+                }
+            ],
             "battles": [
                 {
                     "name": "B1",
@@ -1876,7 +2065,8 @@
                         {
                             "type": "Laser Volley",
                             "id": "g9_support_1",
-                            "node": "F1"
+                            "node": "F1",
+                            "support": true
                         }
                     ]
                 },
@@ -1888,7 +2078,8 @@
                         {
                             "type": "Laser Volley",
                             "id": "g9_support_1",
-                            "node": "F1"
+                            "node": "F1",
+                            "support": true
                         }
                     ]
                 },
@@ -1947,8 +2138,7 @@
                 {
                     "name": "B11",
                     "id": "g9_b11",
-                    "color": "pink",
-                    "boss": true,
+                    "color": "red",
                     "hazard": [
                         {
                             "type": "Damage Per Second",
@@ -1995,7 +2185,8 @@
                         {
                             "type": "Reinforcements",
                             "id": "g9_support_2",
-                            "node": "F2"
+                            "node": "F2",
+                            "support": true
                         }
                     ]
                 },
@@ -2007,7 +2198,8 @@
                         {
                             "type": "Laser Volley",
                             "id": "g9_support_2",
-                            "node": "F2"
+                            "node": "F2",
+                            "support": true
                         }
                     ]
                 },
@@ -2020,7 +2212,8 @@
                         {
                             "type": "Grid Buff",
                             "id": "g9_support_2",
-                            "node": "F2"
+                            "node": "F2",
+                            "support": true
                         },
                         {
                             "type": "Laser Volley",
@@ -2061,6 +2254,98 @@
             "step": 0.25,
             "maxStats": 2.25,
             "minStats": 1,
+            "purchases": [
+                {
+                    "id": "g10_patrol_l1",
+                    "name": "PL1",
+                    "kind": "patrol",
+                    "class": "light"
+                },
+                {
+                    "id": "g10_patrol_l2",
+                    "name": "PL2",
+                    "kind": "patrol",
+                    "class": "light"
+                },
+                {
+                    "id": "g10_patrol_l3",
+                    "name": "PL3",
+                    "kind": "patrol",
+                    "class": "light"
+                },
+                {
+                    "id": "g10_patrol_m1",
+                    "name": "PM1",
+                    "kind": "patrol",
+                    "class": "medium"
+                },
+                {
+                    "id": "g10_patrol_m2",
+                    "name": "PM2",
+                    "kind": "patrol",
+                    "class": "medium"
+                },
+                {
+                    "id": "g10_fr_lsc1",
+                    "name": "L1",
+                    "kind": "buy",
+                    "class": "light"
+                },
+                {
+                    "id": "g10_fr_lsc2",
+                    "name": "L2",
+                    "kind": "buy",
+                    "class": "light"
+                },
+                {
+                    "id": "g10_fr_lsc3",
+                    "name": "L3",
+                    "kind": "buy",
+                    "class": "light"
+                },
+                {
+                    "id": "g10_fr_lsc4",
+                    "name": "L4",
+                    "kind": "buy",
+                    "class": "light"
+                },
+                {
+                    "id": "g10_fr_lsc5",
+                    "name": "L5",
+                    "kind": "buy",
+                    "class": "light"
+                },
+                {
+                    "id": "g10_fr_msc1",
+                    "name": "M1",
+                    "kind": "buy",
+                    "class": "medium"
+                },
+                {
+                    "id": "g10_fr_msc2",
+                    "name": "M2",
+                    "kind": "buy",
+                    "class": "medium"
+                },
+                {
+                    "id": "g10_fr_msc3",
+                    "name": "M3",
+                    "kind": "buy",
+                    "class": "medium"
+                },
+                {
+                    "id": "g10_fr_msc4",
+                    "name": "M4",
+                    "kind": "buy",
+                    "class": "medium"
+                },
+                {
+                    "id": "g10_fr_msc5",
+                    "name": "M5",
+                    "kind": "buy",
+                    "class": "medium"
+                }
+            ],
             "battles": [
                 {
                     "name": "B1",
@@ -2134,8 +2419,7 @@
                 {
                     "name": "B10",
                     "id": "g10_b10",
-                    "color": "pink",
-                    "boss": true,
+                    "color": "red",
                     "hazard": [
                         {
                             "type": "Damage Per Second",
@@ -2236,13 +2520,13 @@
                 {
                     "name": "B19",
                     "id": "g10_b19",
-                    "color": "pink",
-                    "boss": true,
+                    "color": "red",
                     "hazard": [
                         {
                             "type": "Reinforcements",
                             "id": "g10_support_1",
-                            "node": "F1"
+                            "node": "F1",
+                            "support": true
                         },
                         {
                             "type": "Damage Per Second",
@@ -2259,7 +2543,8 @@
                         {
                             "type": "Laser Volley",
                             "id": "g10_support_1",
-                            "node": "F1"
+                            "node": "F1",
+                            "support": true
                         }
                     ]
                 },
@@ -2271,7 +2556,8 @@
                         {
                             "type": "Reinforcements",
                             "id": "g10_support_2",
-                            "node": "F2"
+                            "node": "F2",
+                            "support": true
                         }
                     ]
                 },
@@ -2284,11 +2570,218 @@
                         {
                             "type": "Grid Buff",
                             "id": "g10_support_2",
-                            "node": "F2"
+                            "node": "F2",
+                            "support": true
                         },
                         {
                             "type": "Grid Buff",
                             "id": "g10_b22",
+                            "node": "B22"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "id": "g11",
+            "name": "Galaxy 11",
+            "step": 0.25,
+            "maxStats": 1.5,
+            "minStats": 1,
+            "purchases": [
+                {
+                    "id": "g11_fr_lsc1",
+                    "name": "L1",
+                    "kind": "buy",
+                    "class": "light"
+                },
+                {
+                    "id": "g11_fr_lsc2",
+                    "name": "L2",
+                    "kind": "buy",
+                    "class": "light"
+                }
+            ],
+            "battles": [
+                {
+                    "name": "B1",
+                    "id": "g11_b1",
+                    "color": "red"
+                },
+                {
+                    "name": "B2",
+                    "id": "g11_b2",
+                    "color": "red",
+                    "hazard": [
+                        {
+                            "type": "Laser Volley",
+                            "id": "g11_support_1",
+                            "node": "PF1",
+                            "support": true
+                        }
+                    ]
+                },
+                {
+                    "name": "B3",
+                    "id": "g11_b3",
+                    "color": "red",
+                    "hazard": [
+                        {
+                            "type": "Grid Buff",
+                            "id": "g11_support_1",
+                            "node": "PF1",
+                            "support": true
+                        }
+                    ]
+                },
+                {
+                    "name": "B5",
+                    "id": "g11_b5",
+                    "color": "red"
+                },
+                {
+                    "name": "B6",
+                    "id": "g11_b6",
+                    "color": "red"
+                },
+                {
+                    "name": "B7",
+                    "id": "g11_b7",
+                    "color": "red"
+                },
+                {
+                    "name": "B15",
+                    "id": "g11_b15",
+                    "color": "red"
+                },
+                {
+                    "name": "B16",
+                    "id": "g11_b16",
+                    "color": "red"
+                },
+                {
+                    "name": "BB1",
+                    "id": "g11_bb1",
+                    "color": "white",
+                    "boss": true
+                },
+                {
+                    "name": "B4",
+                    "id": "g11_b4",
+                    "color": "red",
+                    "hazard": [
+                        {
+                            "type": "Reinforcements",
+                            "id": "g11_support_1",
+                            "node": "PF1",
+                            "support": true
+                        }
+                    ]
+                },
+                {
+                    "name": "B8",
+                    "id": "g11_b8",
+                    "color": "red",
+                    "hazard": [
+                        {
+                            "type": "Reinforcements",
+                            "id": "g11_b11",
+                            "node": "B11"
+                        }
+                    ]
+                },
+                {
+                    "name": "B9",
+                    "id": "g11_b9",
+                    "color": "red",
+                    "hazard": [
+                        {
+                            "type": "Grid Buff",
+                            "id": "g11_b11",
+                            "node": "B11"
+                        }
+                    ]
+                },
+                {
+                    "name": "B10",
+                    "id": "g11_b10",
+                    "color": "red",
+                    "hazard": [
+                        {
+                            "type": "Laser Volley",
+                            "id": "g11_b11",
+                            "node": "B11"
+                        }
+                    ]
+                },
+                {
+                    "name": "B11",
+                    "id": "g11_b11",
+                    "color": "pink",
+                    "boss": true,
+                    "hazard": [
+                        {
+                            "type": "Reinforcements",
+                            "id": "g11_b11",
+                            "node": "B11"
+                        }
+                    ]
+                },
+                {
+                    "name": "B12",
+                    "id": "g11_b12",
+                    "color": "red"
+                },
+                {
+                    "name": "B13",
+                    "id": "g11_b13",
+                    "color": "red"
+                },
+                {
+                    "name": "B14",
+                    "id": "g11_b14",
+                    "color": "red"
+                },
+                {
+                    "name": "B17",
+                    "id": "g11_b17",
+                    "color": "red"
+                },
+                {
+                    "name": "B18",
+                    "id": "g11_b18",
+                    "color": "red"
+                },
+                {
+                    "name": "B19",
+                    "id": "g11_b19",
+                    "color": "red"
+                },
+                {
+                    "name": "B20",
+                    "id": "g11_b20",
+                    "color": "red"
+                },
+                {
+                    "name": "B21",
+                    "id": "g11_b21",
+                    "color": "red"
+                },
+                {
+                    "name": "B22",
+                    "id": "g11_b22",
+                    "color": "white",
+                    "boss": true,
+                    "hazard": [
+                        {
+                            "type": "Grid Buff",
+                            "id": "g11_support_2",
+                            "node": "PF2",
+                            "support": true
+                        },
+                        {
+                            "type": "Grid Buff",
+                            "id": "g11_b22",
                             "node": "B22"
                         }
                     ]

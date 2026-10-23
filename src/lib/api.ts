@@ -64,6 +64,11 @@ export async function submitSolution(params: {
   support: boolean;
   supportNodes: string[];
   bossAlive: boolean | null;
+  unlocks: string[];
+  purchases: Record<string, string>;
+  shots: number | null;
+  frTotal: number | null;
+  bossDamage: number | null;
 }): Promise<void> {
   let screenshotUrl: string | null = null;
 
@@ -92,6 +97,11 @@ export async function submitSolution(params: {
     support: params.support,
     support_nodes: params.supportNodes,
     boss_alive: params.bossAlive,
+    unlocks: params.unlocks,
+    purchases: params.purchases,
+    shots: params.shots,
+    fr_total: params.frTotal,
+    boss_damage: params.bossDamage,
   });
 
   if (error) throw error;

@@ -17,6 +17,13 @@ export interface Solution {
   support: boolean;
   support_nodes: string[];
   boss_alive: boolean | null;
+  unlocks: string[];
+  purchases: Record<string, string>;
+  non_standard: boolean;
+  shots: number | null;
+  fr_total: number | null;
+  boss_damage: number | null;
+  source: "site" | "spreadsheet";
 }
 
 export interface Galaxy {

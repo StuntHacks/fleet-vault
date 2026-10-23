@@ -18,6 +18,25 @@ function conditions(s: Solution, battle: Battle | undefined): string[] {
     if (s.boss_alive !== null) {
         result.push(s.boss_alive ? "Boss alive" : "Boss defeated");
     }
+    if (s.unlocks?.length) {
+        result.push(`Unlocked: ${s.unlocks.join(", ")}`);
+    }
+    return result;
+}
+
+function details(s: Solution): string[] {
+    const result: string[] = [];
+    const boss = [
+        s.shots ? (s.shots === 1 ? "One shot" : `${s.shots} shots`) : null,
+        s.fr_total != null ? `${s.fr_total} FR total` : null,
+        s.boss_damage != null ? `${s.boss_damage} damage` : null,
+    ].filter(Boolean);
+    if (boss.length) result.push(boss.join(" · "));
+
+    const purchases = Object.entries(s.purchases ?? {});
+
+    if (purchases.length) result.push(`Purchases: ${purchases.map(([node, ship]) => (ship === "none" ? `no ${node}` : `${node} ${ship}`)).join(", ")}`);
+    if (s.non_standard) result.push("Non-standard path");
     return result;
 }
 
@@ -30,9 +49,10 @@ function SolutionItem({ solution: s, battle }: { solution: Solution; battle: Bat
                 </a>
             )}
             <p>Combat Stats: {s.combat_stats}</p>
-            <p>FR Used: {s.fr_used}</p>
+            <p>FR Used{s.shots && s.shots > 1 ? " (per shot)" : ""}: {s.fr_used}</p>
             {s.fr_committed != null && <p>FR Committed: {s.fr_committed}</p>}
             {conditions(s, battle).map((c) => <p key={c}>{c}</p>)}
+            {details(s).map((d) => <p key={d}>{d}</p>)}
             {s.notes && <p>Notes: {s.notes}</p>}
         </li>
     );

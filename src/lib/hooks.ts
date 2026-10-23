@@ -4,13 +4,34 @@ import { supabase } from './supabase';
 import { getSolutionsForBattle, getBattlesForGalaxy, getGalaxy } from './api';
 import type { Solution, Galaxy } from './types';
 
+const isAdminSession = (s: Session | null) => !!s?.user?.app_metadata?.fleetvault_admin;
+let staleSessionHandled = false;
+
+function handleStaleSession() {
+  if (staleSessionHandled) return;
+  staleSessionHandled = true;
+  localStorage.removeItem('fleetvault_admin_label');
+  setTimeout(() => {
+    supabase.auth.signOut();
+    alert('Admin logins have changed. Please log in again with your token.');
+  }, 0);
+}
+
 export function useAdminSession() {
   const [session, setSession] = useState<Session | null | undefined>(undefined);
 
   useEffect(() => {
-    supabase.auth.getSession().then(({ data }) => setSession(data.session));
+    const apply = (s: Session | null) => {
+      if (s && !isAdminSession(s)) {
+        handleStaleSession();
+        setSession(null);
+      } else {
+        setSession(s);
+      }
+    };
+    supabase.auth.getSession().then(({ data }) => apply(data.session));
 
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((_, s) => setSession(s));
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_, s) => apply(s));
     return () => subscription.unsubscribe();
   }, []);
 
@@ -19,8 +40,7 @@ export function useAdminSession() {
 
 export function useUsername(): string | null {
   const session = useAdminSession();
-  if (!session) return null;
-  return localStorage.getItem('fleetvault_admin_label');
+  return session?.user?.app_metadata?.admin_label ?? null;
 }
 
 export function useBattles(galaxyId: number) {

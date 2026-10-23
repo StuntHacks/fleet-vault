@@ -109,13 +109,11 @@ export async function submitSolution(params: {
 
 // admin stuff
 export async function deleteSolution(id: number): Promise<void> {
-  await setAdminContext();
   const { error } = await supabase.from('solutions').delete().eq('id', id);
   if (error) throw error;
 }
 
 export async function updateGalaxyNotes(galaxyId: number, notes: string): Promise<void> {
-  await setAdminContext();
   const { error } = await supabase.from('galaxies').update({ notes }).eq('id', galaxyId);
   if (error) throw error;
 }
@@ -126,7 +124,6 @@ export async function flagSolution(id: number): Promise<void> {
 }
 
 export async function unflagSolution(id: number): Promise<void> {
-  await setAdminContext();
   const { error } = await supabase
     .from('solutions')
     .update({ flagged: false })
@@ -156,23 +153,15 @@ export async function adminLogin(token: string): Promise<void> {
 
   if (!res.ok) throw new Error('Invalid token');
 
-  const { session, adminLabel } = await res.json();
+  const { session } = await res.json();
 
   await supabase.auth.setSession({
     access_token: session.access_token,
     refresh_token: session.refresh_token,
   });
-
-  localStorage.setItem('fleetvault_admin_label', adminLabel);
-}
-
-async function setAdminContext(): Promise<void> {
-  const label = localStorage.getItem('fleetvault_admin_label') ?? 'unknown';
-  await supabase.rpc('set_config', { key: 'app.fleetvault_admin_label', value: label });
 }
 
 export async function adminLogout(): Promise<void> {
   const { error } = await supabase.auth.signOut();
   if (error) throw error;
-  localStorage.removeItem('fleetvault_admin_label');
 }

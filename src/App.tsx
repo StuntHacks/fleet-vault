@@ -55,8 +55,6 @@ export default function App() {
       <Route path="/" element={<GalaxyView />} />
       <Route path="/g" element={<GalaxyView />} />
       <Route path="/g/:galaxy" element={<GalaxyView />} />
-      <Route path="/g/:galaxy/b" element={<GalaxyView />} />
-      <Route path="/g/:galaxy/b/:battle" element={<BattleView />} />
       <Route path="/g/:galaxy/submit" element={<SubmitView />} />
       <Route path="/submit" element={<SubmitView />} />
       <Route path="/advisors" element={<AdvisorView />} />

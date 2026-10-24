@@ -1,11 +1,11 @@
-import { useParams } from "react-router-dom";
+import { useLocation, useNavigate, useParams, useSearchParams } from "react-router-dom";
 import { BaseLayout } from "../components/baselayout/baselayout";
 import { Modal } from "../components/modal/modal";
 import { useGalaxySolutions } from "../lib/hooks";
 import type { RankedSolutions } from "../lib/api";
 import { findBattle, galaxies, getConditionNodes, getGalaxyUnlocks, isBossBattle } from "../lib/battles";
 import styles from "./galaxy.module.scss";
-import { useRef, useState } from "react";
+import { useEffect, useMemo, useRef } from "react";
 import { Solution } from "../lib/types";
 
 const getUnlockName = (galaxyId: number, unlock: string) => {
@@ -220,7 +220,42 @@ export default function GalaxyView() {
     }
     const solutions = useGalaxySolutions(id);
     const listRef = useRef<HTMLDivElement>(null);
-    const [selected, setSelected] = useState<Solution | null>(null);
+    const location = useLocation();
+    const navigate = useNavigate();
+    const [searchParams, setSearchParams] = useSearchParams();
+    const closing = useRef(false);
+
+    useEffect(() => {
+        closing.current = false;
+    }, [location.key]);
+
+    const selectedId = Number(searchParams.get("solution")) || null;
+    const selected = useMemo(() => {
+        if (selectedId == null) return null;
+        return Object.values(solutions.byBattle)
+            .flatMap((r) => [...r.best, ...r.obsolete, ...r.flagged])
+            .find((s) => s.id === selectedId) ?? null;
+    }, [solutions.byBattle, selectedId]);
+
+    const openSolution = (s: Solution) => {
+        setSearchParams((params) => {
+            params.set("solution", String(s.id));
+            return params;
+        }, { state: { popup: true } });
+    };
+
+    const closeSolution = () => {
+        if (closing.current) return;
+        closing.current = true;
+        if ((location.state as { popup?: boolean } | null)?.popup) {
+            navigate(-1);
+            return;
+        }
+        setSearchParams((params) => {
+            params.delete("solution");
+            return params;
+        }, { replace: true });
+    };
 
     const handleScroll = (e: React.WheelEvent<HTMLDivElement>) => {
         if (e.deltaY === 0) return;
@@ -251,14 +286,14 @@ export default function GalaxyView() {
                                             {results.best.length}
                                         </span>
                                     </div>
-                                    <Solutions solutions={results} onOpen={setSelected} />
+                                    <Solutions solutions={results} onOpen={openSolution} />
                                 </div>
                             );
                         })}
                     </div>
                 </>
             )}
-            <Modal open={!!selected} onClose={() => setSelected(null)}>
+            <Modal open={!!selected} onClose={closeSolution}>
                 {selected && <SolutionPopup solution={selected} />}
             </Modal>
         </BaseLayout>

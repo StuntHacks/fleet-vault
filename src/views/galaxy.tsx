@@ -233,7 +233,7 @@ export default function GalaxyView() {
     const selected = useMemo(() => {
         if (selectedId == null) return null;
         return Object.values(solutions.byBattle)
-            .flatMap((r) => [...r.best, ...r.obsolete, ...r.flagged])
+            .flatMap((r) => [...r.best, ...r.obsolete])
             .find((s) => s.id === selectedId) ?? null;
     }, [solutions.byBattle, selectedId]);
 

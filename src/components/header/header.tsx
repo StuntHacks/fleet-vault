@@ -15,10 +15,10 @@ export default function Header() {
 
   return (
     <header className={styles.header}>
-      <div className={styles.title}>
+      <a className={styles.title} href={`/g/${id}`}>
         <img src={logo} className={styles.logo} alt="logo" />
         <h1>FleetVault</h1>
-      </div>
+      </a>
       <div className={styles.galaxy}>
         <GalaxySelect />
       </div>

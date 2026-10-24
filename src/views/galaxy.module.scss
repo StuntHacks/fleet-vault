@@ -7,21 +7,53 @@
     padding: 0 1rem;
 }
 
-.scrollable {
+.menuBar {
     display: flex;
     align-items: center;
-    justify-content: center;
-    cursor: grab;
-    padding: 0.35rem 1rem 0.5rem;
-    margin: 0 0.5rem;
-    border-radius: 0.5rem;
-    color: var(--color-text-secondary);
-    background: var(--color-glass);
-    backdrop-filter: var(--glass-blur);
-    position: relative;
 
-    @media screen and (pointer: coarse) {
-        display: none;
+    .scrollable {
+        flex-grow: 1;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        cursor: grab;
+        cursor: ew-resize;
+        padding: 0.35rem 1rem 0.5rem;
+        margin: 0 0.5rem;
+        border-radius: 0.5rem;
+        color: var(--color-text-secondary);
+        background: var(--color-glass);
+        backdrop-filter: var(--glass-blur);
+        position: relative;
+        align-self: stretch;
+
+        @media screen and (pointer: coarse) {
+            display: none;
+        }
+    }
+
+    .settings:first-child {
+        margin-left: 1rem;
+        margin-right: 0.5rem;
+        display: flex;
+        flex-direction: column;
+        gap: 0.25rem;
+        align-items: center;
+
+        input,
+        button {
+            height: 1.5rem;
+        }
+
+        input:disabled {
+            opacity: 0.5;
+        }
+    }
+
+    .settings:last-child {
+        margin-right: 1rem;
+        margin-left: 0.5rem;
     }
 }
 

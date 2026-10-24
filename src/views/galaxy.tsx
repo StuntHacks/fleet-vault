@@ -5,8 +5,10 @@ import { useGalaxySolutions } from "../lib/hooks";
 import type { RankedSolutions } from "../lib/api";
 import { findBattle, galaxies, getConditionNodes, getGalaxyUnlocks, isBossBattle } from "../lib/battles";
 import styles from "./galaxy.module.scss";
-import { useEffect, useMemo, useRef } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { Solution } from "../lib/types";
+import { Checkbox } from "../components/checkbox/checkbox";
+import { CombatStatInput } from "../components/combatStatInput/combatStatInput";
 
 const getUnlockName = (galaxyId: number, unlock: string) => {
     return getGalaxyUnlocks(galaxyId).find((u) => u.code === unlock)?.name ?? unlock;
@@ -192,14 +194,26 @@ function SolutionPopup({ solution: s }: { solution: Solution }) {
     );
 }
 
-function Solutions({ solutions, onOpen }: { solutions: RankedSolutions, onOpen: (s: Solution) => void }) {
-    if (!solutions.best.length) return <p className={styles.info}>No solutions yet</p>;
+const filterByStats = (solutions: RankedSolutions, stats: number | null): RankedSolutions => {
+    if (stats == null) return solutions;
+    const nearest = Math.max(...solutions.best.map((s) => s.combat_stats).filter((c) => c <= stats + 1e-6));
+    const matches = (s: Solution) => Math.abs(s.combat_stats - nearest) < 1e-6;
+    return {
+        best: solutions.best.filter(matches),
+        obsolete: solutions.obsolete.filter(matches),
+        flagged: solutions.flagged.filter(matches),
+    };
+}
+
+function Solutions({ solutions, onOpen, showObsolete, filtered }: { solutions: RankedSolutions, onOpen: (s: Solution) => void, showObsolete: boolean, filtered: boolean }) {
+    if (!solutions.best.length) return <p className={styles.info}>{filtered ? "No solutions for these stats" : "No solutions yet"}</p>;
+
     return (
         <>
             {solutions.best.map((s) => (
                 <Entry solution={s} key={s.id} onOpen={onOpen} />
             ))}
-            {solutions.obsolete.length > 0 && (
+            {showObsolete && solutions.obsolete.length > 0 && (
                 <>
                     <div className={styles.obsoleteHeader}> — Obsolete solutions — </div>
                     {solutions.obsolete.map((s) => (
@@ -215,15 +229,28 @@ export default function GalaxyView() {
     const { galaxy } = useParams();
     let id = parseInt(galaxy || "1", 10);
     id = Math.min(Math.max(id, 1), galaxies.length);
+
     if (isNaN(id)) {
         id = 1;
     }
+
     const solutions = useGalaxySolutions(id);
     const listRef = useRef<HTMLDivElement>(null);
     const location = useLocation();
     const navigate = useNavigate();
     const [searchParams, setSearchParams] = useSearchParams();
     const closing = useRef(false);
+
+    const [showObsolete, setShowObsolete] = useState(() => localStorage.getItem('fleetvault_show_obsolete') === 'true');
+    const [filter, setFilter] = useState(false);
+    const [combatStats, setCombatStats] = useState<string>("1");
+
+    const parsedStats = parseFloat(combatStats);
+    const statFilter = filter && !isNaN(parsedStats) ? parsedStats : null;
+
+    useEffect(() => {
+        localStorage.setItem('fleetvault_show_obsolete', String(showObsolete));
+    }, [showObsolete]);
 
     useEffect(() => {
         closing.current = false;
@@ -270,12 +297,32 @@ export default function GalaxyView() {
             {solutions.error && <p className={styles.error}>Error loading solutions</p>}
             {!solutions.loading && !solutions.error && (
                 <>
-                    <div className={styles.scrollable} onWheel={handleScroll}>
-                        ← Scroll here →
+                    <div className={styles.menuBar}>
+                        <div className={styles.settings}>
+                            <Checkbox name="filterStats" checked={filter} onChange={setFilter}>
+                                Filter by stats
+                            </Checkbox>
+                            <CombatStatInput
+                                value={combatStats}
+                                onChange={setCombatStats}
+                                min={galaxies[id - 1].minStats ?? 1}
+                                max={galaxies[id - 1].maxStats ?? 1}
+                                step={galaxies[id - 1].step ?? 0.025}
+                                disabled={!filter}
+                            />
+                        </div>
+                        <div className={styles.scrollable} onWheel={handleScroll}>
+                            ← Scroll here →
+                        </div>
+                        <div className={styles.settings}>
+                            <Checkbox name="showObsolete" checked={showObsolete} onChange={setShowObsolete}>
+                                Show obsolete
+                            </Checkbox>
+                        </div>
                     </div>
                     <div className={styles.battles} ref={listRef}>
                         {galaxies[id - 1].battles.map((b) => {
-                            const results = solutions.forBattle(b.id);
+                            const results = filterByStats(solutions.forBattle(b.id), statFilter);
 
                             return (
                                 <div className={styles.battle} key={b.id}>
@@ -286,7 +333,7 @@ export default function GalaxyView() {
                                             {results.best.length}
                                         </span>
                                     </div>
-                                    <Solutions solutions={results} onOpen={openSolution} />
+                                    <Solutions solutions={results} onOpen={openSolution} showObsolete={showObsolete} filtered={statFilter != null} />
                                 </div>
                             );
                         })}

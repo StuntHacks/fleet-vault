@@ -3,9 +3,11 @@
   --color-primary-hover: #4b6db1;
   --color-primary-active: #405d97;
   --color-glass: #fff5;
+  --color-glass-popup: #fffc;
   --color-flat: #fff;
   --color-background: #f4f6fb;
   --color-background-secondary: #fff;
+  --color-background-secondary-hover: #f0f0f0;
   --color-text: #1a1a2e;
   --color-text-secondary: #555;
   --color-text-tertiary: #888;
@@ -13,7 +15,8 @@
   --color-support: rgb(26, 95, 26);
   --bg-color-hazard: rgba(151, 40, 40, 0.356);
   --color-hazard: rgb(167, 26, 26);
-  --color-error: #ff4d4f;
+  --bg-color-obsolete: rgba(146, 146, 146, 0.356);
+  --color-obsolete: rgb(158, 158, 158);
   --color-error: #d13c3e;
   --color-grid-slot: rgb(152, 187, 189);
   --color-border: #d1d5db;
@@ -24,9 +27,11 @@
   --color-primary-hover: #6389cc;
   --color-primary-active: #5c85d6;
   --color-glass: #1f2f3a99;
+  --color-glass-popup: #1f2f3a99;
   --color-flat: #0f1418;
   --color-background: #131920;
   --color-background-secondary: #0F1418;
+  --color-background-secondary-hover: #1a1f24;
   --color-text: #e8eaf6;
   --color-text-secondary: #aaa;
   --color-text-tertiary: #888;
@@ -34,6 +39,8 @@
   --color-support: rgb(51, 202, 51);
   --bg-color-hazard: rgba(151, 40, 40, 0.356);
   --color-hazard: rgb(238, 75, 75);
+  --bg-color-obsolete: rgba(151, 151, 151, 0.356);
+  --color-obsolete: rgb(231, 231, 231);
   --color-error: #ff4d4f;
   --color-grid-slot: #163f42;
   --color-border: #22303d;
@@ -87,6 +94,11 @@ select {
   scrollbar-color: #fff6 transparent;
   -webkit-scrollbar-width: thin;
   -webkit-scrollbar-color: #fff6 transparent;
+
+  &:focus,
+  &:active {
+    outline: none;
+  }
 }
 
 a {

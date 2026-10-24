@@ -1,15 +1,18 @@
 import { useParams } from "react-router-dom";
 import { BaseLayout } from "../components/baselayout/baselayout";
+import { Modal } from "../components/modal/modal";
 import { useGalaxySolutions } from "../lib/hooks";
 import type { RankedSolutions } from "../lib/api";
-import { galaxies, getGalaxyUnlocks, isBossBattle } from "../lib/battles";
+import { findBattle, galaxies, getConditionNodes, getGalaxyUnlocks, isBossBattle } from "../lib/battles";
 import styles from "./galaxy.module.scss";
-import { useRef } from "react";
+import { useRef, useState } from "react";
 import { Solution } from "../lib/types";
 
 const getUnlockName = (galaxyId: number, unlock: string) => {
     return getGalaxyUnlocks(galaxyId).find((u) => u.code === unlock)?.name ?? unlock;
 }
+
+const formatStats = (stats: number) => `${Number.isInteger(stats) ? stats.toFixed(1) : stats}x`;
 
 const getBossInfo = (s: Solution) => {
     if (s.boss_alive === false) return "Boss dead";
@@ -18,20 +21,63 @@ const getBossInfo = (s: Solution) => {
     return null;
 }
 
-function Entry({ solution, obsolete = false }: { solution: Solution, obsolete?: boolean }) {
+function Extras({ solution: s }: { solution: Solution }) {
+    const purchases = Object.entries(s.purchases ?? {});
+
+    return (
+        <>
+            {purchases.length > 0 && (
+                <div className={styles.unlocks}>
+                    <strong>Ship selection: </strong>
+                    {purchases.map(([node, name], index) => (
+                        <span key={`${s.id}-${node}-${index}`}>{node}: {name}</span>
+                    ))}
+                </div>
+            )}
+            {(s.unlocks?.length > 0) && (
+                <div className={styles.unlocks}>
+                    <strong>Required unlocks: </strong>
+                    {s.unlocks.map((unlock, index) => (
+                        <span key={`${s.id}-${unlock}-${index}`}>{getUnlockName(s.galaxy_id, unlock)}</span>
+                    ))}
+                </div>
+            )}
+        </>
+    );
+}
+
+function Entry({ solution, obsolete = false, onOpen }: { solution: Solution, obsolete?: boolean, onOpen: (s: Solution) => void }) {
     const s = solution;
     const perShot = !!s.shots && s.shots > 1;
     const bossInfo = getBossInfo(s);
     const purchases = Object.entries(s.purchases ?? {});
-    const hasData = s.support || s.hazards || !!bossInfo;
+    const hasData = s.support || s.hazards || !!bossInfo || s.non_standard;
+
+    const pressedAt = useRef<{ x: number, y: number } | null>(null);
+    const open = (e: React.MouseEvent) => {
+        const start = pressedAt.current;
+        if (start && Math.hypot(e.clientX - start.x, e.clientY - start.y) > 5) return;
+        onOpen(s);
+    };
 
     return (
-        <div className={`${styles.solution} ${obsolete ? styles.obsolete : ""}`} key={s.id}>
+        <div
+            className={`${styles.solution} ${obsolete ? styles.obsolete : ""}`}
+            role="button"
+            tabIndex={0}
+            onMouseDown={(e) => { pressedAt.current = { x: e.clientX, y: e.clientY }; }}
+            onClick={open}
+            onKeyDown={(e) => {
+                if (e.target !== e.currentTarget || (e.key !== "Enter" && e.key !== " ")) return;
+                e.preventDefault();
+                onOpen(s);
+            }}
+        >
             <div className={styles.screenshot}>
                 {solution.screenshot_url && <img src={solution.screenshot_url} loading="lazy" alt="Solution screenshot" />}
                 <div className={styles.info}>
                     <span className={styles.stats} title="Combat stats">
-                        {`${Number.isInteger(s.combat_stats) ? s.combat_stats.toFixed(1) : s.combat_stats}x`}
+                        {formatStats(s.combat_stats)}
                     </span>
                     <span className={styles.resources} title={perShot ? 'FR used per shot / committed' : 'FR used / committed'}>
                         {s.fr_used}
@@ -58,22 +104,7 @@ function Entry({ solution, obsolete = false }: { solution: Solution, obsolete?: 
                             {s.non_standard && <span className={styles.nonStandard}>Non-standard path</span>}
                         </div>
                     )}
-                    {purchases.length > 0 && (
-                        <div className={styles.unlocks}>
-                            <strong>Ship selection: </strong>
-                            {purchases.map(([node, name], index) => (
-                                <span key={`${s.id}-${node}-${index}`}>{node}: {name}</span>
-                            ))}
-                        </div>
-                    )}
-                    {(s.unlocks?.length > 0) && (
-                        <div className={styles.unlocks}>
-                            <strong>Required unlocks: </strong>
-                            {s.unlocks.map((unlock, index) => (
-                                <span key={`${s.id}-${unlock}-${index}`}>{getUnlockName(s.galaxy_id, unlock)}</span>
-                            ))}
-                        </div>
-                    )}
+                    <Extras solution={s} />
                     {s.notes &&
                         <div className={styles.notes}>
                             <strong>Notes: </strong>{s.notes}
@@ -85,18 +116,94 @@ function Entry({ solution, obsolete = false }: { solution: Solution, obsolete?: 
     )
 }
 
-function Solutions({ solutions }: { solutions: RankedSolutions }) {
+const getPopupValues = (s: Solution): string[] => {
+    const values: string[] = [];
+    if (s.boss_alive === false) values.push("Boss dead");
+    if (s.shots) values.push(s.shots === 1 ? "Oneshot" : `${s.shots} shots`);
+    if (s.boss_alive && !s.shots) values.push("Boss alive");
+    if (s.boss_damage != null) values.push(`Damage done: ${s.boss_damage.toLocaleString()}`);
+    if (s.fr_total != null) values.push(`Total FR: ${s.fr_total}`);
+    return values;
+}
+
+function SolutionPopup({ solution: s }: { solution: Solution }) {
+    const battle = findBattle(s.galaxy_id, s.battle_id);
+    const { hazards, supports } = getConditionNodes(battle);
+    const nodeLabel = (nodes: { id: string, label: string }[], id: string) => nodes.find((n) => n.id === id)?.label ?? id;
+    const perShot = !!s.shots && s.shots > 1;
+    const obsolete = s.rank_in_group != null && s.rank_in_group > 1;
+    const values = getPopupValues(s);
+
+    return (
+        <div className={styles.popup}>
+            <div className={styles.titleBar}>
+                <span className={styles.stats}>
+                    {formatStats(s.combat_stats)}&nbsp;·&nbsp;
+                    {s.fr_used}
+                    {s.fr_committed != null && <span className={styles.small}> / {s.fr_committed}</span>}
+                    <span className={styles.small}> FR{perShot && '/shot'}</span>
+                </span>
+                <div className={styles.title}>
+                    <h2>{battle?.name}</h2>
+                    {obsolete && <span className={styles.obsolete}>Obsolete</span>}
+                </div>
+            </div>
+            {s.screenshot_url && (
+                <>
+                    <a href={s.screenshot_url} target="_blank" rel="noopener noreferrer" title="Open full size">
+                        <img src={s.screenshot_url} alt="Solution screenshot" />
+                    </a>
+                    <div className={styles.caption}>
+                        Click to open full size
+                    </div>
+                </>
+            )}
+            <div className={styles.details}>
+                {values.length > 0 && (
+                    <div className={styles.values}>
+                        {values.join(' • ')}
+                    </div>
+                )}
+                {(s.support || s.hazards || s.non_standard) && (
+                    <div className={styles.data}>
+                        {(s.support || s.hazards) && (
+                            <div className={styles.modifiers}>
+                                {s.support && !s.support_nodes.length && <span className={styles.support}>Support</span>}
+                                {s.support_nodes.map((id) => (
+                                    <span className={styles.support} key={id}>Support: {nodeLabel(supports, id)}</span>
+                                ))}
+                                {s.hazards && !s.hazard_nodes.length && <span className={styles.hazard}>Hazard</span>}
+                                {s.hazard_nodes.map((id) => (
+                                    <span className={styles.hazard} key={id}>Hazard: {nodeLabel(hazards, id)}</span>
+                                ))}
+                            </div>
+                        )}
+                        {s.non_standard && <span className={styles.nonStandard}>Non-standard path</span>}
+                    </div>
+                )}
+                {s.notes &&
+                    <div className={styles.notes}>
+                        <strong>Notes: </strong>{s.notes}
+                    </div>
+                }
+                <Extras solution={s} />
+            </div>
+        </div>
+    );
+}
+
+function Solutions({ solutions, onOpen }: { solutions: RankedSolutions, onOpen: (s: Solution) => void }) {
     if (!solutions.best.length) return <p className={styles.info}>No solutions yet</p>;
     return (
         <>
             {solutions.best.map((s) => (
-                <Entry solution={s} key={s.id} />
+                <Entry solution={s} key={s.id} onOpen={onOpen} />
             ))}
             {solutions.obsolete.length > 0 && (
                 <>
                     <div className={styles.obsoleteHeader}> — Obsolete solutions — </div>
                     {solutions.obsolete.map((s) => (
-                        <Entry solution={s} key={s.id} obsolete />
+                        <Entry solution={s} key={s.id} obsolete onOpen={onOpen} />
                     ))}
                 </>
             )}
@@ -113,6 +220,7 @@ export default function GalaxyView() {
     }
     const solutions = useGalaxySolutions(id);
     const listRef = useRef<HTMLDivElement>(null);
+    const [selected, setSelected] = useState<Solution | null>(null);
 
     const handleScroll = (e: React.WheelEvent<HTMLDivElement>) => {
         if (e.deltaY === 0) return;
@@ -143,13 +251,16 @@ export default function GalaxyView() {
                                             {results.best.length}
                                         </span>
                                     </div>
-                                    <Solutions solutions={results} />
+                                    <Solutions solutions={results} onOpen={setSelected} />
                                 </div>
                             );
                         })}
                     </div>
                 </>
             )}
+            <Modal open={!!selected} onClose={() => setSelected(null)}>
+                {selected && <SolutionPopup solution={selected} />}
+            </Modal>
         </BaseLayout>
     );
 }

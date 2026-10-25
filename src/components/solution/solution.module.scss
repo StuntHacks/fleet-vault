@@ -88,6 +88,7 @@
         position: relative;
         aspect-ratio: 16 / 9;
         overflow: hidden;
+        width: 100%;
 
         img {
             display: block;
@@ -100,7 +101,6 @@
         &:not(:has(img)) {
             aspect-ratio: auto;
             min-height: 3rem;
-            width: 100%;
 
             .info {
                 background: none;

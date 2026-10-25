@@ -14,6 +14,9 @@ const getUnlockName = (galaxyId: number, unlock: string) => {
     return getGalaxyUnlocks(galaxyId).find((u) => u.code === unlock)?.name ?? unlock;
 }
 
+const statFilterKey = (galaxyId: number) => `fleetvault_stat_filter_${galaxyId}`;
+const combatStatsKey = (galaxyId: number) => `fleetvault_combat_stats_${galaxyId}`;
+
 const formatStats = (stats: number) => `${Number.isInteger(stats) ? stats.toFixed(1) : stats}x`;
 
 const getBossInfo = (s: Solution) => {
@@ -244,11 +247,26 @@ export default function GalaxyView() {
 
     const [showObsolete, setShowObsolete] = useState(() => localStorage.getItem('fleetvault_show_obsolete') === 'true');
     const [preloadImages, setPreloadImages] = useState(() => (localStorage.getItem('fleetvault_preload_images') ?? 'true') === 'true');
-    const [filter, setFilter] = useState(false);
-    const [combatStats, setCombatStats] = useState<string>("1");
+    const [filter, setFilter] = useState(() => localStorage.getItem(statFilterKey(id)) === 'true');
+    const [combatStats, setCombatStats] = useState(() => localStorage.getItem(combatStatsKey(id)) ?? "1");
 
     const parsedStats = parseFloat(combatStats);
     const statFilter = filter && !isNaN(parsedStats) ? parsedStats : null;
+
+    useEffect(() => {
+        setFilter(localStorage.getItem(statFilterKey(id)) === 'true');
+        setCombatStats(localStorage.getItem(combatStatsKey(id)) ?? "1");
+    }, [id]);
+
+    const changeFilter = (value: boolean) => {
+        setFilter(value);
+        localStorage.setItem(statFilterKey(id), String(value));
+    };
+
+    const changeCombatStats = (value: string) => {
+        setCombatStats(value);
+        localStorage.setItem(combatStatsKey(id), value);
+    };
 
     useEffect(() => {
         localStorage.setItem('fleetvault_show_obsolete', String(showObsolete));
@@ -305,12 +323,12 @@ export default function GalaxyView() {
                 <>
                     <div className={styles.menuBar}>
                         <div className={styles.settings}>
-                            <Checkbox name="filterStats" checked={filter} onChange={setFilter}>
+                            <Checkbox name="filterStats" checked={filter} onChange={changeFilter}>
                                 Filter by stats
                             </Checkbox>
                             <CombatStatInput
                                 value={combatStats}
-                                onChange={setCombatStats}
+                                onChange={changeCombatStats}
                                 min={galaxies[id - 1].minStats ?? 1}
                                 max={galaxies[id - 1].maxStats ?? 1}
                                 step={galaxies[id - 1].step ?? 0.025}

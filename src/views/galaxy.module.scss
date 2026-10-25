@@ -80,6 +80,10 @@
     gap: 0.5rem;
     padding: 0.5rem;
 
+    @media screen and (pointer: fine) {
+        scrollbar-width: auto;
+    }
+
     .battle {
         background: var(--color-glass);
         backdrop-filter: var(--glass-blur);
@@ -169,6 +173,22 @@
             transition: filter 150ms;
         }
 
+        &:not(:has(img)) {
+            aspect-ratio: auto;
+            min-height: 3rem;
+            width: 100%;
+
+            .info {
+                background: none;
+                color: var(--color-text);
+                text-shadow: none;
+
+                .resources .small {
+                    color: var(--color-text-secondary);
+                }
+            }
+        }
+
         .info {
             height: 100%;
             width: 100%;
@@ -204,6 +224,17 @@
             }
         }
     }
+}
+
+.obsoleteLabel {
+    display: inline-block;
+    padding: 0.125rem 0.5rem 0.25rem;
+    font-weight: bold;
+    border-radius: 0.25rem;
+    color: var(--color);
+    background-color: var(--bg-color);
+    --color: var(--color-obsolete);
+    --bg-color: var(--bg-color-obsolete);
 }
 
 .details {
@@ -326,13 +357,7 @@
             margin: 0;
         }
 
-        .obsolete {
-            display: inline-block;
-            padding: 0.125rem 0.5rem 0.25rem;
-            font-weight: bold;
-            border-radius: 0.25rem;
-            color: var(--color-obsolete);
-            background-color: var(--bg-color-obsolete);
+        .obsoleteLabel {
             margin-left: 0.5rem;
             margin-top: 2px;
         }

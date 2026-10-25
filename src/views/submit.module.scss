@@ -4,6 +4,28 @@
     height: fit-content;
 }
 
+.disclaimer {
+    display: inline-block;
+    padding: 0.75rem 1.5rem;
+    border-radius: 0.25rem;
+    color: var(--color-text-important);
+    background-color: var(--color-important);
+}
+
+.backlink {
+    text-decoration: none;
+    color: var(--color-primary);
+    align-self: flex-start;
+
+    &:hover {
+        text-decoration: underline;
+    }
+
+    &:active {
+        color: var(--color-primary-hover);
+    }
+}
+
 .form {
     width: 600px;
     display: flex;

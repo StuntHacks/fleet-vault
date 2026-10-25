@@ -48,12 +48,12 @@ function Extras({ solution: s }: { solution: Solution }) {
     );
 }
 
-function Entry({ solution, obsolete = false, onOpen }: { solution: Solution, obsolete?: boolean, onOpen: (s: Solution) => void }) {
+function Entry({ solution, obsolete = false, onOpen, preloadImages }: { solution: Solution, obsolete?: boolean, onOpen: (s: Solution) => void, preloadImages: boolean }) {
     const s = solution;
     const perShot = !!s.shots && s.shots > 1;
     const bossInfo = getBossInfo(s);
     const purchases = Object.entries(s.purchases ?? {});
-    const hasData = s.support || s.hazards || !!bossInfo || s.non_standard;
+    const hasData = s.support || s.hazards || !!bossInfo || s.non_standard || obsolete;
 
     const pressedAt = useRef<{ x: number, y: number } | null>(null);
     const open = (e: React.MouseEvent) => {
@@ -76,7 +76,7 @@ function Entry({ solution, obsolete = false, onOpen }: { solution: Solution, obs
             }}
         >
             <div className={styles.screenshot}>
-                {solution.screenshot_url && <img src={solution.screenshot_url} loading="lazy" alt="Solution screenshot" />}
+                {solution.screenshot_url && preloadImages && <img src={solution.screenshot_url} loading="lazy" alt="Solution screenshot" />}
                 <div className={styles.info}>
                     <span className={styles.stats} title="Combat stats">
                         {formatStats(s.combat_stats)}
@@ -92,10 +92,11 @@ function Entry({ solution, obsolete = false, onOpen }: { solution: Solution, obs
                 <div className={styles.details}>
                     {hasData && (
                         <div className={styles.data}>
-                            {(s.support || s.hazards) && (
+                            {(s.support || s.hazards || obsolete) && (
                                 <div className={styles.modifiers}>
                                     {s.support && <span className={styles.support}>Support</span>}
                                     {s.hazards && <span className={styles.hazard}>Hazard</span>}
+                                    {obsolete && <span className={styles.obsoleteLabel}>Obsolete</span>}
                                 </div>
                             )}
                             {bossInfo && (
@@ -147,7 +148,7 @@ function SolutionPopup({ solution: s }: { solution: Solution }) {
                 </span>
                 <div className={styles.title}>
                     <h2>{battle?.name}</h2>
-                    {obsolete && <span className={styles.obsolete}>Obsolete</span>}
+                    {obsolete && <span className={styles.obsoleteLabel}>Obsolete</span>}
                 </div>
             </div>
             {s.screenshot_url && (
@@ -205,19 +206,19 @@ const filterByStats = (solutions: RankedSolutions, stats: number | null): Ranked
     };
 }
 
-function Solutions({ solutions, onOpen, showObsolete, filtered }: { solutions: RankedSolutions, onOpen: (s: Solution) => void, showObsolete: boolean, filtered: boolean }) {
+function Solutions({ solutions, onOpen, showObsolete, filtered, preloadImages }: { solutions: RankedSolutions, onOpen: (s: Solution) => void, showObsolete: boolean, filtered: boolean, preloadImages: boolean }) {
     if (!solutions.best.length) return <p className={styles.info}>{filtered ? "No solutions for these stats" : "No solutions yet"}</p>;
 
     return (
         <>
             {solutions.best.map((s) => (
-                <Entry solution={s} key={s.id} onOpen={onOpen} />
+                <Entry solution={s} key={s.id} onOpen={onOpen} preloadImages={preloadImages} />
             ))}
             {showObsolete && solutions.obsolete.length > 0 && (
                 <>
                     <div className={styles.obsoleteHeader}> — Obsolete solutions — </div>
                     {solutions.obsolete.map((s) => (
-                        <Entry solution={s} key={s.id} obsolete onOpen={onOpen} />
+                        <Entry solution={s} key={s.id} obsolete onOpen={onOpen} preloadImages={preloadImages} />
                     ))}
                 </>
             )}
@@ -242,6 +243,7 @@ export default function GalaxyView() {
     const closing = useRef(false);
 
     const [showObsolete, setShowObsolete] = useState(() => localStorage.getItem('fleetvault_show_obsolete') === 'true');
+    const [preloadImages, setPreloadImages] = useState(() => (localStorage.getItem('fleetvault_preload_images') ?? 'true') === 'true');
     const [filter, setFilter] = useState(false);
     const [combatStats, setCombatStats] = useState<string>("1");
 
@@ -251,6 +253,10 @@ export default function GalaxyView() {
     useEffect(() => {
         localStorage.setItem('fleetvault_show_obsolete', String(showObsolete));
     }, [showObsolete]);
+
+    useEffect(() => {
+        localStorage.setItem('fleetvault_preload_images', String(preloadImages));
+    }, [preloadImages]);
 
     useEffect(() => {
         closing.current = false;
@@ -308,7 +314,6 @@ export default function GalaxyView() {
                                 min={galaxies[id - 1].minStats ?? 1}
                                 max={galaxies[id - 1].maxStats ?? 1}
                                 step={galaxies[id - 1].step ?? 0.025}
-                                disabled={!filter}
                             />
                         </div>
                         <div className={styles.scrollable} onWheel={handleScroll}>
@@ -317,6 +322,9 @@ export default function GalaxyView() {
                         <div className={styles.settings}>
                             <Checkbox name="showObsolete" checked={showObsolete} onChange={setShowObsolete}>
                                 Show obsolete
+                            </Checkbox>
+                            <Checkbox name="preloadImages" checked={preloadImages} onChange={setPreloadImages}>
+                                Preload images
                             </Checkbox>
                         </div>
                     </div>
@@ -333,7 +341,13 @@ export default function GalaxyView() {
                                             {results.best.length}
                                         </span>
                                     </div>
-                                    <Solutions solutions={results} onOpen={openSolution} showObsolete={showObsolete} filtered={statFilter != null} />
+                                    <Solutions
+                                        solutions={results}
+                                        onOpen={openSolution}
+                                        showObsolete={showObsolete}
+                                        filtered={statFilter != null}
+                                        preloadImages={preloadImages}
+                                    />
                                 </div>
                             );
                         })}

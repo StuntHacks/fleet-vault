@@ -132,6 +132,12 @@ export default function SubmitView() {
     return (
         <BaseLayout>
             <div className={styles.form}>
+                <a href={`/g/${id}`} className={styles.backlink}>
+                    ← Back to galaxy
+                </a>
+                <div className={styles.disclaimer}>
+                    <strong>Thank you for submitting to the fleet vault. </strong>Please ensure your screenshot is in horizontal orientation, and any notes you provide are written in english. Ideally, please use the default skin for your ships, and include all relevant information down below.
+                </div>
                 <FileUpload
                     accept={SCREENSHOT_TYPES.join(",")}
                     preview

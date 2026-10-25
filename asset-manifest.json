@@ -1,7 +1,7 @@
 {
   "files": {
-    "main.css": "/fleet-vault/static/css/main.ffd7bcb9.css",
-    "main.js": "/fleet-vault/static/js/main.db696da9.js",
+    "main.css": "/fleet-vault/static/css/main.bf4f05a2.css",
+    "main.js": "/fleet-vault/static/js/main.5156ff5b.js",
     "static/js/915.8503a7c0.chunk.js": "/fleet-vault/static/js/915.8503a7c0.chunk.js",
     "static/js/453.fc2f17c8.chunk.js": "/fleet-vault/static/js/453.fc2f17c8.chunk.js",
     "static/js/401.712d549c.chunk.js": "/fleet-vault/static/js/401.712d549c.chunk.js",
@@ -14,14 +14,18 @@
     "static/media/Datacore.svg": "/fleet-vault/static/media/Datacore.5e2a32b65db52a6d220ecaab6ab6f355.svg",
     "static/media/ArmorDamageSynergy.svg": "/fleet-vault/static/media/ArmorDamageSynergy.ac614ff2b953eaefcaa114255e409d4f.svg",
     "static/media/PristineArmor.svg": "/fleet-vault/static/media/PristineArmor.5ea7eb4950647ac0b5a0689fee661c21.svg",
-    "main.ffd7bcb9.css.map": "/fleet-vault/static/css/main.ffd7bcb9.css.map",
-    "main.db696da9.js.map": "/fleet-vault/static/js/main.db696da9.js.map",
+    "static/media/ChargeLaserBurst.svg": "/fleet-vault/static/media/ChargeLaserBurst.a1c60f198b58c4556c51cd4462f3a39c.svg",
+    "static/media/HealthBoost.svg": "/fleet-vault/static/media/HealthBoost.a1c60f198b58c4556c51cd4462f3a39c.svg",
+    "static/media/RapidFire.svg": "/fleet-vault/static/media/RapidFire.a1c60f198b58c4556c51cd4462f3a39c.svg",
+    "static/media/ShotgunMissiles.svg": "/fleet-vault/static/media/ShotgunMissiles.a1c60f198b58c4556c51cd4462f3a39c.svg",
+    "main.bf4f05a2.css.map": "/fleet-vault/static/css/main.bf4f05a2.css.map",
+    "main.5156ff5b.js.map": "/fleet-vault/static/js/main.5156ff5b.js.map",
     "915.8503a7c0.chunk.js.map": "/fleet-vault/static/js/915.8503a7c0.chunk.js.map",
     "453.fc2f17c8.chunk.js.map": "/fleet-vault/static/js/453.fc2f17c8.chunk.js.map",
     "401.712d549c.chunk.js.map": "/fleet-vault/static/js/401.712d549c.chunk.js.map"
   },
   "entrypoints": [
-    "static/css/main.ffd7bcb9.css",
-    "static/js/main.db696da9.js"
+    "static/css/main.bf4f05a2.css",
+    "static/js/main.5156ff5b.js"
   ]
 }

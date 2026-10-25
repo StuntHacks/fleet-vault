@@ -9,7 +9,7 @@ export function HiddenGalaxy({ galaxyId }: { galaxyId: number }) {
     const [error, setError] = useState(false);
 
     const enable = async () => {
-        if (!window.confirm(`Enable galaxy ${galaxyId} for everyone? This can't be undone.`)) return;
+        if (!window.confirm(`Publish galaxy ${galaxyId} for everyone? This can't be undone.`)) return;
         setBusy(true);
         setError(false);
         try {

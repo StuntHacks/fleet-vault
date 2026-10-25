@@ -82,6 +82,7 @@ export default function FlaggedView() {
                         solution={selected}
                         isAdmin={isAdmin}
                         onUnflagged={() => { closeSolution(); refreshSolutions(); }}
+                        onVerified={refreshSolutions}
                         onDeleted={() => { closeSolution(); refreshSolutions(); }}
                     />
                 )}

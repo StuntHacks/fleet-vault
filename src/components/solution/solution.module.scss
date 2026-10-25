@@ -150,7 +150,8 @@
     }
 }
 
-.obsoleteLabel {
+.obsoleteLabel,
+.verifiedLabel {
     display: inline-block;
     padding: 0.125rem 0.5rem 0.25rem;
     font-weight: bold;
@@ -159,6 +160,11 @@
     background-color: var(--bg-color);
     --color: var(--color-obsolete);
     --bg-color: var(--bg-color-obsolete);
+}
+
+.verifiedLabel {
+    --color: var(--color-verified);
+    --bg-color: var(--bg-color-verified);
 }
 
 .details {
@@ -198,6 +204,11 @@
             .hazard {
                 --bg-color: var(--bg-color-hazard);
                 --color: var(--color-hazard);
+            }
+
+            .verified {
+                --bg-color: var(--bg-color-verified);
+                --color: var(--color-verified);
             }
         }
 
@@ -286,7 +297,8 @@
             margin: 0;
         }
 
-        .obsoleteLabel {
+        .obsoleteLabel,
+        .verifiedLabel {
             margin-left: 0.5rem;
             margin-top: 2px;
         }
@@ -435,6 +447,14 @@
 
                 &:hover {
                     --bg-color: var(--color-hazard-dark);
+                }
+            }
+
+            &.verify {
+                --bg-color: var(--bg-color-verified);
+
+                &:hover {
+                    --bg-color: var(--bg-color-verified-dark);
                 }
             }
         }

@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { deleteSolution, flagSolution, getSolutionFlags, unflagSolution } from "../../lib/api";
+import { deleteSolution, flagSolution, getSolutionFlags, setSolutionVerified, unflagSolution } from "../../lib/api";
 import { findBattle, getConditionNodes } from "../../lib/battles";
 import { Solution, SolutionFlag } from "../../lib/types";
 import { Extras, formatStats } from "./solutionEntry";
@@ -33,7 +33,7 @@ const getPopupValues = (s: Solution): string[] => {
     return values;
 }
 
-export function SolutionPopup({ solution: s, isAdmin, onUnflagged, onDeleted }: { solution: Solution, isAdmin: boolean, onUnflagged: () => void, onDeleted: () => void }) {
+export function SolutionPopup({ solution: s, isAdmin, onUnflagged, onVerified, onDeleted }: { solution: Solution, isAdmin: boolean, onUnflagged: () => void, onVerified: () => void, onDeleted: () => void }) {
     const battle = findBattle(s.galaxy_id, s.battle_id);
     const { hazards, supports } = getConditionNodes(battle);
     const nodeLabel = (nodes: { id: string, label: string }[], id: string) => nodes.find((n) => n.id === id)?.label ?? id;
@@ -105,6 +105,20 @@ export function SolutionPopup({ solution: s, isAdmin, onUnflagged, onDeleted }: 
         }
     }
 
+    const toggleVerified = async () => {
+        const verify = s.verified_at == null;
+        setAdminBusy(true);
+        setAdminError(null);
+        try {
+            await setSolutionVerified(s.id, verify);
+            onVerified();
+        } catch {
+            setAdminError(`${verify ? 'Verifying' : 'Unverifying'} failed, please try again`);
+        } finally {
+            setAdminBusy(false);
+        }
+    }
+
     const remove = async () => {
         if (!window.confirm('Delete this solution? This cannot be undone.')) return;
         setAdminBusy(true);
@@ -130,6 +144,7 @@ export function SolutionPopup({ solution: s, isAdmin, onUnflagged, onDeleted }: 
                 </span>
                 <div className={styles.title}>
                     <h2>{battle?.name}</h2>
+                    {s.verified_at && <span className={styles.verifiedLabel}>Verified</span>}
                     {obsolete && <span className={styles.obsoleteLabel}>Obsolete</span>}
                 </div>
             </div>
@@ -195,6 +210,7 @@ export function SolutionPopup({ solution: s, isAdmin, onUnflagged, onDeleted }: 
                     {isAdmin && (
                         <>
                             <button className={styles.flag} onClick={remove} disabled={adminBusy}>Delete</button>
+                            <button className={s.verified_at ? '' : styles.verify} onClick={toggleVerified} disabled={adminBusy}>{s.verified_at ? 'Unverify' : 'Verify'}</button>
                             {s.flagged && <button onClick={unflag} disabled={adminBusy}>Unflag</button>}
                             <button onClick={() => navigate(`/edit/${s.id}`)} disabled={adminBusy}>Edit</button>
                             {adminError && <span className={styles.error}>{adminError}</span>}

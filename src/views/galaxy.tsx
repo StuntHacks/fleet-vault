@@ -176,6 +176,7 @@ export default function GalaxyView() {
                         solution={selected}
                         isAdmin={isAdmin}
                         onUnflagged={refreshSolutions}
+                        onVerified={refreshSolutions}
                         onDeleted={() => { closeSolution(); refreshSolutions(); }}
                     />
                 )}

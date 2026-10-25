@@ -46,7 +46,8 @@ export function SolutionEntry({ solution, obsolete = false, onOpen, preloadImage
     const perShot = !!s.shots && s.shots > 1;
     const bossInfo = getBossInfo(s);
     const purchases = Object.entries(s.purchases ?? {});
-    const hasData = s.support || s.hazards || !!bossInfo || s.non_standard || obsolete;
+    const verified = s.verified_at != null;
+    const hasData = verified || s.support || s.hazards || !!bossInfo || s.non_standard || obsolete;
 
     const pressedAt = useRef<{ x: number, y: number } | null>(null);
     const open = (e: React.MouseEvent) => {
@@ -86,8 +87,9 @@ export function SolutionEntry({ solution, obsolete = false, onOpen, preloadImage
                     {battleName && <div className={styles.battleLabel}>{battleName}</div>}
                     {hasData && (
                         <div className={styles.data}>
-                            {(s.support || s.hazards || obsolete) && (
+                            {(verified || s.support || s.hazards || obsolete) && (
                                 <div className={styles.modifiers}>
+                                    {verified && <span className={styles.verified}>Verified</span>}
                                     {s.support && <span className={styles.support}>Support</span>}
                                     {s.hazards && <span className={styles.hazard}>Hazard</span>}
                                     {obsolete && <span className={styles.obsoleteLabel}>Obsolete</span>}

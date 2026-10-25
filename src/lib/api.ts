@@ -32,10 +32,13 @@ export interface RankedSolutions {
   flagged: Solution[];
 }
 
+const verifiedFirst = (a: Solution, b: Solution) =>
+  a.combat_stats - b.combat_stats || Number(b.verified_at != null) - Number(a.verified_at != null);
+
 function splitRanked(solutions: Solution[]): RankedSolutions {
   return {
-    best: solutions.filter(s => s.rank_in_group === 1),
-    obsolete: solutions.filter(s => s.rank_in_group != null && s.rank_in_group > 1),
+    best: solutions.filter(s => s.rank_in_group === 1).sort(verifiedFirst),
+    obsolete: solutions.filter(s => s.rank_in_group != null && s.rank_in_group > 1).sort(verifiedFirst),
     flagged: solutions.filter(s => s.flagged),
   };
 }
@@ -197,6 +200,16 @@ export async function unflagSolution(id: number): Promise<void> {
     .select('id');
   if (error) throw error;
   if (!data.length) throw new Error('Solution not unflagged');
+}
+
+export async function setSolutionVerified(id: number, verified: boolean): Promise<void> {
+  const { data, error } = await supabase
+    .from('solutions')
+    .update({ verified_at: verified ? new Date().toISOString() : null })
+    .eq('id', id)
+    .select('id');
+  if (error) throw error;
+  if (!data.length) throw new Error(`Solution not ${verified ? 'verified' : 'unverified'}`);
 }
 
 export async function getFlaggedSolutions(): Promise<Solution[]> {

@@ -24,6 +24,7 @@ export interface Solution {
   fr_total: number | null;
   boss_damage: number | null;
   source: "site" | "spreadsheet";
+  verified_at: string | null;
 }
 
 export interface SolutionFlag {

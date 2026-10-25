@@ -66,6 +66,10 @@
         margin-left: 0.5rem;
 
         @media screen and (pointer: coarse) {
+            flex-direction: row;
+            display: flex;
+            gap: 0.5rem;
+            align-items: center;
             margin-left: 0;
         }
     }

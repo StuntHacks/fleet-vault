@@ -141,8 +141,9 @@ export async function submitSolution(params: {
 
 // admin stuff
 export async function deleteSolution(id: number): Promise<void> {
-  const { error } = await supabase.from('solutions').delete().eq('id', id);
+  const { data, error } = await supabase.from('solutions').delete().eq('id', id).select('id');
   if (error) throw error;
+  if (!data.length) throw new Error('Solution not deleted');
 }
 
 export async function updateGalaxyNotes(galaxyId: number, notes: string): Promise<void> {
@@ -156,11 +157,13 @@ export async function flagSolution(id: number, reason?: string): Promise<void> {
 }
 
 export async function unflagSolution(id: number): Promise<void> {
-  const { error } = await supabase
+  const { data, error } = await supabase
     .from('solutions')
     .update({ flagged: false })
-    .eq('id', id);
+    .eq('id', id)
+    .select('id');
   if (error) throw error;
+  if (!data.length) throw new Error('Solution not unflagged');
 }
 
 export async function getFlaggedSolutions(): Promise<FlaggedSolution[]> {

@@ -79,7 +79,8 @@ export function useGalaxySolutions(galaxyId: number) {
   }, [galaxyId]);
 
   const forBattle = (battleId: string) => byBattle[battleId] ?? NO_SOLUTIONS;
-  return { byBattle, forBattle, loading, error };
+  const reload = () => getSolutionsForGalaxy(galaxyId).then(setByBattle);
+  return { byBattle, forBattle, reload, loading, error };
 }
 
 export function useSolutions(galaxyId: number, battleId: string) {

@@ -1,12 +1,12 @@
 import { useLocation, useNavigate, useParams, useSearchParams } from "react-router-dom";
 import { BaseLayout } from "../components/baselayout/baselayout";
 import { Modal } from "../components/modal/modal";
-import { useGalaxySolutions } from "../lib/hooks";
-import type { RankedSolutions } from "../lib/api";
+import { useAdminSession, useGalaxySolutions } from "../lib/hooks";
+import { deleteSolution, flagSolution, getSolutionFlags, unflagSolution, type RankedSolutions } from "../lib/api";
 import { findBattle, galaxies, getConditionNodes, getGalaxyUnlocks, isBossBattle } from "../lib/battles";
 import styles from "./galaxy.module.scss";
 import { useEffect, useMemo, useRef, useState } from "react";
-import { Solution } from "../lib/types";
+import { Solution, SolutionFlag } from "../lib/types";
 import { Checkbox } from "../components/checkbox/checkbox";
 import { CombatStatInput } from "../components/combatStatInput/combatStatInput";
 
@@ -16,6 +16,22 @@ const getUnlockName = (galaxyId: number, unlock: string) => {
 
 const statFilterKey = (galaxyId: number) => `fleetvault_stat_filter_${galaxyId}`;
 const combatStatsKey = (galaxyId: number) => `fleetvault_combat_stats_${galaxyId}`;
+const flaggedKey = 'fleetvault_flagged_solutions';
+const flaggedThisSession = new Set<number>();
+
+const isFlaggedByUser = (s: Solution) => {
+    const ids = JSON.parse(localStorage.getItem(flaggedKey) ?? '[]') as number[];
+    if (!ids.includes(s.id)) return false;
+    if (s.flagged || flaggedThisSession.has(s.id)) return true;
+    localStorage.setItem(flaggedKey, JSON.stringify(ids.filter((id) => id !== s.id)))
+    return false;
+}
+
+const rememberFlagged = (id: number) => {
+    flaggedThisSession.add(id);
+    const flagged = JSON.parse(localStorage.getItem(flaggedKey) ?? '[]') as number[];
+    localStorage.setItem(flaggedKey, JSON.stringify([...flagged.filter((x) => x !== id), id]))
+}
 
 const formatStats = (stats: number) => `${Number.isInteger(stats) ? stats.toFixed(1) : stats}x`;
 
@@ -51,7 +67,7 @@ function Extras({ solution: s }: { solution: Solution }) {
     );
 }
 
-function Entry({ solution, obsolete = false, onOpen, preloadImages }: { solution: Solution, obsolete?: boolean, onOpen: (s: Solution) => void, preloadImages: boolean }) {
+function Entry({ solution, obsolete = false, onOpen, preloadImages, isAdmin }: { solution: Solution, obsolete?: boolean, onOpen: (s: Solution) => void, preloadImages: boolean, isAdmin: boolean }) {
     const s = solution;
     const perShot = !!s.shots && s.shots > 1;
     const bossInfo = getBossInfo(s);
@@ -67,7 +83,7 @@ function Entry({ solution, obsolete = false, onOpen, preloadImages }: { solution
 
     return (
         <div
-            className={`${styles.solution} ${obsolete ? styles.obsolete : ""}`}
+            className={`${styles.solution} ${obsolete ? styles.obsolete : ""} ${s.flagged && isAdmin ? styles.flagged : ""}`}
             role="button"
             tabIndex={0}
             onMouseDown={(e) => { pressedAt.current = { x: e.clientX, y: e.clientY }; }}
@@ -132,13 +148,85 @@ const getPopupValues = (s: Solution): string[] => {
     return values;
 }
 
-function SolutionPopup({ solution: s }: { solution: Solution }) {
+function SolutionPopup({ solution: s, isAdmin, onUnflagged, onDeleted }: { solution: Solution, isAdmin: boolean, onUnflagged: () => void, onDeleted: () => void }) {
     const battle = findBattle(s.galaxy_id, s.battle_id);
     const { hazards, supports } = getConditionNodes(battle);
     const nodeLabel = (nodes: { id: string, label: string }[], id: string) => nodes.find((n) => n.id === id)?.label ?? id;
     const perShot = !!s.shots && s.shots > 1;
     const obsolete = s.rank_in_group != null && s.rank_in_group > 1;
     const values = getPopupValues(s);
+    const [flagged, setFlagged] = useState(() => isFlaggedByUser(s));
+    const [flagging, setFlagging] = useState(false);
+    const [submitting, setSubmitting] = useState(false);
+    const [flagError, setFlagError] = useState(false);
+    const [reason, setReason] = useState('');
+    const [flagReasons, setFlagReasons] = useState<SolutionFlag[]>([]);
+    const [adminBusy, setAdminBusy] = useState(false);
+    const [adminError, setAdminError] = useState<string | null>(null);
+    const flagBox = useRef<HTMLDivElement>(null);
+    const flagTrigger = useRef<HTMLButtonElement>(null);
+
+    useEffect(() => {
+        if (!isAdmin || !s.flagged) return;
+        let current = true;
+        getSolutionFlags(s.id)
+            .then((flags) => { if (current) setFlagReasons(flags.filter((f) => f.resolved_at == null && f.reason)); })
+            .catch(() => {});
+        return () => { current = false; };
+    }, [isAdmin, s.id, s.flagged]);
+
+    useEffect(() => {
+        if (!flagging) return;
+        const onPointerDown = (e: PointerEvent) => {
+            const target = e.target as Node;
+            if (flagBox.current?.contains(target) || flagTrigger.current?.contains(target)) return;
+            setFlagging(false);
+        };
+        document.addEventListener('pointerdown', onPointerDown);
+        return () => document.removeEventListener('pointerdown', onPointerDown);
+    }, [flagging]);
+
+    const flag = async () => {
+        setSubmitting(true);
+        setFlagError(false);
+        try {
+            await flagSolution(s.id, reason);
+            rememberFlagged(s.id);
+            setFlagged(true);
+            setFlagging(false);
+        } catch {
+            setFlagError(true);
+        } finally {
+            setSubmitting(false);
+        }
+    }
+
+    const unflag = async () => {
+        setAdminBusy(true);
+        setAdminError(null);
+        try {
+            await unflagSolution(s.id);
+            setFlagReasons([]);
+            onUnflagged();
+        } catch {
+            setAdminError('Unflagging failed, please try again');
+        } finally {
+            setAdminBusy(false);
+        }
+    }
+
+    const remove = async () => {
+        if (!window.confirm('Delete this solution? This cannot be undone.')) return;
+        setAdminBusy(true);
+        setAdminError(null);
+        try {
+            await deleteSolution(s.id);
+            onDeleted();
+        } catch {
+            setAdminError('Deleting failed, please try again');
+            setAdminBusy(false);
+        }
+    }
 
     return (
         <div className={styles.popup}>
@@ -193,6 +281,45 @@ function SolutionPopup({ solution: s }: { solution: Solution }) {
                     </div>
                 }
                 <Extras solution={s} />
+                <div className={styles.curation}>
+                    <div ref={flagBox} className={`${styles.flagging} ${flagging ? '' : styles.hidden}`}>
+                        <textarea
+                            name="reason"
+                            placeholder="Further context..."
+                            maxLength={500}
+                            value={reason}
+                            onChange={(e) => setReason(e.target.value)}
+                            onKeyDown={(e) => {
+                                if (e.key !== 'Enter' || !(e.ctrlKey || e.metaKey)) return;
+                                e.preventDefault();
+                                if (!submitting) flag();
+                            }}
+                        />
+                        {flagError && <span className={styles.error}>Flagging failed, please try again</span>}
+                        <button className={styles.flag} onClick={flag} disabled={submitting}>Flag</button>
+                    </div>
+
+
+                    {!isAdmin && !flagged && <button ref={flagTrigger} className={styles.flag} onClick={() => setFlagging(true)}>Flag as incorrect</button>}
+                    {isAdmin && (
+                        <>
+                            <button className={styles.flag} onClick={remove} disabled={adminBusy}>Delete</button>
+                            {s.flagged && <button onClick={unflag} disabled={adminBusy}>Unflag</button>}
+                            <button>Edit</button>
+                            {adminError && <span className={styles.error}>{adminError}</span>}
+                        </>
+                    )}
+
+                    {!isAdmin && flagged && <span className={styles.flagged}>Flagged as incorrect</span>}
+                    {isAdmin && s.flagged && <span className={styles.flagged}>Flagged as incorrect</span>}
+
+                    {isAdmin && flagReasons.length > 0 && (
+                        <>
+                            <strong className={styles.reasons}>Context provided:</strong>
+                            {flagReasons.map((f) => <div className={styles.reason} key={f.id}>{f.reason}</div>)}
+                        </>
+                    )}
+                </div>
             </div>
         </div>
     );
@@ -209,19 +336,21 @@ const filterByStats = (solutions: RankedSolutions, stats: number | null): Ranked
     };
 }
 
-function Solutions({ solutions, onOpen, showObsolete, filtered, preloadImages }: { solutions: RankedSolutions, onOpen: (s: Solution) => void, showObsolete: boolean, filtered: boolean, preloadImages: boolean }) {
+function Solutions({ solutions, onOpen, showObsolete, filtered, preloadImages, isAdmin, flaggedOnly }: { solutions: RankedSolutions, onOpen: (s: Solution) => void, showObsolete: boolean, filtered: boolean, preloadImages: boolean, isAdmin: boolean, flaggedOnly: boolean }) {
     if (!solutions.best.length) return <p className={styles.info}>{filtered ? "No solutions for these stats" : "No solutions yet"}</p>;
+    const filteredBest = solutions.best.filter((s) => !flaggedOnly || s.flagged);
+    const filteredObsolete = solutions.obsolete.filter((s) => !flaggedOnly || s.flagged);
 
     return (
         <>
-            {solutions.best.map((s) => (
-                <Entry solution={s} key={s.id} onOpen={onOpen} preloadImages={preloadImages} />
+            {filteredBest.map((s) => (
+                <Entry solution={s} key={s.id} onOpen={onOpen} preloadImages={preloadImages} isAdmin={isAdmin} />
             ))}
-            {showObsolete && solutions.obsolete.length > 0 && (
+            {showObsolete && filteredObsolete.length > 0 && (
                 <>
                     <div className={styles.obsoleteHeader}> — Obsolete solutions — </div>
-                    {solutions.obsolete.map((s) => (
-                        <Entry solution={s} key={s.id} obsolete onOpen={onOpen} preloadImages={preloadImages} />
+                    {filteredObsolete.map((s) => (
+                        <Entry solution={s} key={s.id} obsolete onOpen={onOpen} preloadImages={preloadImages} isAdmin={isAdmin} />
                     ))}
                 </>
             )}
@@ -239,6 +368,7 @@ export default function GalaxyView() {
     }
 
     const solutions = useGalaxySolutions(id);
+    const isAdmin = !!useAdminSession();
     const listRef = useRef<HTMLDivElement>(null);
     const location = useLocation();
     const navigate = useNavigate();
@@ -247,6 +377,7 @@ export default function GalaxyView() {
 
     const [showObsolete, setShowObsolete] = useState(() => localStorage.getItem('fleetvault_show_obsolete') === 'true');
     const [preloadImages, setPreloadImages] = useState(() => (localStorage.getItem('fleetvault_preload_images') ?? 'true') === 'true');
+    const [flaggedOnly, setFlaggedOnly] = useState(false);
     const [filter, setFilter] = useState(() => localStorage.getItem(statFilterKey(id)) === 'true');
     const [combatStats, setCombatStats] = useState(() => localStorage.getItem(combatStatsKey(id)) ?? "1");
 
@@ -308,6 +439,8 @@ export default function GalaxyView() {
         }, { replace: true });
     };
 
+    const refreshSolutions = () => { solutions.reload().catch(() => {}); };
+
     const handleScroll = (e: React.WheelEvent<HTMLDivElement>) => {
         if (e.deltaY === 0) return;
         e.preventDefault();
@@ -344,6 +477,11 @@ export default function GalaxyView() {
                             <Checkbox name="preloadImages" checked={preloadImages} onChange={setPreloadImages}>
                                 Preload images
                             </Checkbox>
+                            {isAdmin && (
+                                <Checkbox name="flaggedOnly" checked={flaggedOnly} onChange={setFlaggedOnly}>
+                                    Show only flagged
+                                </Checkbox>
+                            )}
                         </div>
                     </div>
                     <div className={styles.battles} ref={listRef}>
@@ -365,6 +503,8 @@ export default function GalaxyView() {
                                         showObsolete={showObsolete}
                                         filtered={statFilter != null}
                                         preloadImages={preloadImages}
+                                        flaggedOnly={flaggedOnly}
+                                        isAdmin={isAdmin}
                                     />
                                 </div>
                             );
@@ -373,7 +513,15 @@ export default function GalaxyView() {
                 </>
             )}
             <Modal open={!!selected} onClose={closeSolution}>
-                {selected && <SolutionPopup solution={selected} />}
+                {selected && (
+                    <SolutionPopup
+                        key={selected.id}
+                        solution={selected}
+                        isAdmin={isAdmin}
+                        onUnflagged={refreshSolutions}
+                        onDeleted={() => { closeSolution(); refreshSolutions(); }}
+                    />
+                )}
             </Modal>
         </BaseLayout>
     );

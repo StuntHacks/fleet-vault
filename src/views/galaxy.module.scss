@@ -148,6 +148,10 @@
     background: var(--color-background-secondary);
     transition: background 150ms;
 
+    &.flagged {
+        background: var(--bg-color-hazard);
+    }
+
     &:hover {
         background: var(--color-background-secondary-hover);
     }
@@ -393,13 +397,124 @@
     .data,
     .notes,
     .unlocks,
-    .values {
+    .values,
+    .curation {
         padding: 0.5rem 1rem;
         box-sizing: border-box;
         color: var(--color-text);
 
         &:not(:last-child) {
             padding-bottom: 0rem;
+        }
+    }
+
+    .curation {
+        display: flex;
+        gap: 0.5rem;
+        flex-wrap: wrap;
+
+        .error {
+            width: 100%;
+            padding: 0;
+            font-weight: normal;
+        }
+
+        .flagged {
+            color: var(--color-hazard);
+            width: 100%;
+        }
+
+        .reasons {
+            color: var(--color-text);
+            width: 100%;
+        }
+
+        .reason {
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            margin-bottom: 0.125rem;
+            padding-left: 0.5rem;
+            border-left: 2px solid var(--color-hazard);
+            color: var(--color-text-secondary);
+            white-space: pre-wrap;
+            user-select: text;
+            cursor: auto;
+        }
+
+        .flagging {
+            display: flex;
+            gap: 0.5rem;
+            flex-direction: column;
+            position: absolute;
+            bottom: 2.5rem;
+            background: var(--color-background-secondary);
+            padding: 1rem;
+            border-radius: 0.5rem;
+            color: var(--color-text);
+            font-size: 0.9rem;
+            font-weight: bold;
+            box-shadow: 0 0 5px black;
+            transition: opacity 150ms, visibility 150ms;
+
+            &.hidden {
+                opacity: 0;
+                visibility: hidden;
+            }
+
+            textarea {
+                resize: vertical;
+                height: 50px;
+                border: 2px solid var(--color-text-secondary);
+                background-color: transparent;
+                border-radius: 10px;
+                color: var(--color-text);
+                padding: 0.5rem 1rem;
+
+                &::placeholder {
+                    color: var(--color-text-tertiary);
+                }
+
+                &:focus,
+                &:not(:placeholder-shown) {
+                    outline: none;
+                    border-color: var(--color-hazard);
+                }
+            }
+
+            button {
+                align-self: flex-end;
+            }
+        }
+
+        button {
+            border: 0;
+            background: var(--bg-color);
+            color: var(--color);
+            --color: #fff;
+            --bg-color: #777;
+            padding: 0.3rem 0.6rem;
+            border-radius: 0.25rem;
+            cursor: pointer;
+            transition: background 150ms;
+            font-weight: bold;
+
+            &:hover {
+                --bg-color: #555;
+            }
+
+            &:disabled {
+                opacity: 0.5;
+                cursor: default;
+            }
+
+            &.flag {
+                --bg-color: var(--color-hazard);
+
+                &:hover {
+                    --bg-color: var(--color-hazard-dark);
+                }
+            }
         }
     }
 

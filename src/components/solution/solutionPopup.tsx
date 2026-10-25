@@ -33,7 +33,7 @@ const getPopupValues = (s: Solution): string[] => {
     return values;
 }
 
-export function SolutionPopup({ solution: s, isAdmin, onUnflagged, onVerified, onDeleted }: { solution: Solution, isAdmin: boolean, onUnflagged: () => void, onVerified: () => void, onDeleted: () => void }) {
+export function SolutionPopup({ solution: s, isAdmin, onFlagsChanged, onVerified, onDeleted }: { solution: Solution, isAdmin: boolean, onFlagsChanged: () => void, onVerified: () => void, onDeleted: () => void }) {
     const battle = findBattle(s.galaxy_id, s.battle_id);
     const { hazards, supports } = getConditionNodes(battle);
     const nodeLabel = (nodes: { id: string, label: string }[], id: string) => nodes.find((n) => n.id === id)?.label ?? id;
@@ -51,6 +51,7 @@ export function SolutionPopup({ solution: s, isAdmin, onUnflagged, onVerified, o
     const [adminError, setAdminError] = useState<string | null>(null);
     const flagBox = useRef<HTMLDivElement>(null);
     const flagTrigger = useRef<HTMLButtonElement>(null);
+    const showFlagged = flagged || (isAdmin && s.flagged);
 
     useEffect(() => {
         if (!isAdmin || !s.flagged) return;
@@ -83,6 +84,10 @@ export function SolutionPopup({ solution: s, isAdmin, onUnflagged, onVerified, o
             rememberFlagged(s.id);
             setFlagged(true);
             setFlagging(false);
+            if (isAdmin) {
+                window.dispatchEvent(new Event('fv:flags-changed'));
+                onFlagsChanged();
+            }
         } catch {
             setFlagError(true);
         } finally {
@@ -97,7 +102,7 @@ export function SolutionPopup({ solution: s, isAdmin, onUnflagged, onVerified, o
             await unflagSolution(s.id);
             window.dispatchEvent(new Event('fv:flags-changed'));
             setFlagReasons([]);
-            onUnflagged();
+            onFlagsChanged();
         } catch {
             setAdminError('Unflagging failed, please try again');
         } finally {
@@ -206,7 +211,7 @@ export function SolutionPopup({ solution: s, isAdmin, onUnflagged, onVerified, o
                     </div>
 
 
-                    {!flagged && <button ref={flagTrigger} className={styles.flag} onClick={() => setFlagging(true)}>Flag as incorrect</button>}
+                    {!showFlagged && <button ref={flagTrigger} className={styles.flag} onClick={() => setFlagging(true)}>Flag as incorrect</button>}
                     {isAdmin && (
                         <>
                             <button className={styles.flag} onClick={remove} disabled={adminBusy}>Delete</button>
@@ -217,8 +222,7 @@ export function SolutionPopup({ solution: s, isAdmin, onUnflagged, onVerified, o
                         </>
                     )}
 
-                    {!isAdmin && flagged && <span className={styles.flagged}>Flagged as incorrect</span>}
-                    {isAdmin && s.flagged && <span className={styles.flagged}>Flagged as incorrect</span>}
+                    {showFlagged && <span className={styles.flagged}>Flagged as incorrect</span>}
 
                     {isAdmin && flagReasons.length > 0 && (
                         <>

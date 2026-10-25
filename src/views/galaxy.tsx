@@ -102,6 +102,10 @@ export default function GalaxyView() {
             .find((s) => s.id === selectedId) ?? null;
     }, [solutions.byBattle, selectedId]);
 
+    const columns = galaxies[id - 1].battles
+        .map((b) => ({ battle: b, results: filterByStats(solutions.forBattle(b.id), statFilter) }))
+        .filter(({ results }) => !flaggedOnly || results.best.some((s) => s.flagged) || (showObsolete && results.obsolete.some((s) => s.flagged)));
+
     const refreshSolutions = () => { solutions.reload().catch(() => {}); };
 
     const handleScroll = (e: React.WheelEvent<HTMLDivElement>) => {
@@ -148,23 +152,20 @@ export default function GalaxyView() {
                         </div>
                     </div>
                     <SolutionColumns ref={listRef}>
-                        {galaxies[id - 1].battles.map((b) => {
-                            const results = filterByStats(solutions.forBattle(b.id), statFilter);
-
-                            return (
-                                <SolutionColumn key={b.id} title={b.name} boss={isBossBattle(b)} count={results.best.length}>
-                                    <Solutions
-                                        solutions={results}
-                                        onOpen={openSolution}
-                                        showObsolete={showObsolete}
-                                        filtered={statFilter != null}
-                                        preloadImages={preloadImages}
-                                        flaggedOnly={flaggedOnly}
-                                        isAdmin={isAdmin}
-                                    />
-                                </SolutionColumn>
-                            );
-                        })}
+                        {flaggedOnly && !columns.length && <p className={styles.info}>No flagged solutions</p>}
+                        {columns.map(({ battle: b, results }) => (
+                            <SolutionColumn key={b.id} title={b.name} boss={isBossBattle(b)} count={results.best.length}>
+                                <Solutions
+                                    solutions={results}
+                                    onOpen={openSolution}
+                                    showObsolete={showObsolete}
+                                    filtered={statFilter != null}
+                                    preloadImages={preloadImages}
+                                    flaggedOnly={flaggedOnly}
+                                    isAdmin={isAdmin}
+                                />
+                            </SolutionColumn>
+                        ))}
                     </SolutionColumns>
                 </>
             )}

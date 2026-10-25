@@ -142,6 +142,13 @@ export function useSelectedSolution() {
     }, { state: { popup: true } });
   };
 
+  const switchSolution = (s: Solution) => {
+    setSearchParams((params) => {
+      params.set("solution", String(s.id));
+      return params;
+    }, { replace: true, state: location.state });
+  };
+
   const closeSolution = () => {
     if (closing.current) return;
     closing.current = true;
@@ -155,7 +162,7 @@ export function useSelectedSolution() {
     }, { replace: true });
   };
 
-  return { selectedId, openSolution, closeSolution };
+  return { selectedId, openSolution, switchSolution, closeSolution };
 }
 
 export function useSolutions(galaxyId: number, battleId: string) {

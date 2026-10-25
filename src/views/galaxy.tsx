@@ -1,6 +1,6 @@
 import { useParams } from "react-router-dom";
 import { BaseLayout } from "../components/baselayout/baselayout";
-import { Modal } from "../components/modal/modal";
+import { Modal, ModalTarget } from "../components/modal/modal";
 import { useAdminSession, useGalaxySolutions, useSelectedSolution } from "../lib/hooks";
 import { type RankedSolutions } from "../lib/api";
 import { galaxies, isBossBattle } from "../lib/battles";
@@ -17,15 +17,27 @@ import { GalaxyNotes } from "../components/galaxyNotes/galaxyNotes";
 const statFilterKey = (galaxyId: number) => `fleetvault_stat_filter_${galaxyId}`;
 const combatStatsKey = (galaxyId: number) => `fleetvault_combat_stats_${galaxyId}`;
 
+const nearestStats = (solutions: Solution[], stats: number) =>
+    Math.max(...solutions.map((s) => s.combat_stats).filter((c) => c <= stats + 1e-6));
+
 const filterByStats = (solutions: RankedSolutions, stats: number | null): RankedSolutions => {
     if (stats == null) return solutions;
-    const nearest = Math.max(...solutions.best.map((s) => s.combat_stats).filter((c) => c <= stats + 1e-6));
+    const nearest = nearestStats(solutions.best, stats);
     const matches = (s: Solution) => Math.abs(s.combat_stats - nearest) < 1e-6;
     return {
         best: solutions.best.filter(matches),
         obsolete: solutions.obsolete.filter(matches),
         flagged: solutions.flagged.filter(matches),
     };
+}
+
+const pickBest = (solutions: Solution[], stats: number): Solution | null => {
+    const nearest = nearestStats(solutions, stats);
+    return solutions
+        .filter((s) => Math.abs(s.combat_stats - nearest) < 1e-6)
+        .sort((a, b) => Number(a.flagged) - Number(b.flagged)
+            || a.fr_used - b.fr_used
+            || Number(b.verified_at != null) - Number(a.verified_at != null))[0] ?? null;
 }
 
 function Solutions({ solutions, onOpen, showObsolete, filtered, preloadImages, isAdmin, flaggedOnly }: { solutions: RankedSolutions, onOpen: (s: Solution) => void, showObsolete: boolean, filtered: boolean, preloadImages: boolean, isAdmin: boolean, flaggedOnly: boolean }) {
@@ -62,7 +74,7 @@ export default function GalaxyView() {
     const solutions = useGalaxySolutions(id);
     const isAdmin = !!useAdminSession();
     const listRef = useRef<HTMLDivElement>(null);
-    const { selectedId, openSolution, closeSolution } = useSelectedSolution();
+    const { selectedId, openSolution, switchSolution, closeSolution } = useSelectedSolution();
 
     const [showObsolete, setShowObsolete] = useState(() => localStorage.getItem('fleetvault_show_obsolete') === 'true');
     const [preloadImages, setPreloadImages] = useState(() => (localStorage.getItem('fleetvault_preload_images') ?? 'true') === 'true');
@@ -102,6 +114,23 @@ export default function GalaxyView() {
             .flatMap((r) => [...r.best, ...r.obsolete])
             .find((s) => s.id === selectedId) ?? null;
     }, [solutions.byBattle, selectedId]);
+
+    const [navStats, setNavStats] = useState<number | null>(null);
+
+    useEffect(() => {
+        if (selectedId == null) setNavStats(null);
+    }, [selectedId]);
+
+    const neighbor = (direction: 1 | -1): ModalTarget | null => {
+        if (!selected) return null;
+        const battles = galaxies[id - 1].battles;
+        const stats = navStats ?? selected.combat_stats;
+        for (let i = battles.findIndex((b) => b.id === selected.battle_id) + direction; i >= 0 && i < battles.length; i += direction) {
+            const best = pickBest(solutions.forBattle(battles[i].id).best, stats);
+            if (best) return { title: battles[i].name, onSelect: () => { setNavStats(stats); switchSolution(best); } };
+        }
+        return null;
+    };
 
     const columns = galaxies[id - 1].battles
         .map((b) => ({ battle: b, results: filterByStats(solutions.forBattle(b.id), statFilter) }))
@@ -171,7 +200,7 @@ export default function GalaxyView() {
                     </SolutionColumns>
                 </>
             )}
-            <Modal open={!!selected} onClose={closeSolution}>
+            <Modal open={!!selected} onClose={closeSolution} nav={{ prev: neighbor(-1), next: neighbor(1) }}>
                 {selected && (
                     <SolutionPopup
                         key={selected.id}

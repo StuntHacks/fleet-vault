@@ -266,6 +266,24 @@
         border-radius: 0.25rem;
     }
 
+    .screenshot {
+        display: block;
+        position: relative;
+
+        &.loading {
+            aspect-ratio: 16 / 9;
+            border-radius: 0.25rem;
+            background: var(--color-background-secondary);
+        }
+
+        img + img {
+            position: absolute;
+            inset: 0;
+            height: 100%;
+            object-fit: cover;
+        }
+    }
+
     .caption {
         width: 100%;
         text-align: center;

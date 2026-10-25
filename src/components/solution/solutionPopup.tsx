@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { clsx } from "clsx";
 import { deleteSolution, flagSolution, getSolutionFlags, setSolutionVerified, unflagSolution } from "../../lib/api";
 import { findBattle, getConditionNodes } from "../../lib/battles";
 import { Solution, SolutionFlag } from "../../lib/types";
@@ -31,6 +32,25 @@ const getPopupValues = (s: Solution): string[] => {
     if (s.boss_damage != null) values.push(`Damage done: ${s.boss_damage.toLocaleString()}`);
     if (s.fr_total != null) values.push(`Total FR: ${s.fr_total}`);
     return values;
+}
+
+function Screenshot({ url, thumbnailUrl }: { url: string, thumbnailUrl: string | null }) {
+    const [thumbnailFailed, setThumbnailFailed] = useState(false);
+    const [loaded, setLoaded] = useState(false);
+    const thumbnail = thumbnailFailed ? null : thumbnailUrl;
+
+    return (
+        <a
+            className={clsx(styles.screenshot, !loaded && styles.loading)}
+            href={url}
+            target="_blank"
+            rel="noopener noreferrer"
+            title="Open full size"
+        >
+            {thumbnail && <img src={thumbnail} alt="" onLoad={() => setLoaded(true)} onError={() => setThumbnailFailed(true)} />}
+            <img src={url} alt="Solution screenshot" onLoad={thumbnail ? undefined : () => setLoaded(true)} />
+        </a>
+    );
 }
 
 export function SolutionPopup({ solution: s, isAdmin, showGalaxy, onFlagsChanged, onVerified, onDeleted }: { solution: Solution, isAdmin: boolean, showGalaxy?: boolean, onFlagsChanged: () => void, onVerified: () => void, onDeleted: () => void }) {
@@ -155,9 +175,7 @@ export function SolutionPopup({ solution: s, isAdmin, showGalaxy, onFlagsChanged
             </div>
             {s.screenshot_url && (
                 <>
-                    <a href={s.screenshot_url} target="_blank" rel="noopener noreferrer" title="Open full size">
-                        <img src={s.screenshot_url} alt="Solution screenshot" />
-                    </a>
+                    <Screenshot key={s.id} url={s.screenshot_url} thumbnailUrl={s.thumbnail_url} />
                     <div className={styles.caption}>
                         Click to open full size
                     </div>

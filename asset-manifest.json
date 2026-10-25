@@ -1,8 +1,10 @@
 {
   "files": {
-    "main.css": "/fleet-vault/static/css/main.57407222.css",
-    "main.js": "/fleet-vault/static/js/main.0d078efa.js",
+    "main.css": "/fleet-vault/static/css/main.1cc46635.css",
+    "main.js": "/fleet-vault/static/js/main.c30843c3.js",
+    "static/js/915.8503a7c0.chunk.js": "/fleet-vault/static/js/915.8503a7c0.chunk.js",
     "static/js/453.fc2f17c8.chunk.js": "/fleet-vault/static/js/453.fc2f17c8.chunk.js",
+    "static/js/401.712d549c.chunk.js": "/fleet-vault/static/js/401.712d549c.chunk.js",
     "static/media/ArmorPiercing.svg": "/fleet-vault/static/media/ArmorPiercing.3207ef73e7ff2aa6edd0a1f6da6f29c5.svg",
     "static/media/ParticleCannon.svg": "/fleet-vault/static/media/ParticleCannon.6336b9e6551034966b66a9c3dd582f95.svg",
     "static/media/PowerMode.svg": "/fleet-vault/static/media/PowerMode.9185d01ce6adb69442d26cf1068c7cc5.svg",
@@ -12,12 +14,14 @@
     "static/media/Datacore.svg": "/fleet-vault/static/media/Datacore.5e2a32b65db52a6d220ecaab6ab6f355.svg",
     "static/media/ArmorDamageSynergy.svg": "/fleet-vault/static/media/ArmorDamageSynergy.ac614ff2b953eaefcaa114255e409d4f.svg",
     "static/media/PristineArmor.svg": "/fleet-vault/static/media/PristineArmor.5ea7eb4950647ac0b5a0689fee661c21.svg",
-    "main.57407222.css.map": "/fleet-vault/static/css/main.57407222.css.map",
-    "main.0d078efa.js.map": "/fleet-vault/static/js/main.0d078efa.js.map",
-    "453.fc2f17c8.chunk.js.map": "/fleet-vault/static/js/453.fc2f17c8.chunk.js.map"
+    "main.1cc46635.css.map": "/fleet-vault/static/css/main.1cc46635.css.map",
+    "main.c30843c3.js.map": "/fleet-vault/static/js/main.c30843c3.js.map",
+    "915.8503a7c0.chunk.js.map": "/fleet-vault/static/js/915.8503a7c0.chunk.js.map",
+    "453.fc2f17c8.chunk.js.map": "/fleet-vault/static/js/453.fc2f17c8.chunk.js.map",
+    "401.712d549c.chunk.js.map": "/fleet-vault/static/js/401.712d549c.chunk.js.map"
   },
   "entrypoints": [
-    "static/css/main.57407222.css",
-    "static/js/main.0d078efa.js"
+    "static/css/main.1cc46635.css",
+    "static/js/main.c30843c3.js"
   ]
 }

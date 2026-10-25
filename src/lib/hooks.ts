@@ -182,12 +182,16 @@ export function useGalaxy(galaxyId: number) {
   const [error, setError] = useState<Error | null>(null);
 
   useEffect(() => {
+    let current = true;
     setLoading(true);
+    setError(null);
     getGalaxy(galaxyId)
-      .then(setGalaxy)
-      .catch(setError)
-      .finally(() => setLoading(false));
+      .then((result) => { if (current) setGalaxy(result); })
+      .catch((e) => { if (current) setError(e); })
+      .finally(() => { if (current) setLoading(false); });
+    return () => { current = false; };
   }, [galaxyId]);
 
-  return { galaxy, loading, error };
+  const reload = () => getGalaxy(galaxyId).then(setGalaxy);
+  return { galaxy, reload, loading, error };
 }

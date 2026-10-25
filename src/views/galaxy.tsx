@@ -12,6 +12,7 @@ import { CombatStatInput } from "../components/combatStatInput/combatStatInput";
 import { SolutionEntry } from "../components/solution/solutionEntry";
 import { SolutionPopup } from "../components/solution/solutionPopup";
 import { SolutionColumn, SolutionColumns } from "../components/solution/solutionColumns";
+import { GalaxyNotes } from "../components/galaxyNotes/galaxyNotes";
 
 const statFilterKey = (galaxyId: number) => `fleetvault_stat_filter_${galaxyId}`;
 const combatStatsKey = (galaxyId: number) => `fleetvault_combat_stats_${galaxyId}`;
@@ -151,6 +152,7 @@ export default function GalaxyView() {
                             )}
                         </div>
                     </div>
+                    <GalaxyNotes galaxyId={id} isAdmin={isAdmin} />
                     <SolutionColumns ref={listRef}>
                         {flaggedOnly && !columns.length && <p className={styles.info}>No flagged solutions</p>}
                         {columns.map(({ battle: b, results }) => (

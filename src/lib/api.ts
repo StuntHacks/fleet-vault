@@ -182,9 +182,10 @@ export async function deleteSolution(id: number): Promise<void> {
   if (!data.length) throw new Error('Solution not deleted');
 }
 
-export async function updateGalaxyNotes(galaxyId: number, notes: string): Promise<void> {
-  const { error } = await supabase.from('galaxies').update({ notes }).eq('id', galaxyId);
+export async function updateGalaxyNotes(galaxyId: number, notes: string | null): Promise<void> {
+  const { data, error } = await supabase.from('galaxies').update({ notes }).eq('id', galaxyId).select('id');
   if (error) throw error;
+  if (!data.length) throw new Error('Galaxy notes not saved');
 }
 
 export async function flagSolution(id: number, reason?: string): Promise<void> {

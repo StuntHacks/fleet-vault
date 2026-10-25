@@ -4,12 +4,13 @@ import styles from './baselayout.module.scss';
 
 interface BaseLayoutProps {
   children?: React.ReactNode;
+  galaxy?: number;
 }
 
-export function BaseLayout({ children }: BaseLayoutProps) {
+export function BaseLayout({ children, galaxy }: BaseLayoutProps) {
   return (
     <>
-      <Header />
+      <Header galaxy={galaxy} />
       <main className={styles.main}>
         {children}
       </main>

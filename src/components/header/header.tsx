@@ -6,12 +6,12 @@ import { Button } from "../button/button";
 import GalaxySelect from "../galaxySelect/galaxySelect";
 import styles from './header.module.scss';
 
-export default function Header() {
+export default function Header({ galaxy: current }: { galaxy?: number }) {
   const session = useAdminSession();
   const isAdmin = !!session;
   const navigate = useNavigate();
   const { galaxy } = useParams();
-  const id = parseInt(galaxy || "1", 10);
+  const id = current ?? parseInt(galaxy || "1", 10);
   const flaggedCount = useFlaggedCount(isAdmin);
   const isFlaggedPage = !!useMatch('/flagged');
 
@@ -22,7 +22,7 @@ export default function Header() {
         <h1>FleetVault</h1>
       </Link>
       <div className={styles.galaxy}>
-        <GalaxySelect />
+        <GalaxySelect selected={current} />
       </div>
       <div className={styles.login}>
         {flaggedCount > 0 && !isFlaggedPage && (

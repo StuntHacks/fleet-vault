@@ -33,7 +33,7 @@ const getPopupValues = (s: Solution): string[] => {
     return values;
 }
 
-export function SolutionPopup({ solution: s, isAdmin, onFlagsChanged, onVerified, onDeleted }: { solution: Solution, isAdmin: boolean, onFlagsChanged: () => void, onVerified: () => void, onDeleted: () => void }) {
+export function SolutionPopup({ solution: s, isAdmin, showGalaxy, onFlagsChanged, onVerified, onDeleted }: { solution: Solution, isAdmin: boolean, showGalaxy?: boolean, onFlagsChanged: () => void, onVerified: () => void, onDeleted: () => void }) {
     const battle = findBattle(s.galaxy_id, s.battle_id);
     const { hazards, supports } = getConditionNodes(battle);
     const nodeLabel = (nodes: { id: string, label: string }[], id: string) => nodes.find((n) => n.id === id)?.label ?? id;
@@ -148,7 +148,7 @@ export function SolutionPopup({ solution: s, isAdmin, onFlagsChanged, onVerified
                     <span className={styles.small}> FR{perShot && '/shot'}</span>
                 </span>
                 <div className={styles.title}>
-                    <h2>{battle?.name}</h2>
+                    <h2>{showGalaxy && `G${s.galaxy_id} · `}{battle?.name}</h2>
                     {s.verified_at && <span className={styles.verifiedLabel}>Verified</span>}
                     {obsolete && <span className={styles.obsoleteLabel}>Obsolete</span>}
                 </div>

@@ -29,7 +29,7 @@ export default function GalaxySelect({ className, isSelect, selected, callback, 
   const isFlaggedPage = !!useMatch('/flagged');
   const pageName = isAdvisorPage ? 'Advisor Explorer' : isFlaggedPage ? 'Flagged Solutions' : null;
   const { galaxy } = useParams();
-  let id = parseInt(galaxy || "1", 10);
+  let id = (!isSelect && selected) || parseInt(galaxy || "1", 10);
   id = Math.min(Math.max(id, 1), data.galaxies.length);
   if (isNaN(id)) {
     id = 1;

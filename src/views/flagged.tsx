@@ -81,6 +81,7 @@ export default function FlaggedView() {
                         key={selected.id}
                         solution={selected}
                         isAdmin={isAdmin}
+                        showGalaxy
                         onFlagsChanged={() => { closeSolution(); refreshSolutions(); }}
                         onVerified={refreshSolutions}
                         onDeleted={() => { closeSolution(); refreshSolutions(); }}

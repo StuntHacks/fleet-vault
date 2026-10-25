@@ -145,7 +145,7 @@ export function SolutionForm({ galaxy: id, solution: s }: { galaxy?: number, sol
     };
 
     return (
-        <BaseLayout>
+        <BaseLayout galaxy={s?.galaxy_id}>
             <div className={styles.form}>
                 <Link to={s ? `/g/${s.galaxy_id}?solution=${s.id}` : `/g/${id}`} className={styles.backlink}>
                     {editing ? "← Back to solution" : "← Back to galaxy"}

@@ -29,6 +29,7 @@ verify.js
 convert_battles.js
 output.json
 game_data.json
+game_data.cdb
 TODO.md
 
 supabase/schema.sql

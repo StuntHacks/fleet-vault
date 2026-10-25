@@ -18,6 +18,10 @@
         column-gap: 1rem;
     }
 
+    &.toggleable {
+        cursor: pointer;
+    }
+
     .viewport {
         flex: 1 1 20rem;
         min-width: 0;
@@ -62,11 +66,10 @@
         &.preview {
             max-height: 25vh;
             overflow-y: auto;
-        }
 
-        &,
-        * {
-            user-select: text;
+            &, * {
+                user-select: text;
+            }
         }
 
         > :first-child {

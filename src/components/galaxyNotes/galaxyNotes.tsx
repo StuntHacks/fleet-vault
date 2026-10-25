@@ -96,8 +96,15 @@ export function GalaxyNotes({ galaxyId, isAdmin }: { galaxyId: number, isAdmin: 
 
     if (!notes && !isAdmin) return null;
 
+    const canToggle = !!notes && (expanded || overflowing);
+
+    const toggleFromBox = (e: React.MouseEvent) => {
+        if (!canToggle || (e.target as HTMLElement).closest('a, button') || !window.getSelection()?.isCollapsed) return;
+        setExpanded(!expanded);
+    };
+
     return (
-        <div className={clsx(styles.galaxyNotes, styles.display)}>
+        <div className={clsx(styles.galaxyNotes, styles.display, canToggle && styles.toggleable)} onClick={toggleFromBox}>
             {notes && (
                 <div ref={viewport} className={clsx(styles.viewport, expanded ? styles.expanded : overflowing && styles.clipped)}>
                     <div ref={content} className={styles.content}>
@@ -107,9 +114,9 @@ export function GalaxyNotes({ galaxyId, isAdmin }: { galaxyId: number, isAdmin: 
                     </div>
                 </div>
             )}
-            {((notes && (expanded || overflowing)) || isAdmin) && (
+            {(canToggle || isAdmin) && (
                 <div className={clsx(styles.actions, expanded && styles.expanded)}>
-                    {notes && (expanded || overflowing) && (
+                    {canToggle && (
                         <button className={styles.toggle} onClick={() => setExpanded(!expanded)}>
                             {expanded ? 'Show less ▴' : 'Show more ▾'}
                         </button>

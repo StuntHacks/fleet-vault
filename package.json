@@ -36,6 +36,7 @@
   "scripts": {
     "dev": "react-scripts start",
     "build": "react-scripts build",
+    "postbuild": "node galaxy_pages.js",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
     "predeploy": "npm run build",

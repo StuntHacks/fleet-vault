@@ -1,7 +1,8 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
+import { useLocation, useNavigate, useSearchParams } from 'react-router-dom';
 import { Session } from '@supabase/supabase-js';
 import { supabase } from './supabase';
-import { getSolutionsForBattle, getSolutionsForGalaxy, getBattlesForGalaxy, getGalaxy } from './api';
+import { getSolutionsForBattle, getSolutionsForGalaxy, getBattlesForGalaxy, getGalaxy, getFlaggedSolutions } from './api';
 import type { RankedSolutions } from './api';
 import type { Solution, Galaxy } from './types';
 
@@ -81,6 +82,59 @@ export function useGalaxySolutions(galaxyId: number) {
   const forBattle = (battleId: string) => byBattle[battleId] ?? NO_SOLUTIONS;
   const reload = () => getSolutionsForGalaxy(galaxyId).then(setByBattle);
   return { byBattle, forBattle, reload, loading, error };
+}
+
+export function useFlaggedSolutions() {
+  const [solutions, setSolutions] = useState<Solution[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<Error | null>(null);
+
+  useEffect(() => {
+    let current = true;
+    getFlaggedSolutions()
+      .then((result) => { if (current) setSolutions(result); })
+      .catch((e) => { if (current) setError(e); })
+      .finally(() => { if (current) setLoading(false); });
+    return () => { current = false; };
+  }, []);
+
+  const reload = () => getFlaggedSolutions().then(setSolutions);
+  return { solutions, reload, loading, error };
+}
+
+export function useSelectedSolution() {
+  const location = useLocation();
+  const navigate = useNavigate();
+  const [searchParams, setSearchParams] = useSearchParams();
+  const closing = useRef(false);
+
+  useEffect(() => {
+    closing.current = false;
+  }, [location.key]);
+
+  const selectedId = Number(searchParams.get("solution")) || null;
+
+  const openSolution = (s: Solution) => {
+    setSearchParams((params) => {
+      params.set("solution", String(s.id));
+      return params;
+    }, { state: { popup: true } });
+  };
+
+  const closeSolution = () => {
+    if (closing.current) return;
+    closing.current = true;
+    if ((location.state as { popup?: boolean } | null)?.popup) {
+      navigate(-1);
+      return;
+    }
+    setSearchParams((params) => {
+      params.delete("solution");
+      return params;
+    }, { replace: true });
+  };
+
+  return { selectedId, openSolution, closeSolution };
 }
 
 export function useSolutions(galaxyId: number, battleId: string) {

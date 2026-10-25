@@ -1,5 +1,5 @@
 import { supabase } from './supabase';
-import { FlaggedSolution, Galaxy, Solution, SolutionFlag } from './types';
+import { Galaxy, Solution, SolutionFlag } from './types';
 
 export async function getBattlesForGalaxy(galaxyId: number): Promise<string[]> {
   const { data, error } = await supabase
@@ -166,16 +166,18 @@ export async function unflagSolution(id: number): Promise<void> {
   if (!data.length) throw new Error('Solution not unflagged');
 }
 
-export async function getFlaggedSolutions(): Promise<FlaggedSolution[]> {
+export async function getFlaggedSolutions(): Promise<Solution[]> {
   const { data, error } = await supabase
-    .from('solutions')
-    .select('*, solution_flags(*)')
+    .from('solutions_ranked')
+    .select('*')
     .eq('flagged', true)
-    .is('solution_flags.resolved_at', null)
-    .order('submitted_at')
-    .order('created_at', { referencedTable: 'solution_flags' });
+    .order('galaxy_id')
+    .order('battle_id')
+    .order('combat_stats')
+    .order('rank_in_group')
+    .order('id');
   if (error) throw error;
-  return data as FlaggedSolution[];
+  return data as Solution[];
 }
 
 export async function getSolutionFlags(solutionId: number): Promise<SolutionFlag[]> {

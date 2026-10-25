@@ -1,329 +1,20 @@
-import { useLocation, useNavigate, useParams, useSearchParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import { BaseLayout } from "../components/baselayout/baselayout";
 import { Modal } from "../components/modal/modal";
-import { useAdminSession, useGalaxySolutions } from "../lib/hooks";
-import { deleteSolution, flagSolution, getSolutionFlags, unflagSolution, type RankedSolutions } from "../lib/api";
-import { findBattle, galaxies, getConditionNodes, getGalaxyUnlocks, isBossBattle } from "../lib/battles";
+import { useAdminSession, useGalaxySolutions, useSelectedSolution } from "../lib/hooks";
+import { type RankedSolutions } from "../lib/api";
+import { galaxies, isBossBattle } from "../lib/battles";
 import styles from "./galaxy.module.scss";
 import { useEffect, useMemo, useRef, useState } from "react";
-import { Solution, SolutionFlag } from "../lib/types";
+import { Solution } from "../lib/types";
 import { Checkbox } from "../components/checkbox/checkbox";
 import { CombatStatInput } from "../components/combatStatInput/combatStatInput";
-
-const getUnlockName = (galaxyId: number, unlock: string) => {
-    return getGalaxyUnlocks(galaxyId).find((u) => u.code === unlock)?.name ?? unlock;
-}
+import { SolutionEntry } from "../components/solution/solutionEntry";
+import { SolutionPopup } from "../components/solution/solutionPopup";
+import { SolutionColumn, SolutionColumns } from "../components/solution/solutionColumns";
 
 const statFilterKey = (galaxyId: number) => `fleetvault_stat_filter_${galaxyId}`;
 const combatStatsKey = (galaxyId: number) => `fleetvault_combat_stats_${galaxyId}`;
-const flaggedKey = 'fleetvault_flagged_solutions';
-const flaggedThisSession = new Set<number>();
-
-const isFlaggedByUser = (s: Solution) => {
-    const ids = JSON.parse(localStorage.getItem(flaggedKey) ?? '[]') as number[];
-    if (!ids.includes(s.id)) return false;
-    if (s.flagged || flaggedThisSession.has(s.id)) return true;
-    localStorage.setItem(flaggedKey, JSON.stringify(ids.filter((id) => id !== s.id)))
-    return false;
-}
-
-const rememberFlagged = (id: number) => {
-    flaggedThisSession.add(id);
-    const flagged = JSON.parse(localStorage.getItem(flaggedKey) ?? '[]') as number[];
-    localStorage.setItem(flaggedKey, JSON.stringify([...flagged.filter((x) => x !== id), id]))
-}
-
-const formatStats = (stats: number) => `${Number.isInteger(stats) ? stats.toFixed(1) : stats}x`;
-
-const getBossInfo = (s: Solution) => {
-    if (s.boss_alive === false) return "Boss dead";
-    if (s.shots) return s.shots === 1 ? "Oneshot" : `${s.shots} shots`;
-    if (s.boss_alive) return "Boss alive";
-    return null;
-}
-
-function Extras({ solution: s }: { solution: Solution }) {
-    const purchases = Object.entries(s.purchases ?? {});
-
-    return (
-        <>
-            {purchases.length > 0 && (
-                <div className={styles.unlocks}>
-                    <strong>Ship selection: </strong>
-                    {purchases.map(([node, name], index) => (
-                        <span key={`${s.id}-${node}-${index}`}>{node}: {name}</span>
-                    ))}
-                </div>
-            )}
-            {(s.unlocks?.length > 0) && (
-                <div className={styles.unlocks}>
-                    <strong>Required unlocks: </strong>
-                    {s.unlocks.map((unlock, index) => (
-                        <span key={`${s.id}-${unlock}-${index}`}>{getUnlockName(s.galaxy_id, unlock)}</span>
-                    ))}
-                </div>
-            )}
-        </>
-    );
-}
-
-function Entry({ solution, obsolete = false, onOpen, preloadImages, isAdmin }: { solution: Solution, obsolete?: boolean, onOpen: (s: Solution) => void, preloadImages: boolean, isAdmin: boolean }) {
-    const s = solution;
-    const perShot = !!s.shots && s.shots > 1;
-    const bossInfo = getBossInfo(s);
-    const purchases = Object.entries(s.purchases ?? {});
-    const hasData = s.support || s.hazards || !!bossInfo || s.non_standard || obsolete;
-
-    const pressedAt = useRef<{ x: number, y: number } | null>(null);
-    const open = (e: React.MouseEvent) => {
-        const start = pressedAt.current;
-        if (start && Math.hypot(e.clientX - start.x, e.clientY - start.y) > 5) return;
-        onOpen(s);
-    };
-
-    return (
-        <div
-            className={`${styles.solution} ${obsolete ? styles.obsolete : ""} ${s.flagged && isAdmin ? styles.flagged : ""}`}
-            role="button"
-            tabIndex={0}
-            onMouseDown={(e) => { pressedAt.current = { x: e.clientX, y: e.clientY }; }}
-            onClick={open}
-            onKeyDown={(e) => {
-                if (e.target !== e.currentTarget || (e.key !== "Enter" && e.key !== " ")) return;
-                e.preventDefault();
-                onOpen(s);
-            }}
-        >
-            <div className={styles.screenshot}>
-                {solution.screenshot_url && preloadImages && <img src={solution.screenshot_url} loading="lazy" alt="Solution screenshot" />}
-                <div className={styles.info}>
-                    <span className={styles.stats} title="Combat stats">
-                        {formatStats(s.combat_stats)}
-                    </span>
-                    <span className={styles.resources} title={perShot ? 'FR used per shot / committed' : 'FR used / committed'}>
-                        {s.fr_used}
-                        {s.fr_committed != null && <span className={styles.small}> / {s.fr_committed}</span>}
-                        <span className={styles.small}> FR{perShot && '/shot'}</span>
-                    </span>
-                </div>
-            </div>
-            {(hasData || purchases.length > 0 || s.unlocks?.length > 0 || s.notes) && (
-                <div className={styles.details}>
-                    {hasData && (
-                        <div className={styles.data}>
-                            {(s.support || s.hazards || obsolete) && (
-                                <div className={styles.modifiers}>
-                                    {s.support && <span className={styles.support}>Support</span>}
-                                    {s.hazards && <span className={styles.hazard}>Hazard</span>}
-                                    {obsolete && <span className={styles.obsoleteLabel}>Obsolete</span>}
-                                </div>
-                            )}
-                            {bossInfo && (
-                                <div className={styles.bossInfo}>
-                                    <span>{bossInfo}</span>
-                                </div>
-                            )}
-                            {s.non_standard && <span className={styles.nonStandard}>Non-standard path</span>}
-                        </div>
-                    )}
-                    <Extras solution={s} />
-                    {s.notes &&
-                        <div className={styles.notes}>
-                            <strong>Notes: </strong>{s.notes}
-                        </div>
-                    }
-                </div>
-            )}
-        </div>
-    )
-}
-
-const getPopupValues = (s: Solution): string[] => {
-    const values: string[] = [];
-    if (s.boss_alive === false) values.push("Boss dead");
-    if (s.shots) values.push(s.shots === 1 ? "Oneshot" : `${s.shots} shots`);
-    if (s.boss_alive && !s.shots) values.push("Boss alive");
-    if (s.boss_damage != null) values.push(`Damage done: ${s.boss_damage.toLocaleString()}`);
-    if (s.fr_total != null) values.push(`Total FR: ${s.fr_total}`);
-    return values;
-}
-
-function SolutionPopup({ solution: s, isAdmin, onUnflagged, onDeleted }: { solution: Solution, isAdmin: boolean, onUnflagged: () => void, onDeleted: () => void }) {
-    const battle = findBattle(s.galaxy_id, s.battle_id);
-    const { hazards, supports } = getConditionNodes(battle);
-    const nodeLabel = (nodes: { id: string, label: string }[], id: string) => nodes.find((n) => n.id === id)?.label ?? id;
-    const perShot = !!s.shots && s.shots > 1;
-    const obsolete = s.rank_in_group != null && s.rank_in_group > 1;
-    const values = getPopupValues(s);
-    const [flagged, setFlagged] = useState(() => isFlaggedByUser(s));
-    const [flagging, setFlagging] = useState(false);
-    const [submitting, setSubmitting] = useState(false);
-    const [flagError, setFlagError] = useState(false);
-    const [reason, setReason] = useState('');
-    const [flagReasons, setFlagReasons] = useState<SolutionFlag[]>([]);
-    const [adminBusy, setAdminBusy] = useState(false);
-    const [adminError, setAdminError] = useState<string | null>(null);
-    const flagBox = useRef<HTMLDivElement>(null);
-    const flagTrigger = useRef<HTMLButtonElement>(null);
-
-    useEffect(() => {
-        if (!isAdmin || !s.flagged) return;
-        let current = true;
-        getSolutionFlags(s.id)
-            .then((flags) => { if (current) setFlagReasons(flags.filter((f) => f.resolved_at == null && f.reason)); })
-            .catch(() => {});
-        return () => { current = false; };
-    }, [isAdmin, s.id, s.flagged]);
-
-    useEffect(() => {
-        if (!flagging) return;
-        const onPointerDown = (e: PointerEvent) => {
-            const target = e.target as Node;
-            if (flagBox.current?.contains(target) || flagTrigger.current?.contains(target)) return;
-            setFlagging(false);
-        };
-        document.addEventListener('pointerdown', onPointerDown);
-        return () => document.removeEventListener('pointerdown', onPointerDown);
-    }, [flagging]);
-
-    const flag = async () => {
-        setSubmitting(true);
-        setFlagError(false);
-        try {
-            await flagSolution(s.id, reason);
-            rememberFlagged(s.id);
-            setFlagged(true);
-            setFlagging(false);
-        } catch {
-            setFlagError(true);
-        } finally {
-            setSubmitting(false);
-        }
-    }
-
-    const unflag = async () => {
-        setAdminBusy(true);
-        setAdminError(null);
-        try {
-            await unflagSolution(s.id);
-            setFlagReasons([]);
-            onUnflagged();
-        } catch {
-            setAdminError('Unflagging failed, please try again');
-        } finally {
-            setAdminBusy(false);
-        }
-    }
-
-    const remove = async () => {
-        if (!window.confirm('Delete this solution? This cannot be undone.')) return;
-        setAdminBusy(true);
-        setAdminError(null);
-        try {
-            await deleteSolution(s.id);
-            onDeleted();
-        } catch {
-            setAdminError('Deleting failed, please try again');
-            setAdminBusy(false);
-        }
-    }
-
-    return (
-        <div className={styles.popup}>
-            <div className={styles.titleBar}>
-                <span className={styles.stats}>
-                    {formatStats(s.combat_stats)}&nbsp;·&nbsp;
-                    {s.fr_used}
-                    {s.fr_committed != null && <span className={styles.small}> / {s.fr_committed}</span>}
-                    <span className={styles.small}> FR{perShot && '/shot'}</span>
-                </span>
-                <div className={styles.title}>
-                    <h2>{battle?.name}</h2>
-                    {obsolete && <span className={styles.obsoleteLabel}>Obsolete</span>}
-                </div>
-            </div>
-            {s.screenshot_url && (
-                <>
-                    <a href={s.screenshot_url} target="_blank" rel="noopener noreferrer" title="Open full size">
-                        <img src={s.screenshot_url} alt="Solution screenshot" />
-                    </a>
-                    <div className={styles.caption}>
-                        Click to open full size
-                    </div>
-                </>
-            )}
-            <div className={styles.details}>
-                {values.length > 0 && (
-                    <div className={styles.values}>
-                        {values.join(' • ')}
-                    </div>
-                )}
-                {(s.support || s.hazards || s.non_standard) && (
-                    <div className={styles.data}>
-                        {(s.support || s.hazards) && (
-                            <div className={styles.modifiers}>
-                                {s.support && !s.support_nodes.length && <span className={styles.support}>Support</span>}
-                                {s.support_nodes.map((id) => (
-                                    <span className={styles.support} key={id}>Support: {nodeLabel(supports, id)}</span>
-                                ))}
-                                {s.hazards && !s.hazard_nodes.length && <span className={styles.hazard}>Hazard</span>}
-                                {s.hazard_nodes.map((id) => (
-                                    <span className={styles.hazard} key={id}>Hazard: {nodeLabel(hazards, id)}</span>
-                                ))}
-                            </div>
-                        )}
-                        {s.non_standard && <span className={styles.nonStandard}>Non-standard path</span>}
-                    </div>
-                )}
-                {s.notes &&
-                    <div className={styles.notes}>
-                        <strong>Notes: </strong>{s.notes}
-                    </div>
-                }
-                <Extras solution={s} />
-                <div className={styles.curation}>
-                    <div ref={flagBox} className={`${styles.flagging} ${flagging ? '' : styles.hidden}`}>
-                        <textarea
-                            name="reason"
-                            placeholder="Further context..."
-                            maxLength={500}
-                            value={reason}
-                            onChange={(e) => setReason(e.target.value)}
-                            onKeyDown={(e) => {
-                                if (e.key !== 'Enter' || !(e.ctrlKey || e.metaKey)) return;
-                                e.preventDefault();
-                                if (!submitting) flag();
-                            }}
-                        />
-                        {flagError && <span className={styles.error}>Flagging failed, please try again</span>}
-                        <button className={styles.flag} onClick={flag} disabled={submitting}>Flag</button>
-                    </div>
-
-
-                    {!isAdmin && !flagged && <button ref={flagTrigger} className={styles.flag} onClick={() => setFlagging(true)}>Flag as incorrect</button>}
-                    {isAdmin && (
-                        <>
-                            <button className={styles.flag} onClick={remove} disabled={adminBusy}>Delete</button>
-                            {s.flagged && <button onClick={unflag} disabled={adminBusy}>Unflag</button>}
-                            <button>Edit</button>
-                            {adminError && <span className={styles.error}>{adminError}</span>}
-                        </>
-                    )}
-
-                    {!isAdmin && flagged && <span className={styles.flagged}>Flagged as incorrect</span>}
-                    {isAdmin && s.flagged && <span className={styles.flagged}>Flagged as incorrect</span>}
-
-                    {isAdmin && flagReasons.length > 0 && (
-                        <>
-                            <strong className={styles.reasons}>Context provided:</strong>
-                            {flagReasons.map((f) => <div className={styles.reason} key={f.id}>{f.reason}</div>)}
-                        </>
-                    )}
-                </div>
-            </div>
-        </div>
-    );
-}
 
 const filterByStats = (solutions: RankedSolutions, stats: number | null): RankedSolutions => {
     if (stats == null) return solutions;
@@ -344,13 +35,13 @@ function Solutions({ solutions, onOpen, showObsolete, filtered, preloadImages, i
     return (
         <>
             {filteredBest.map((s) => (
-                <Entry solution={s} key={s.id} onOpen={onOpen} preloadImages={preloadImages} isAdmin={isAdmin} />
+                <SolutionEntry solution={s} key={s.id} onOpen={onOpen} preloadImages={preloadImages} isAdmin={isAdmin} />
             ))}
             {showObsolete && filteredObsolete.length > 0 && (
                 <>
                     <div className={styles.obsoleteHeader}> — Obsolete solutions — </div>
                     {filteredObsolete.map((s) => (
-                        <Entry solution={s} key={s.id} obsolete onOpen={onOpen} preloadImages={preloadImages} isAdmin={isAdmin} />
+                        <SolutionEntry solution={s} key={s.id} obsolete onOpen={onOpen} preloadImages={preloadImages} isAdmin={isAdmin} />
                     ))}
                 </>
             )}
@@ -370,10 +61,7 @@ export default function GalaxyView() {
     const solutions = useGalaxySolutions(id);
     const isAdmin = !!useAdminSession();
     const listRef = useRef<HTMLDivElement>(null);
-    const location = useLocation();
-    const navigate = useNavigate();
-    const [searchParams, setSearchParams] = useSearchParams();
-    const closing = useRef(false);
+    const { selectedId, openSolution, closeSolution } = useSelectedSolution();
 
     const [showObsolete, setShowObsolete] = useState(() => localStorage.getItem('fleetvault_show_obsolete') === 'true');
     const [preloadImages, setPreloadImages] = useState(() => (localStorage.getItem('fleetvault_preload_images') ?? 'true') === 'true');
@@ -407,37 +95,12 @@ export default function GalaxyView() {
         localStorage.setItem('fleetvault_preload_images', String(preloadImages));
     }, [preloadImages]);
 
-    useEffect(() => {
-        closing.current = false;
-    }, [location.key]);
-
-    const selectedId = Number(searchParams.get("solution")) || null;
     const selected = useMemo(() => {
         if (selectedId == null) return null;
         return Object.values(solutions.byBattle)
             .flatMap((r) => [...r.best, ...r.obsolete])
             .find((s) => s.id === selectedId) ?? null;
     }, [solutions.byBattle, selectedId]);
-
-    const openSolution = (s: Solution) => {
-        setSearchParams((params) => {
-            params.set("solution", String(s.id));
-            return params;
-        }, { state: { popup: true } });
-    };
-
-    const closeSolution = () => {
-        if (closing.current) return;
-        closing.current = true;
-        if ((location.state as { popup?: boolean } | null)?.popup) {
-            navigate(-1);
-            return;
-        }
-        setSearchParams((params) => {
-            params.delete("solution");
-            return params;
-        }, { replace: true });
-    };
 
     const refreshSolutions = () => { solutions.reload().catch(() => {}); };
 
@@ -484,19 +147,12 @@ export default function GalaxyView() {
                             )}
                         </div>
                     </div>
-                    <div className={styles.battles} ref={listRef}>
+                    <SolutionColumns ref={listRef}>
                         {galaxies[id - 1].battles.map((b) => {
                             const results = filterByStats(solutions.forBattle(b.id), statFilter);
 
                             return (
-                                <div className={styles.battle} key={b.id}>
-                                    <div className={styles.battleName}>
-                                        {b.name}
-                                        {isBossBattle(b) && <span className={styles.hasBoss}>Boss</span>}
-                                        <span className={styles.count}>
-                                            {results.best.length}
-                                        </span>
-                                    </div>
+                                <SolutionColumn key={b.id} title={b.name} boss={isBossBattle(b)} count={results.best.length}>
                                     <Solutions
                                         solutions={results}
                                         onOpen={openSolution}
@@ -506,10 +162,10 @@ export default function GalaxyView() {
                                         flaggedOnly={flaggedOnly}
                                         isAdmin={isAdmin}
                                     />
-                                </div>
+                                </SolutionColumn>
                             );
                         })}
-                    </div>
+                    </SolutionColumns>
                 </>
             )}
             <Modal open={!!selected} onClose={closeSolution}>

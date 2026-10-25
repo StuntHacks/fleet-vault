@@ -26,6 +26,8 @@ export default function GalaxySelect({ className, isSelect, selected, callback, 
   const isAdmin = !!useAdminSession();
 
   const isAdvisorPage = !!useMatch('/advisors');
+  const isFlaggedPage = !!useMatch('/flagged');
+  const pageName = isAdvisorPage ? 'Advisor Explorer' : isFlaggedPage ? 'Flagged Solutions' : null;
   const { galaxy } = useParams();
   let id = parseInt(galaxy || "1", 10);
   id = Math.min(Math.max(id, 1), data.galaxies.length);
@@ -55,7 +57,7 @@ export default function GalaxySelect({ className, isSelect, selected, callback, 
             : (selected ? `Galaxy ${selected}` : placeholder)}
         </span>
       )}
-      {!isSelect && <span className={styles.current}>{isAdvisorPage ? 'Advisor Explorer' : `Galaxy ${id}`}</span>}
+      {!isSelect && <span className={styles.current}>{pageName ?? `Galaxy ${id}`}</span>}
       <div className={styles.dropdown}>
         {items
           ? items.filter(item => item.value !== selected).map((item) => (
@@ -63,7 +65,7 @@ export default function GalaxySelect({ className, isSelect, selected, callback, 
                 {item.label}
               </Link>
             ))
-          : data.galaxies.map((g, index) => (isSelect && index + 1 === selected) || (!isSelect && !isAdvisorPage && index + 1 === id) ? undefined : (
+          : data.galaxies.map((g, index) => (isSelect && index + 1 === selected) || (!isSelect && !pageName && index + 1 === id) ? undefined : (
               <Link data-id={index + 1} key={index} to={`/g/${index + 1}`} className={styles.dropdownItem} onClick={(e) => handleCallback(e)}>
                 Galaxy {index + 1}
               </Link>
@@ -72,6 +74,11 @@ export default function GalaxySelect({ className, isSelect, selected, callback, 
         {isAdmin && !isAdvisorPage && !isSelect && (
           <Link to="/advisors" className={styles.dropdownItem}>
             Advisor Explorer
+          </Link>
+        )}
+        {isAdmin && !isFlaggedPage && !isSelect && (
+          <Link to="/flagged" className={styles.dropdownItem}>
+            Flagged Solutions
           </Link>
         )}
       </div>

@@ -1,8 +1,8 @@
 import { Routes, Route, useNavigate } from 'react-router-dom';
 import GalaxyView from './views/galaxy';
-import BattleView from './views/battle';
 import AdvisorView from './views/advisor';
 import SubmitView from './views/submit';
+import FlaggedView from './views/flagged';
 import { useEffect } from 'react';
 
 export default function App() {
@@ -58,6 +58,7 @@ export default function App() {
       <Route path="/g/:galaxy/submit" element={<SubmitView />} />
       <Route path="/submit" element={<SubmitView />} />
       <Route path="/advisors" element={<AdvisorView />} />
+      <Route path="/flagged" element={<FlaggedView />} />
       <Route path="*" element={<GalaxyView />} />
     </Routes>
   );

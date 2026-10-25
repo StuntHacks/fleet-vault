@@ -104,14 +104,43 @@ export interface SolutionFields {
   bossDamage: number | null;
 }
 
-async function uploadScreenshot(galaxyId: number, battleId: string, screenshot: File): Promise<string> {
-  const ext = IMAGE_EXTENSIONS[screenshot.type] ?? 'png';
-  const path = `${galaxyId}/${battleId}/${Date.now()}.${ext}`;
+const THUMBNAIL_WIDTH = 480;
+
+function encodeCanvas(canvas: HTMLCanvasElement, type: string, quality: number): Promise<Blob | null> {
+  return new Promise((resolve) => canvas.toBlob(resolve, type, quality));
+}
+
+async function makeThumbnail(screenshot: File): Promise<Blob | null> {
+  const bitmap = await createImageBitmap(screenshot);
+  const scale = Math.min(1, THUMBNAIL_WIDTH / bitmap.width);
+  const canvas = document.createElement('canvas');
+  canvas.width = Math.round(bitmap.width * scale);
+  canvas.height = Math.round(bitmap.height * scale);
+  const ctx = canvas.getContext('2d');
+  if (!ctx) return null;
+  ctx.imageSmoothingQuality = 'high';
+  ctx.drawImage(bitmap, 0, 0, canvas.width, canvas.height);
+  bitmap.close();
+  // no webP for safari :'(
+  const webp = await encodeCanvas(canvas, 'image/webp', 0.75);
+  return webp?.type === 'image/webp' ? webp : encodeCanvas(canvas, 'image/jpeg', 0.8);
+}
+
+async function uploadImage(path: string, image: Blob): Promise<string> {
   const { data: upload, error: uploadError } = await supabase.storage
     .from('screenshots')
-    .upload(path, screenshot);
+    .upload(path, image, { contentType: image.type });
   if (uploadError) throw uploadError;
   return supabase.storage.from('screenshots').getPublicUrl(upload.path).data.publicUrl;
+}
+
+async function uploadScreenshot(galaxyId: number, battleId: string, screenshot: File) {
+  const base = `${galaxyId}/${battleId}/${Date.now()}`;
+  const thumbnail = await makeThumbnail(screenshot).catch(() => null);
+  return {
+    screenshot_url: await uploadImage(`${base}.${IMAGE_EXTENSIONS[screenshot.type] ?? 'png'}`, screenshot),
+    thumbnail_url: thumbnail && await uploadImage(`${base}.thumb.${IMAGE_EXTENSIONS[thumbnail.type]}`, thumbnail),
+  };
 }
 
 function solutionRow(params: SolutionFields) {
@@ -139,14 +168,14 @@ export async function submitSolution(params: SolutionFields & {
   submittedBy: string;
   advancedSolution?: string;
 }): Promise<number> {
-  const screenshotUrl = params.screenshot
+  const images = params.screenshot
     ? await uploadScreenshot(params.galaxyId, params.battleId, params.screenshot)
-    : null;
+    : { screenshot_url: null, thumbnail_url: null };
 
   const { data, error } = await supabase.from('solutions').insert({
     ...solutionRow(params),
     submitted_by: params.submittedBy,
-    screenshot_url: screenshotUrl,
+    ...images,
     advanced_solution: params.advancedSolution ?? null,
   }).select('id').single();
 
@@ -168,7 +197,7 @@ export async function getSolution(id: number): Promise<Solution | null> {
 export async function updateSolution(id: number, params: SolutionFields, unflag: boolean): Promise<void> {
   const row = {
     ...solutionRow(params),
-    ...(params.screenshot && { screenshot_url: await uploadScreenshot(params.galaxyId, params.battleId, params.screenshot) }),
+    ...(params.screenshot && await uploadScreenshot(params.galaxyId, params.battleId, params.screenshot)),
     ...(unflag && { flagged: false }),
   };
   const { data, error } = await supabase.from('solutions').update(row).eq('id', id).select('id');

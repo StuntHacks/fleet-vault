@@ -70,7 +70,7 @@ export function SolutionEntry({ solution, obsolete = false, onOpen, preloadImage
             }}
         >
             <div className={styles.screenshot}>
-                {solution.screenshot_url && preloadImages && <img src={solution.screenshot_url} loading="lazy" alt="Solution screenshot" />}
+                {solution.screenshot_url && preloadImages && <img src={solution.thumbnail_url ?? solution.screenshot_url} loading="lazy" alt="Solution screenshot" />}
                 <div className={styles.info}>
                     <span className={styles.stats} title="Combat stats">
                         {formatStats(s.combat_stats)}

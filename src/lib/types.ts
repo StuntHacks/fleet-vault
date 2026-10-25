@@ -7,6 +7,7 @@ export interface Solution {
   fr_committed: number | null;
   notes: string | null;
   screenshot_url: string | null;
+  thumbnail_url: string | null;
   advanced_solution: string | null;
   flagged: boolean;
   submitted_by: string | null;

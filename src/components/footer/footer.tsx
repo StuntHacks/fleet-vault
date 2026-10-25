@@ -7,9 +7,9 @@ export default function Footer() {
   const session = useAdminSession();
   const username = useUsername();
   const [ darkMode, setDarkMode ] = useState(() => {
-    const stored = localStorage.getItem('fleetvault_darkmode')
-    if (stored !== null) return stored === 'true'
-    return window.matchMedia('(prefers-color-scheme: dark)').matches
+    const stored = localStorage.getItem('fleetvault_darkmode');
+    if (stored !== null) return stored === 'true';
+    return true;
   })
    
   useEffect(() => {

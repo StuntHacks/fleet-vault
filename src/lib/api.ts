@@ -101,7 +101,7 @@ export async function submitSolution(params: {
   shots: number | null;
   frTotal: number | null;
   bossDamage: number | null;
-}): Promise<void> {
+}): Promise<number> {
   let screenshotUrl: string | null = null;
 
   if (params.screenshot) {
@@ -114,7 +114,7 @@ export async function submitSolution(params: {
     screenshotUrl = supabase.storage.from('screenshots').getPublicUrl(upload.path).data.publicUrl;
   }
 
-  const { error } = await supabase.from('solutions').insert({
+  const { data, error } = await supabase.from('solutions').insert({
     galaxy_id: params.galaxyId,
     battle_id: params.battleId,
     combat_stats: params.combatStats,
@@ -134,9 +134,10 @@ export async function submitSolution(params: {
     shots: params.shots,
     fr_total: params.frTotal,
     boss_damage: params.bossDamage,
-  });
+  }).select('id').single();
 
   if (error) throw error;
+  return data.id;
 }
 
 // admin stuff
@@ -178,6 +179,15 @@ export async function getFlaggedSolutions(): Promise<Solution[]> {
     .order('id');
   if (error) throw error;
   return data as Solution[];
+}
+
+export async function getFlaggedCount(): Promise<number> {
+  const { count, error } = await supabase
+    .from('solutions')
+    .select('id', { count: 'exact', head: true })
+    .eq('flagged', true);
+  if (error) throw error;
+  return count ?? 0;
 }
 
 export async function getSolutionFlags(solutionId: number): Promise<SolutionFlag[]> {

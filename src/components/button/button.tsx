@@ -4,7 +4,7 @@ import styles from './button.module.scss';
 interface ButtonProps {
   onClick: () => void;
   children: React.ReactNode;
-  variant?: 'primary' | 'secondary';
+  variant?: 'primary' | 'secondary' | 'flag';
   disabled?: boolean;
 }
 
@@ -13,7 +13,7 @@ export function Button(props: ButtonProps) {
     <button
       onClick={props.onClick}
       disabled={props.disabled}
-      className={clsx(styles.button, { [styles.secondary]: props.variant === 'secondary' })}
+      className={clsx(styles.button, { [styles.secondary]: props.variant === 'secondary' || props.variant === 'flag', [styles.flag]: props.variant === 'flag' })}
     >
       {props.children}
     </button>

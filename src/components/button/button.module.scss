@@ -46,6 +46,23 @@
         }
     }
 
+    &.flag {
+        color: var(--color-hazard);
+        border-color: var(--color-hazard);
+        white-space: nowrap;
+
+        span {
+            font-size: inherit;
+            color: inherit;
+        }
+
+        &:hover,
+        &:active {
+            color: var(--color-hazard-dark);
+            border-color: var(--color-hazard-dark);
+        }
+    }
+
     span {
         font-size: 0.75rem;
         margin-left: 5px;

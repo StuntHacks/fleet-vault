@@ -120,8 +120,8 @@ export default function SubmitView() {
             frTotal: multiShot && Number.isFinite(frTotalValue) ? frTotalValue : null,
             bossDamage: showBossResults && Number.isFinite(bossDamageValue) ? bossDamageValue : null,
             submittedBy: "Anonymous",
-        }).then(() => {
-            navigate(`/g/${selectedGalaxy}/b/${battleData.id}`);
+        }).then((solutionId) => {
+            navigate(`/g/${selectedGalaxy}?solution=${solutionId}`);
         }).catch((e) => {
             alert("Failed to submit solution: " + e.message);
             console.error(e);

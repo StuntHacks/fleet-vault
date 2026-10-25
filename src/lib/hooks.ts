@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import { useLocation, useNavigate, useSearchParams } from 'react-router-dom';
 import { Session } from '@supabase/supabase-js';
 import { supabase } from './supabase';
-import { getSolutionsForBattle, getSolutionsForGalaxy, getBattlesForGalaxy, getGalaxy, getFlaggedSolutions } from './api';
+import { getSolutionsForBattle, getSolutionsForGalaxy, getBattlesForGalaxy, getGalaxy, getFlaggedSolutions, getFlaggedCount } from './api';
 import type { RankedSolutions } from './api';
 import type { Solution, Galaxy } from './types';
 
@@ -100,6 +100,27 @@ export function useFlaggedSolutions() {
 
   const reload = () => getFlaggedSolutions().then(setSolutions);
   return { solutions, reload, loading, error };
+}
+
+export function useFlaggedCount(enabled: boolean) {
+  const [count, setCount] = useState(0);
+
+  useEffect(() => {
+    if (!enabled) {
+      setCount(0);
+      return;
+    }
+    let current = true;
+    const load = () => { getFlaggedCount().then((c) => { if (current) setCount(c); }).catch(() => {}); };
+    load();
+    window.addEventListener('fv:flags-changed', load);
+    return () => {
+      current = false;
+      window.removeEventListener('fv:flags-changed', load);
+    };
+  }, [enabled]);
+
+  return count;
 }
 
 export function useSelectedSolution() {

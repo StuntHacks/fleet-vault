@@ -90,6 +90,7 @@ export function SolutionPopup({ solution: s, isAdmin, onUnflagged, onDeleted }: 
         setAdminError(null);
         try {
             await unflagSolution(s.id);
+            window.dispatchEvent(new Event('fv:flags-changed'));
             setFlagReasons([]);
             onUnflagged();
         } catch {
@@ -105,6 +106,7 @@ export function SolutionPopup({ solution: s, isAdmin, onUnflagged, onDeleted }: 
         setAdminError(null);
         try {
             await deleteSolution(s.id);
+            window.dispatchEvent(new Event('fv:flags-changed'));
             onDeleted();
         } catch {
             setAdminError('Deleting failed, please try again');

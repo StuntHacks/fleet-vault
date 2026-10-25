@@ -9,6 +9,7 @@ interface FileUploadProps {
     dragText?: string;
     idleText?: string;
     preview?: boolean;
+    previewSrc?: string;
     file?: File;
 }
 
@@ -20,6 +21,7 @@ export function FileUpload(props: FileUploadProps) {
         dragText = "Drop file here",
         idleText = "Click or drag a file to upload",
         preview = false,
+        previewSrc,
         file,
     } = props;
 
@@ -85,8 +87,8 @@ export function FileUpload(props: FileUploadProps) {
                 onChange={onInputChange}
                 name="screenshot"
             />
-            {preview && previewUrl ? (
-                <img src={previewUrl} alt="Preview" className={styles.preview} />
+            {preview && (previewUrl || previewSrc) ? (
+                <img src={previewUrl || previewSrc} alt="Preview" className={styles.preview} />
             ) : (
                 <span className={styles.text}>
                     {isDragging ? dragText : idleText}

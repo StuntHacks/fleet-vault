@@ -3,6 +3,7 @@ import GalaxyView from './views/galaxy';
 import AdvisorView from './views/advisor';
 import SubmitView from './views/submit';
 import FlaggedView from './views/flagged';
+import EditView from './views/edit';
 import { useEffect } from 'react';
 
 export default function App() {
@@ -32,7 +33,7 @@ export default function App() {
       }
 
       const path = window.location.pathname;
-      const isOnSubmit = path.endsWith('/submit');
+      const isOnSubmit = path.endsWith('/submit') || /\/edit\/\d+$/.test(path);
 
       if (isOnSubmit) {
         if (imageFile) {
@@ -57,6 +58,7 @@ export default function App() {
       <Route path="/g/:galaxy" element={<GalaxyView />} />
       <Route path="/g/:galaxy/submit" element={<SubmitView />} />
       <Route path="/submit" element={<SubmitView />} />
+      <Route path="/edit/:solution" element={<EditView />} />
       <Route path="/advisors" element={<AdvisorView />} />
       <Route path="/flagged" element={<FlaggedView />} />
       <Route path="*" element={<GalaxyView />} />

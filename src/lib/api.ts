@@ -81,16 +81,14 @@ const IMAGE_EXTENSIONS: Record<string, string> = {
   'image/gif': 'gif',
 };
 
-export async function submitSolution(params: {
+export interface SolutionFields {
   galaxyId: number;
   battleId: string;
   combatStats: number;
   frUsed: number;
   frCommitted?: number;
   notes: string;
-  submittedBy: string;
   screenshot?: File;
-  advancedSolution?: string;
   hazards: boolean;
   hazardNodes: string[];
   support: boolean;
@@ -101,29 +99,26 @@ export async function submitSolution(params: {
   shots: number | null;
   frTotal: number | null;
   bossDamage: number | null;
-}): Promise<number> {
-  let screenshotUrl: string | null = null;
+}
 
-  if (params.screenshot) {
-    const ext = IMAGE_EXTENSIONS[params.screenshot.type] ?? 'png';
-    const path = `${params.galaxyId}/${params.battleId}/${Date.now()}.${ext}`;
-    const { data: upload, error: uploadError } = await supabase.storage
-      .from('screenshots')
-      .upload(path, params.screenshot);
-    if (uploadError) throw uploadError;
-    screenshotUrl = supabase.storage.from('screenshots').getPublicUrl(upload.path).data.publicUrl;
-  }
+async function uploadScreenshot(galaxyId: number, battleId: string, screenshot: File): Promise<string> {
+  const ext = IMAGE_EXTENSIONS[screenshot.type] ?? 'png';
+  const path = `${galaxyId}/${battleId}/${Date.now()}.${ext}`;
+  const { data: upload, error: uploadError } = await supabase.storage
+    .from('screenshots')
+    .upload(path, screenshot);
+  if (uploadError) throw uploadError;
+  return supabase.storage.from('screenshots').getPublicUrl(upload.path).data.publicUrl;
+}
 
-  const { data, error } = await supabase.from('solutions').insert({
+function solutionRow(params: SolutionFields) {
+  return {
     galaxy_id: params.galaxyId,
     battle_id: params.battleId,
     combat_stats: params.combatStats,
     fr_used: params.frUsed,
     fr_committed: Number.isFinite(params.frCommitted) ? params.frCommitted : null,
     notes: params.notes,
-    submitted_by: params.submittedBy,
-    screenshot_url: screenshotUrl,
-    advanced_solution: params.advancedSolution ?? null,
     hazards: params.hazards,
     hazard_nodes: params.hazardNodes,
     support: params.support,
@@ -134,13 +129,50 @@ export async function submitSolution(params: {
     shots: params.shots,
     fr_total: params.frTotal,
     boss_damage: params.bossDamage,
+  };
+}
+
+export async function submitSolution(params: SolutionFields & {
+  submittedBy: string;
+  advancedSolution?: string;
+}): Promise<number> {
+  const screenshotUrl = params.screenshot
+    ? await uploadScreenshot(params.galaxyId, params.battleId, params.screenshot)
+    : null;
+
+  const { data, error } = await supabase.from('solutions').insert({
+    ...solutionRow(params),
+    submitted_by: params.submittedBy,
+    screenshot_url: screenshotUrl,
+    advanced_solution: params.advancedSolution ?? null,
   }).select('id').single();
 
   if (error) throw error;
   return data.id;
 }
 
+export async function getSolution(id: number): Promise<Solution | null> {
+  const { data, error } = await supabase
+    .from('solutions')
+    .select('*')
+    .eq('id', id)
+    .maybeSingle();
+  if (error) throw error;
+  return data;
+}
+
 // admin stuff
+export async function updateSolution(id: number, params: SolutionFields, unflag: boolean): Promise<void> {
+  const row = {
+    ...solutionRow(params),
+    ...(params.screenshot && { screenshot_url: await uploadScreenshot(params.galaxyId, params.battleId, params.screenshot) }),
+    ...(unflag && { flagged: false }),
+  };
+  const { data, error } = await supabase.from('solutions').update(row).eq('id', id).select('id');
+  if (error) throw error;
+  if (!data.length) throw new Error('Solution not updated');
+}
+
 export async function deleteSolution(id: number): Promise<void> {
   const { data, error } = await supabase.from('solutions').delete().eq('id', id).select('id');
   if (error) throw error;

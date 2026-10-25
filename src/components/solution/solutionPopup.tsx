@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { deleteSolution, flagSolution, getSolutionFlags, unflagSolution } from "../../lib/api";
 import { findBattle, getConditionNodes } from "../../lib/battles";
 import { Solution, SolutionFlag } from "../../lib/types";
@@ -39,6 +40,7 @@ export function SolutionPopup({ solution: s, isAdmin, onUnflagged, onDeleted }: 
     const perShot = !!s.shots && s.shots > 1;
     const obsolete = s.rank_in_group != null && s.rank_in_group > 1;
     const values = getPopupValues(s);
+    const navigate = useNavigate();
     const [flagged, setFlagged] = useState(() => isFlaggedByUser(s));
     const [flagging, setFlagging] = useState(false);
     const [submitting, setSubmitting] = useState(false);
@@ -191,7 +193,7 @@ export function SolutionPopup({ solution: s, isAdmin, onUnflagged, onDeleted }: 
                         <>
                             <button className={styles.flag} onClick={remove} disabled={adminBusy}>Delete</button>
                             {s.flagged && <button onClick={unflag} disabled={adminBusy}>Unflag</button>}
-                            <button>Edit</button>
+                            <button onClick={() => navigate(`/edit/${s.id}`)} disabled={adminBusy}>Edit</button>
                             {adminError && <span className={styles.error}>{adminError}</span>}
                         </>
                     )}

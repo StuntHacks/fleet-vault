@@ -4,7 +4,8 @@ import { FileUpload } from "../components/fileUpload/fileUpload";
 import GalaxySelect from "../components/galaxySelect/galaxySelect";
 import { CombatStatInput } from "../components/combatStatInput/combatStatInput";
 import { Checkbox } from "../components/checkbox/checkbox";
-import { submitSolution } from "../lib/api";
+import { submitSolution, updateSolution } from "../lib/api";
+import { Solution } from "../lib/types";
 import { ConditionNode, galaxies, getConditionNodes, getGalaxyPurchases, getGalaxyUnlocks, isBossBattle, SHIPS_BY_CLASS } from "../lib/battles";
 import styles from "./submit.module.scss";
 import clsx from "clsx";
@@ -27,8 +28,9 @@ function selectedNodes(active: boolean, options: ConditionNode[], chosen: string
     return chosen.filter((id) => options.some((o) => o.id === id));
 }
 
+const optional = (value?: number | null) => value != null ? String(value) : "";
+
 export default function SubmitView() {
-    const navigate = useNavigate();
     const { galaxy } = useParams();
     let id = undefined;
     if (galaxy) {
@@ -38,8 +40,18 @@ export default function SubmitView() {
         }
     }
 
-    const [selectedGalaxy, setSelectedGalaxy] = useState<number | undefined>(id);
-    const [selectedBattle, setSelectedBattle] = useState<number | undefined>(undefined);
+    return <SolutionForm galaxy={id} />;
+}
+
+export function SolutionForm({ galaxy: id, solution: s }: { galaxy?: number, solution?: Solution }) {
+    const navigate = useNavigate();
+    const editing = !!s;
+    const [selectedGalaxy, setSelectedGalaxy] = useState<number | undefined>(s ? s.galaxy_id : id);
+    const [selectedBattle, setSelectedBattle] = useState<number | undefined>(() => {
+        if (!s) return undefined;
+        const index = galaxies[s.galaxy_id - 1]?.battles.findIndex((b) => b.id === s.battle_id) ?? -1;
+        return index >= 0 ? index + 1 : undefined;
+    });
     const [screenshot, setScreenshot] = useState<File | undefined>(undefined);
 
     const location = useLocation();
@@ -57,20 +69,21 @@ export default function SubmitView() {
         window.addEventListener('fv:paste-image', handler);
         return () => window.removeEventListener('fv:paste-image', handler);
     }, []);
-    const [combatStats, setCombatStats] = useState<string>("1");
-    const [frUsed, setFrUsed] = useState<string>("");
-    const [frCommitted, setFrCommitted] = useState<string>("");
-    const [hazard, setHazard] = useState(false);
-    const [hazardNodes, setHazardNodes] = useState<string[]>([]);
-    const [support, setSupport] = useState(false);
-    const [supportNodes, setSupportNodes] = useState<string[]>([]);
-    const [bossDefeated, setBossDefeated] = useState(false);
-    const [unlocks, setUnlocks] = useState<string[]>([]);
-    const [purchases, setPurchases] = useState<Record<string, string>>({});
-    const [shots, setShots] = useState<string>("");
-    const [frTotal, setFrTotal] = useState<string>("");
-    const [bossDamage, setBossDamage] = useState<string>("");
-    const [notes, setNotes] = useState<string>("");
+    const [combatStats, setCombatStats] = useState<string>(s ? String(s.combat_stats) : "1");
+    const [frUsed, setFrUsed] = useState<string>(s ? String(s.fr_used) : "");
+    const [frCommitted, setFrCommitted] = useState<string>(optional(s?.fr_committed));
+    const [hazard, setHazard] = useState(s?.hazards ?? false);
+    const [hazardNodes, setHazardNodes] = useState<string[]>(s?.hazard_nodes ?? []);
+    const [support, setSupport] = useState(s?.support ?? false);
+    const [supportNodes, setSupportNodes] = useState<string[]>(s?.support_nodes ?? []);
+    const [bossDefeated, setBossDefeated] = useState(s?.boss_alive === false);
+    const [unlocks, setUnlocks] = useState<string[]>(s?.unlocks ?? []);
+    const [purchases, setPurchases] = useState<Record<string, string>>(s?.purchases ?? {});
+    const [shots, setShots] = useState<string>(optional(s?.shots));
+    const [frTotal, setFrTotal] = useState<string>(optional(s?.fr_total));
+    const [bossDamage, setBossDamage] = useState<string>(optional(s?.boss_damage));
+    const [notes, setNotes] = useState<string>(s?.notes ?? "");
+    const [unflag, setUnflag] = useState(true);
 
     const battleData = selectedGalaxy && selectedBattle
         ? galaxies[selectedGalaxy - 1]?.battles[selectedBattle - 1]
@@ -100,7 +113,7 @@ export default function SubmitView() {
     const submit = () => {
         if (!battleData) return;
         setLoading(true);
-        submitSolution({
+        const fields = {
             galaxyId: selectedGalaxy!,
             battleId: battleData.id,
             combatStats: parseFloat(combatStats.replace(",", ".")),
@@ -108,7 +121,6 @@ export default function SubmitView() {
             frCommitted: frCommittedValue,
             notes: notes,
             screenshot: screenshot || undefined,
-            advancedSolution: undefined,
             hazards: hazard,
             hazardNodes: selectedNodes(hazard, hazardOptions, hazardNodes),
             support: support,
@@ -119,11 +131,14 @@ export default function SubmitView() {
             shots: showBossResults && shotsValue > 0 ? shotsValue : null,
             frTotal: multiShot && Number.isFinite(frTotalValue) ? frTotalValue : null,
             bossDamage: showBossResults && Number.isFinite(bossDamageValue) ? bossDamageValue : null,
-            submittedBy: "Anonymous",
-        }).then((solutionId) => {
-            navigate(`/g/${selectedGalaxy}?solution=${solutionId}`);
+        };
+        const request = s
+            ? updateSolution(s.id, fields, s.flagged && unflag).then(() => s.id)
+            : submitSolution({ ...fields, advancedSolution: undefined, submittedBy: "Anonymous" });
+        request.then((solutionId) => {
+            navigate(`/g/${selectedGalaxy}?solution=${solutionId}`, { replace: editing });
         }).catch((e) => {
-            alert("Failed to submit solution: " + e.message);
+            alert(`Failed to ${editing ? "save" : "submit"} solution: ` + e.message);
             console.error(e);
             setLoading(false);
         });
@@ -132,16 +147,19 @@ export default function SubmitView() {
     return (
         <BaseLayout>
             <div className={styles.form}>
-                <a href={`/g/${id}`} className={styles.backlink}>
-                    ← Back to galaxy
+                <a href={s ? `/g/${s.galaxy_id}?solution=${s.id}` : `/g/${id}`} className={styles.backlink}>
+                    {editing ? "← Back to solution" : "← Back to galaxy"}
                 </a>
-                <div className={styles.disclaimer}>
-                    <strong>Thank you for submitting to the fleet vault. </strong>Please ensure your screenshot is in horizontal orientation, and any notes you provide are written in english. Ideally, please use the default skin for your ships, and include all relevant information down below.
-                </div>
+                {!editing && (
+                    <div className={styles.disclaimer}>
+                        <strong>Thank you for submitting to the fleet vault. </strong>Please ensure your screenshot is in horizontal orientation, and any notes you provide are written in english. Ideally, please use the default skin for your ships, and include all relevant information down below.
+                    </div>
+                )}
                 <FileUpload
                     accept={SCREENSHOT_TYPES.join(",")}
                     preview
                     file={screenshot}
+                    previewSrc={s?.screenshot_url ?? undefined}
                     className={styles.fileUpload}
                     onFileSelected={(file) => setScreenshot(file)}
                     idleText={screenshot ? screenshot.name : "Click or drag a screenshot to upload"}
@@ -308,18 +326,21 @@ export default function SubmitView() {
                         onChange={(e) => setNotes(e.target.value)}
                     />
                 </div>
+                {s?.flagged && (
+                    <Checkbox checked={unflag} onChange={setUnflag}>Unflag solution</Checkbox>
+                )}
                 <Button disabled={
                     loading ||
                     !frUsed ||
                     frCommittedTooLow ||
                     frTotalTooLow ||
-                    !screenshot ||
+                    (!screenshot && !editing) ||
                     !!screenshotProblem ||
                     !selectedGalaxy ||
                     !selectedBattle ||
                     !combatStats
                 } onClick={() => submit()}>
-                    {loading ? "Submitting..." : "Submit"}
+                    {editing ? (loading ? "Saving..." : "Save") : (loading ? "Submitting..." : "Submit")}
                 </Button>
             </div>
         </BaseLayout>

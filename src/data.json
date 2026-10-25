@@ -2787,6 +2787,260 @@
                     ]
                 }
             ]
+        },
+        {
+            "id": "g12",
+            "name": "Galaxy 12",
+            "step": 0.25,
+            "maxStats": 1.5,
+            "minStats": 1,
+            "purchases": [
+                {
+                    "id": "g12_fr_lsc1",
+                    "name": "L1",
+                    "kind": "buy",
+                    "class": "light"
+                },
+                {
+                    "id": "g12_fr_lsc2",
+                    "name": "L2",
+                    "kind": "buy",
+                    "class": "light"
+                }
+            ],
+            "battles": [
+                {
+                    "name": "B1",
+                    "id": "g12_b1",
+                    "color": "red"
+                },
+                {
+                    "name": "B2",
+                    "id": "g12_b2",
+                    "color": "red",
+                    "hazard": [
+                        {
+                            "type": "Grid Buff",
+                            "id": "g12_support_1",
+                            "node": "PF1",
+                            "support": true
+                        }
+                    ]
+                },
+                {
+                    "name": "B3",
+                    "id": "g12_b3",
+                    "color": "red",
+                    "hazard": [
+                        {
+                            "type": "Laser Volley",
+                            "id": "g12_support_1",
+                            "node": "PF1",
+                            "support": true
+                        }
+                    ]
+                },
+                {
+                    "name": "B4",
+                    "id": "g12_b4",
+                    "color": "red",
+                    "hazard": [
+                        {
+                            "type": "Reinforcements",
+                            "id": "g12_support_1",
+                            "node": "PF1",
+                            "support": true
+                        }
+                    ]
+                },
+                {
+                    "name": "B5",
+                    "id": "g12_b5",
+                    "color": "red"
+                },
+                {
+                    "name": "B6",
+                    "id": "g12_b6",
+                    "color": "red",
+                    "hazard": [
+                        {
+                            "type": "Damage Per Second",
+                            "id": "g12_b6",
+                            "node": "B6"
+                        }
+                    ]
+                },
+                {
+                    "name": "B7",
+                    "id": "g12_b7",
+                    "color": "red"
+                },
+                {
+                    "name": "B8",
+                    "id": "g12_b8",
+                    "color": "red",
+                    "hazard": [
+                        {
+                            "type": "Reinforcements",
+                            "id": "g12_b11",
+                            "node": "B11"
+                        }
+                    ]
+                },
+                {
+                    "name": "B9",
+                    "id": "g12_b9",
+                    "color": "red",
+                    "hazard": [
+                        {
+                            "type": "Grid Buff",
+                            "id": "g12_b11",
+                            "node": "B11"
+                        }
+                    ]
+                },
+                {
+                    "name": "B10",
+                    "id": "g12_b10",
+                    "color": "red"
+                },
+                {
+                    "name": "B11",
+                    "id": "g12_b11",
+                    "color": "pink",
+                    "boss": true,
+                    "hazard": [
+                        {
+                            "type": "Laser Volley",
+                            "id": "g12_b11",
+                            "node": "B11"
+                        }
+                    ]
+                },
+                {
+                    "name": "B12",
+                    "id": "g12_b12",
+                    "color": "red",
+                    "hazard": [
+                        {
+                            "type": "Laser Volley",
+                            "id": "g12_b11",
+                            "node": "B11"
+                        }
+                    ]
+                },
+                {
+                    "name": "B13",
+                    "id": "g12_b13",
+                    "color": "red"
+                },
+                {
+                    "name": "B14",
+                    "id": "g12_b14",
+                    "color": "red"
+                },
+                {
+                    "name": "B15",
+                    "id": "g12_b15",
+                    "color": "red",
+                    "hazard": [
+                        {
+                            "type": "Laser Volley",
+                            "id": "g12_support_2",
+                            "node": "PF2",
+                            "support": true
+                        },
+                        {
+                            "type": "Reinforcements",
+                            "id": "g12_b18",
+                            "node": "B18"
+                        }
+                    ]
+                },
+                {
+                    "name": "B16",
+                    "id": "g12_b16",
+                    "color": "red",
+                    "hazard": [
+                        {
+                            "type": "Reinforcements",
+                            "id": "g12_support_2",
+                            "node": "PF2",
+                            "support": true
+                        },
+                        {
+                            "type": "Grid Buff",
+                            "id": "g12_b18",
+                            "node": "B18"
+                        }
+                    ]
+                },
+                {
+                    "name": "BB1",
+                    "id": "g12_bb1",
+                    "color": "white",
+                    "boss": true,
+                    "hazard": [
+                        {
+                            "type": "Grid Buff",
+                            "id": "g12_support_2",
+                            "node": "PF2",
+                            "support": true
+                        }
+                    ]
+                },
+                {
+                    "name": "B17",
+                    "id": "g12_b17",
+                    "color": "red",
+                    "hazard": [
+                        {
+                            "type": "Grid Buff",
+                            "id": "g12_support_2",
+                            "node": "PF2",
+                            "support": true
+                        },
+                        {
+                            "type": "Laser Volley",
+                            "id": "g12_b18",
+                            "node": "B18"
+                        }
+                    ]
+                },
+                {
+                    "name": "B18",
+                    "id": "g12_b18",
+                    "color": "pink",
+                    "boss": true,
+                    "hazard": [
+                        {
+                            "type": "Reinforcements",
+                            "id": "g12_b18",
+                            "node": "B18"
+                        }
+                    ]
+                },
+                {
+                    "name": "B19",
+                    "id": "g12_b19",
+                    "color": "red"
+                },
+                {
+                    "name": "B20",
+                    "id": "g12_b20",
+                    "color": "red"
+                },
+                {
+                    "name": "B21",
+                    "id": "g12_b21",
+                    "color": "red"
+                },
+                {
+                    "name": "B22",
+                    "id": "g12_b22",
+                    "color": "red"
+                }
+            ]
         }
     ]
 }

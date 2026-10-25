@@ -1,7 +1,7 @@
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { BaseLayout } from "../components/baselayout/baselayout";
 import { Modal, ModalTarget } from "../components/modal/modal";
-import { useAdminSession, useGalaxySolutions, useSelectedSolution } from "../lib/hooks";
+import { useAdminSession, useGalaxyAccess, useGalaxySolutions, useSelectedSolution } from "../lib/hooks";
 import { type RankedSolutions } from "../lib/api";
 import { galaxies, isBossBattle } from "../lib/battles";
 import styles from "./galaxy.module.scss";
@@ -13,6 +13,7 @@ import { SolutionEntry } from "../components/solution/solutionEntry";
 import { SolutionPopup } from "../components/solution/solutionPopup";
 import { SolutionColumn, SolutionColumns } from "../components/solution/solutionColumns";
 import { GalaxyNotes } from "../components/galaxyNotes/galaxyNotes";
+import { HiddenGalaxy } from "../components/hiddenGalaxy/hiddenGalaxy";
 
 const statFilterKey = (galaxyId: number) => `fleetvault_stat_filter_${galaxyId}`;
 const combatStatsKey = (galaxyId: number) => `fleetvault_combat_stats_${galaxyId}`;
@@ -73,6 +74,14 @@ export default function GalaxyView() {
 
     const solutions = useGalaxySolutions(id);
     const isAdmin = !!useAdminSession();
+    const access = useGalaxyAccess();
+    const allowed = access.canView(id);
+    const navigate = useNavigate();
+
+    useEffect(() => {
+        if (!access.loading && !allowed) navigate('/', { replace: true });
+    }, [access.loading, allowed, navigate]);
+
     const listRef = useRef<HTMLDivElement>(null);
     const { selectedId, openSolution, switchSolution, closeSolution } = useSelectedSolution();
 
@@ -147,9 +156,9 @@ export default function GalaxyView() {
 
     return (
         <BaseLayout>
-            {solutions.loading && <p className={styles.info}>Loading...</p>}
+            {(solutions.loading || !allowed) && <p className={styles.info}>Loading...</p>}
             {solutions.error && <p className={styles.error}>Error loading solutions</p>}
-            {!solutions.loading && !solutions.error && (
+            {!solutions.loading && !solutions.error && allowed && (
                 <>
                     <div className={styles.menuBar}>
                         <div className={styles.settings}>
@@ -181,6 +190,7 @@ export default function GalaxyView() {
                             )}
                         </div>
                     </div>
+                    {isAdmin && access.isHidden(id) && <HiddenGalaxy galaxyId={id} />}
                     <GalaxyNotes galaxyId={id} isAdmin={isAdmin} />
                     <SolutionColumns ref={listRef}>
                         {flaggedOnly && !columns.length && <p className={styles.info}>No flagged solutions</p>}

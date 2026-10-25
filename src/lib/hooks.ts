@@ -2,7 +2,8 @@ import { useEffect, useRef, useState } from 'react';
 import { useLocation, useNavigate, useSearchParams } from 'react-router-dom';
 import { Session } from '@supabase/supabase-js';
 import { supabase } from './supabase';
-import { getSolutionsForBattle, getSolutionsForGalaxy, getBattlesForGalaxy, getGalaxy, getFlaggedSolutions, getFlaggedCount } from './api';
+import { getSolutionsForBattle, getSolutionsForGalaxy, getBattlesForGalaxy, getGalaxy, getFlaggedSolutions, getFlaggedCount, getGalaxies } from './api';
+import { galaxies } from './battles';
 import type { RankedSolutions } from './api';
 import type { Solution, Galaxy } from './types';
 
@@ -38,6 +39,42 @@ export function useAdminSession() {
   }, []);
 
   return session;
+}
+
+let hiddenGalaxies: Promise<number[]> | null = null;
+const loadHiddenGalaxies = () => hiddenGalaxies ??= getGalaxies()
+  .then((rows) => galaxies.map((_, i) => i + 1).filter((id) => {
+    const row = rows.find((r) => r.id === id);
+    return !row || !!row.hidden;
+  }))
+  .catch(() => []);
+
+export function refreshHiddenGalaxies() {
+  hiddenGalaxies = null;
+  window.dispatchEvent(new Event('fv:galaxies-changed'));
+}
+
+export function useGalaxyAccess() {
+  const session = useAdminSession();
+  const [hidden, setHidden] = useState<number[] | undefined>(undefined);
+
+  useEffect(() => {
+    let current = true;
+    const load = () => { loadHiddenGalaxies().then((ids) => { if (current) setHidden(ids); }); };
+    load();
+    window.addEventListener('fv:galaxies-changed', load);
+    return () => {
+      current = false;
+      window.removeEventListener('fv:galaxies-changed', load);
+    };
+  }, []);
+
+  const loading = session === undefined || hidden === undefined;
+  return {
+    loading,
+    isHidden: (galaxyId: number) => !!hidden?.includes(galaxyId),
+    canView: (galaxyId: number) => !loading && (!!session || !hidden!.includes(galaxyId)),
+  };
 }
 
 export function useUsername(): string | null {

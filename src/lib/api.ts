@@ -211,6 +211,18 @@ export async function deleteSolution(id: number): Promise<void> {
   if (!data.length) throw new Error('Solution not deleted');
 }
 
+export async function getGalaxies(): Promise<Galaxy[]> {
+  const { data, error } = await supabase.from('galaxies').select('*');
+  if (error) throw error;
+  return data;
+}
+
+export async function enableGalaxy(galaxyId: number): Promise<void> {
+  const { data, error } = await supabase.from('galaxies').update({ hidden: false }).eq('id', galaxyId).select('id');
+  if (error) throw error;
+  if (!data.length) throw new Error('Galaxy not enabled');
+}
+
 export async function updateGalaxyNotes(galaxyId: number, notes: string | null): Promise<void> {
   const { data, error } = await supabase.from('galaxies').update({ notes }).eq('id', galaxyId).select('id');
   if (error) throw error;

@@ -3,7 +3,7 @@ import { clsx } from "clsx"
 import styles from './galaxySelect.module.scss';
 import data from '../../data.json';
 import { useState, useRef, useEffect } from 'react';
-import { useAdminSession } from '../../lib/hooks';
+import { useAdminSession, useGalaxyAccess } from '../../lib/hooks';
 
 export interface SelectItem {
   label: string;
@@ -24,6 +24,7 @@ export default function GalaxySelect({ className, isSelect, selected, callback, 
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
   const isAdmin = !!useAdminSession();
+  const access = useGalaxyAccess();
 
   const isAdvisorPage = !!useMatch('/advisors');
   const isFlaggedPage = !!useMatch('/flagged');
@@ -65,9 +66,9 @@ export default function GalaxySelect({ className, isSelect, selected, callback, 
                 {item.label}
               </Link>
             ))
-          : data.galaxies.map((g, index) => (isSelect && index + 1 === selected) || (!isSelect && !pageName && index + 1 === id) ? undefined : (
+          : data.galaxies.map((g, index) => (isSelect && index + 1 === selected) || (!isSelect && !pageName && index + 1 === id) || !access.canView(index + 1) ? undefined : (
               <Link data-id={index + 1} key={index} to={`/g/${index + 1}`} className={styles.dropdownItem} onClick={(e) => handleCallback(e)}>
-                Galaxy {index + 1}
+                Galaxy {index + 1}{access.isHidden(index + 1) && ' (hidden)'}
               </Link>
             ))
         }

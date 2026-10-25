@@ -44,4 +44,5 @@ export interface FlaggedSolution extends Solution {
 export interface Galaxy {
   id: number;
   notes: string | null;
+  hidden: boolean;
 }

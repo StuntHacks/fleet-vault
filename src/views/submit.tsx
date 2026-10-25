@@ -6,10 +6,11 @@ import { CombatStatInput } from "../components/combatStatInput/combatStatInput";
 import { Checkbox } from "../components/checkbox/checkbox";
 import { submitSolution, updateSolution } from "../lib/api";
 import { Solution } from "../lib/types";
+import { useGalaxyAccess } from "../lib/hooks";
 import { ConditionNode, galaxies, getConditionNodes, getGalaxyPurchases, getGalaxyUnlocks, isBossBattle, SHIPS_BY_CLASS } from "../lib/battles";
 import styles from "./submit.module.scss";
 import clsx from "clsx";
-import { Link, useParams, useLocation, useNavigate } from "react-router-dom";
+import { Link, Navigate, useParams, useLocation, useNavigate } from "react-router-dom";
 import { Button } from "../components/button/button";
 
 const SCREENSHOT_TYPES = ["image/png", "image/jpeg", "image/webp"];
@@ -32,6 +33,8 @@ const optional = (value?: number | null) => value != null ? String(value) : "";
 
 export default function SubmitView() {
     const { galaxy } = useParams();
+    const location = useLocation();
+    const access = useGalaxyAccess();
     let id = undefined;
     if (galaxy) {
         id = Math.min(Math.max(parseInt(galaxy || "1", 10), 1), galaxies.length);
@@ -39,6 +42,9 @@ export default function SubmitView() {
             id = undefined;
         }
     }
+
+    if (id && access.loading) return <BaseLayout />;
+    if (id && !access.canView(id)) return <Navigate to="/submit" replace state={location.state} />;
 
     return <SolutionForm galaxy={id} />;
 }

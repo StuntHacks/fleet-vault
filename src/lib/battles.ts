@@ -23,6 +23,7 @@ const GALAXY_UNLOCKS: Record<number, Unlock[]> = {
     8: [{ code: "SHC", name: "Starting Heavy Cruiser" }, { code: "SC", name: "Starting Cruiser" }],
     9: [{ code: "PC", name: "Particle Cannon" }],
     11: [{ code: "CRF", name: "Corvette Rapid Fire" }, { code: "TM", name: "Temporary Corvette Burst" }],
+    12: [{ code: "FHB", name: "Frigate Health Boost" }, { code: "TM", name: "Temporary Frigate Shotgun" }],
 };
 
 export const SHIPS_BY_CLASS: Record<PurchaseNode["class"], string[]> = {

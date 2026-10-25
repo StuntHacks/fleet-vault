@@ -20,6 +20,10 @@ export const MOD_MAP: Record<string, { name: string; icon: string }> = {
     CruiserSingleArmorTank:   { name: "Single Armored Cruiser", icon: "PristineArmor" },
     HeavyCruiserBeamMod:      { name: "Heavy Cruiser Beam Laser", icon: "PowerMode" },
     CruiserParticleCannonMod: { name: "Cruiser Particle Cannon", icon: "ParticleCannon" },
+    CorvetteRapidFire:        { name: "Corvette Rapid Fire", icon: "RapidFire" },
+    CorvetteChargeLaserBurst: { name: "Corvette Charge Laser Burst", icon: "ChargeLaserBurst" },
+    FrigateHealthBoost:       { name: "Frigate Health Boost", icon: "HealthBoost" },
+    FrigateShotgunMissileMod: { name: "Frigate Shotgun Missiles", icon: "ShotgunMissiles" },
 };
 
 export interface Hazard {

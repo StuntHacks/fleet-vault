@@ -376,11 +376,12 @@
             font-size: 0.9rem;
             font-weight: bold;
             box-shadow: 0 0 5px black;
-            transition: opacity 150ms, visibility 150ms;
+            transition: opacity 150ms;
 
             &.hidden {
                 opacity: 0;
                 visibility: hidden;
+                transition: opacity 150ms, visibility 150ms;
             }
 
             textarea {

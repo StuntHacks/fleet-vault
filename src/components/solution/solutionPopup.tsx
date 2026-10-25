@@ -63,11 +63,14 @@ export function SolutionPopup({ solution: s, isAdmin, onUnflagged, onDeleted }: 
 
     useEffect(() => {
         if (!flagging) return;
+        flagBox.current?.getElementsByTagName('textarea')[0]?.focus();
+
         const onPointerDown = (e: PointerEvent) => {
             const target = e.target as Node;
             if (flagBox.current?.contains(target) || flagTrigger.current?.contains(target)) return;
             setFlagging(false);
         };
+
         document.addEventListener('pointerdown', onPointerDown);
         return () => document.removeEventListener('pointerdown', onPointerDown);
     }, [flagging]);

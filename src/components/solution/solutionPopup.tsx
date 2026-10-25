@@ -206,7 +206,7 @@ export function SolutionPopup({ solution: s, isAdmin, onUnflagged, onVerified, o
                     </div>
 
 
-                    {!isAdmin && !flagged && <button ref={flagTrigger} className={styles.flag} onClick={() => setFlagging(true)}>Flag as incorrect</button>}
+                    {!flagged && <button ref={flagTrigger} className={styles.flag} onClick={() => setFlagging(true)}>Flag as incorrect</button>}
                     {isAdmin && (
                         <>
                             <button className={styles.flag} onClick={remove} disabled={adminBusy}>Delete</button>

@@ -4,6 +4,7 @@
     border-radius: 0.5rem;
     width: min(1000px, calc(100vw - 2rem));
     max-height: calc(100vh - 2rem);
+    max-height: calc(100dvh - 2rem);
     background: var(--color-glass-popup);
     backdrop-filter: var(--glass-blur);
     color: var(--color-text);

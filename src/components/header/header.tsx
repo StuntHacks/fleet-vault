@@ -1,4 +1,4 @@
-import { useMatch, useNavigate, useParams } from "react-router-dom";
+import { Link, useMatch, useNavigate, useParams } from "react-router-dom";
 import logo from "../../assets/logo.png";
 import { adminLogin, adminLogout } from "../../lib/api";
 import { useAdminSession, useFlaggedCount } from "../../lib/hooks";
@@ -17,10 +17,10 @@ export default function Header() {
 
   return (
     <header className={styles.header}>
-      <a className={styles.title} href={`/g/${id}`}>
+      <Link className={styles.title} to={`/g/${id}`}>
         <img src={logo} className={styles.logo} alt="logo" />
         <h1>FleetVault</h1>
-      </a>
+      </Link>
       <div className={styles.galaxy}>
         <GalaxySelect />
       </div>

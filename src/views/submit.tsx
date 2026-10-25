@@ -9,7 +9,7 @@ import { Solution } from "../lib/types";
 import { ConditionNode, galaxies, getConditionNodes, getGalaxyPurchases, getGalaxyUnlocks, isBossBattle, SHIPS_BY_CLASS } from "../lib/battles";
 import styles from "./submit.module.scss";
 import clsx from "clsx";
-import { useParams, useLocation, useNavigate } from "react-router-dom";
+import { Link, useParams, useLocation, useNavigate } from "react-router-dom";
 import { Button } from "../components/button/button";
 
 const SCREENSHOT_TYPES = ["image/png", "image/jpeg", "image/webp"];
@@ -147,9 +147,9 @@ export function SolutionForm({ galaxy: id, solution: s }: { galaxy?: number, sol
     return (
         <BaseLayout>
             <div className={styles.form}>
-                <a href={s ? `/g/${s.galaxy_id}?solution=${s.id}` : `/g/${id}`} className={styles.backlink}>
+                <Link to={s ? `/g/${s.galaxy_id}?solution=${s.id}` : `/g/${id}`} className={styles.backlink}>
                     {editing ? "← Back to solution" : "← Back to galaxy"}
-                </a>
+                </Link>
                 {!editing && (
                     <div className={styles.disclaimer}>
                         <strong>Thank you for submitting to the fleet vault. </strong>Please ensure your screenshot is in horizontal orientation, and any notes you provide are written in english. Ideally, please use the default skin for your ships, and include all relevant information down below.

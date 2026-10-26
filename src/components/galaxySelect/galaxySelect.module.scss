@@ -5,8 +5,17 @@
     cursor: pointer;
     padding-right: 30px;
 
+    *,
+    span {
+        -webkit-tap-highlight-color: #0000;
+    }
+
     @media screen and (max-width: 459px) {
         margin-left: 0;
+    }
+
+    @media screen and (pointer: fine) {
+        padding-right: 0;
     }
 
     &::after {
@@ -23,6 +32,10 @@
         margin-left: 10px;
         margin-top: -1px;
         transition: transform 150ms, margin-top 150ms;
+
+        @media screen and (pointer: fine) {
+            display: none;
+        }
     }
 
     &:hover {
@@ -64,9 +77,12 @@
         transition: opacity 150ms, z-index 0ms 150ms;
         padding: 0.25rem 0;
         margin: 0;
-        left: -15px;
+        left: -30px;
         min-width: calc(100% + 25px);
+        padding-left: 0.9rem;
+        padding-right: 0.9rem;
         padding-top: 37px;
+        padding-bottom: 0.5rem;
         top: -5px;
         z-index: 1;
         max-height: 450px;
@@ -75,6 +91,12 @@
         scrollbar-color: #fff6 transparent;
         -webkit-scrollbar-width: thin;
         -webkit-scrollbar-color: #fff6 transparent;
+
+        @media screen and (pointer: coarse) {
+            left: -15px;
+            padding-left: 0.25rem;
+            padding-right: 0.25rem;
+        }
 
         a {
             white-space: nowrap;

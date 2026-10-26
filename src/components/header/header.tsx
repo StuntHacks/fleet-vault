@@ -1,7 +1,9 @@
 import { Link, useMatch, useNavigate, useParams } from "react-router-dom";
+import { clsx } from "clsx";
 import logo from "../../assets/logo.png";
+import data from '../../data.json';
 import { adminLogin, adminLogout } from "../../lib/api";
-import { useAdminSession, useFlaggedCount } from "../../lib/hooks";
+import { useAdminSession, useFlaggedCount, useGalaxyAccess } from "../../lib/hooks";
 import { Button } from "../button/button";
 import GalaxySelect from "../galaxySelect/galaxySelect";
 import styles from './header.module.scss';
@@ -14,6 +16,19 @@ export default function Header({ galaxy: current }: { galaxy?: number }) {
   const id = current ?? parseInt(galaxy || "1", 10);
   const flaggedCount = useFlaggedCount(isAdmin);
   const isFlaggedPage = !!useMatch('/flagged');
+  const isAdvisorPage = !!useMatch('/advisors');
+  const access = useGalaxyAccess();
+
+  const galaxyIds = data.galaxies.map((_, i) => i + 1).filter(g => access.canView(g));
+  const prev = galaxyIds.filter(g => g < id).pop();
+  const next = galaxyIds.find(g => g > id);
+  const showArrows = !isFlaggedPage && !isAdvisorPage;
+
+  const arrow = (target: number | undefined, dir: 'prev' | 'next') => target ? (
+    <Link className={clsx(styles.arrow, styles[dir])} to={`/g/${target}`} title={`Galaxy ${target}`} aria-label={`Galaxy ${target}`} />
+  ) : (
+    <span className={clsx(styles.arrow, styles[dir], styles.disabled)} />
+  );
 
   return (
     <header className={styles.header}>
@@ -22,7 +37,9 @@ export default function Header({ galaxy: current }: { galaxy?: number }) {
         <h1>FleetVault</h1>
       </Link>
       <div className={styles.galaxy}>
-        <GalaxySelect selected={current} />
+        {showArrows && arrow(prev, 'prev')}
+        <GalaxySelect className={styles.select} selected={current} />
+        {showArrows && arrow(next, 'next')}
       </div>
       <div className={styles.login}>
         {flaggedCount > 0 && !isFlaggedPage && (

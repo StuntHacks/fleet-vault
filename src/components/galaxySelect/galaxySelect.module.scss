@@ -92,12 +92,6 @@
         -webkit-scrollbar-width: thin;
         -webkit-scrollbar-color: #fff6 transparent;
 
-        @media screen and (pointer: coarse) {
-            left: -15px;
-            padding-left: 0.25rem;
-            padding-right: 0.25rem;
-        }
-
         a {
             white-space: nowrap;
             text-decoration: none;
@@ -110,6 +104,15 @@
             &:hover {
                 background-color: #0002;
                 color: var(--color-text);
+            }
+        }
+
+        @media screen and (pointer: coarse) {
+            left: -15px;
+            
+            a {
+                padding-left: 0.25rem;
+                padding-right: 0.25rem;
             }
         }
     }

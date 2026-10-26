@@ -25,7 +25,7 @@ export default function Header({ galaxy: current }: { galaxy?: number }) {
   const showArrows = !isFlaggedPage && !isAdvisorPage;
 
   const arrow = (target: number | undefined, dir: 'prev' | 'next') => target ? (
-    <Link className={clsx(styles.arrow, styles[dir])} to={`/g/${target}`} title={`Galaxy ${target}`} aria-label={`Galaxy ${target}`} />
+    <Link className={clsx(styles.arrow, styles[dir])} to={`/g/${target}`} />
   ) : (
     <span className={clsx(styles.arrow, styles[dir], styles.disabled)} />
   );

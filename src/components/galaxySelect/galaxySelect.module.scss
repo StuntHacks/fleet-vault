@@ -14,10 +14,6 @@
         margin-left: 0;
     }
 
-    @media screen and (pointer: fine) {
-        padding-right: 0;
-    }
-
     &::after {
         content: '';
         height: 9px;
@@ -32,10 +28,6 @@
         margin-left: 10px;
         margin-top: -1px;
         transition: transform 150ms, margin-top 150ms;
-
-        @media screen and (pointer: fine) {
-            display: none;
-        }
     }
 
     &:hover {
@@ -77,10 +69,9 @@
         transition: opacity 150ms, z-index 0ms 150ms;
         padding: 0.25rem 0;
         margin: 0;
-        left: -30px;
+        left: -15px;
         min-width: calc(100% + 25px);
         padding-top: 37px;
-        padding-bottom: 0.5rem;
         top: -5px;
         z-index: 1;
         max-height: 450px;
@@ -96,8 +87,6 @@
             color: var(--color-text-secondary);
             transition: background-color 150ms, color 150ms;
             padding: 0.25rem 15px;
-            padding-left: 1.8rem;
-            padding-right: 1.75rem;
             display: flex;
             align-items: center;
 
@@ -106,13 +95,33 @@
                 color: var(--color-text);
             }
         }
+    }
 
-        @media screen and (pointer: coarse) {
-            left: -15px;
+    &.nav {
+        @media screen and (pointer: fine) {
+            padding-right: 0;
+
+            &::after {
+                display: none;
+            }
+        }
+
+        .dropdown {
+            left: -30px;
+            padding-bottom: 0.5rem;
 
             a {
-                padding-left: 1rem;
-                padding-right: 1rem;
+                padding-left: 1.8rem;
+                padding-right: 1.75rem;
+            }
+
+            @media screen and (pointer: coarse) {
+                left: -15px;
+
+                a {
+                    padding-left: 1rem;
+                    padding-right: 1rem;
+                }
             }
         }
     }

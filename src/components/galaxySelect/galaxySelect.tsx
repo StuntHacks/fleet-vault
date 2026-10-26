@@ -48,7 +48,7 @@ export default function GalaxySelect({ className, isSelect, selected, callback, 
   return (
     <div
       ref={ref}
-      className={clsx(styles.galaxySelect, className, { [styles.shown]: shown })}
+      className={clsx(styles.galaxySelect, className, { [styles.shown]: shown, [styles.nav]: !isSelect && !pageName })}
       onClick={() => setShown(!shown)}
     >
       {isSelect && (

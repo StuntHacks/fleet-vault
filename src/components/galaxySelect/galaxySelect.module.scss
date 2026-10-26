@@ -79,8 +79,6 @@
         margin: 0;
         left: -30px;
         min-width: calc(100% + 25px);
-        padding-left: 0.9rem;
-        padding-right: 0.9rem;
         padding-top: 37px;
         padding-bottom: 0.5rem;
         top: -5px;
@@ -98,6 +96,8 @@
             color: var(--color-text-secondary);
             transition: background-color 150ms, color 150ms;
             padding: 0.25rem 15px;
+            padding-left: 1.8rem;
+            padding-right: 1.75rem;
             display: flex;
             align-items: center;
 
@@ -109,10 +109,10 @@
 
         @media screen and (pointer: coarse) {
             left: -15px;
-            
+
             a {
-                padding-left: 0.25rem;
-                padding-right: 0.25rem;
+                padding-left: 1rem;
+                padding-right: 1rem;
             }
         }
     }

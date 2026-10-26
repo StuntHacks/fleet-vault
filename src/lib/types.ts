@@ -41,6 +41,18 @@ export interface FlaggedSolution extends Solution {
   solution_flags: SolutionFlag[];
 }
 
+export interface AuditEntry {
+  id: number;
+  table_name: "solutions" | "galaxies" | "solution_flags";
+  operation: "INSERT" | "UPDATE" | "DELETE";
+  record_id: number | null;
+  admin_label: string | null;
+  changed_at: string;
+  old_data: Record<string, unknown> | null;
+  new_data: Record<string, unknown> | null;
+  actor_id: string | null;
+}
+
 export interface Galaxy {
   id: number;
   notes: string | null;

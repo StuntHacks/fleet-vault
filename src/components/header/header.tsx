@@ -17,12 +17,13 @@ export default function Header({ galaxy: current }: { galaxy?: number }) {
   const flaggedCount = useFlaggedCount(isAdmin);
   const isFlaggedPage = !!useMatch('/flagged');
   const isAdvisorPage = !!useMatch('/advisors');
+  const isAuditPage = !!useMatch('/audit');
   const access = useGalaxyAccess();
 
   const galaxyIds = data.galaxies.map((_, i) => i + 1).filter(g => access.canView(g));
   const prev = galaxyIds.filter(g => g < id).pop();
   const next = galaxyIds.find(g => g > id);
-  const showArrows = !isFlaggedPage && !isAdvisorPage;
+  const showArrows = !isFlaggedPage && !isAdvisorPage && !isAuditPage;
 
   const arrow = (target: number | undefined, dir: 'prev' | 'next') => target ? (
     <Link className={clsx(styles.arrow, styles[dir])} to={`/g/${target}`} />

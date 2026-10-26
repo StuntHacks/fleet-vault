@@ -2,10 +2,10 @@ import { useEffect, useRef, useState } from 'react';
 import { useLocation, useNavigate, useSearchParams } from 'react-router-dom';
 import { Session } from '@supabase/supabase-js';
 import { supabase } from './supabase';
-import { getSolutionsForBattle, getSolutionsForGalaxy, getBattlesForGalaxy, getGalaxy, getFlaggedSolutions, getFlaggedCount, getGalaxies } from './api';
+import { getSolutionsForBattle, getSolutionsForGalaxy, getBattlesForGalaxy, getGalaxy, getFlaggedSolutions, getFlaggedCount, getGalaxies, getAuditLog, AUDIT_PAGE } from './api';
 import { galaxies } from './battles';
-import type { RankedSolutions } from './api';
-import type { Solution, Galaxy } from './types';
+import type { AuditFilter, RankedSolutions } from './api';
+import type { Solution, Galaxy, AuditEntry } from './types';
 
 const isAdminSession = (s: Session | null) => !!s?.user?.app_metadata?.fleetvault_admin;
 let staleSessionHandled = false;
@@ -137,6 +137,38 @@ export function useFlaggedSolutions() {
 
   const reload = () => getFlaggedSolutions().then(setSolutions);
   return { solutions, reload, loading, error };
+}
+
+export function useAuditLog(filter: AuditFilter) {
+  const [entries, setEntries] = useState<AuditEntry[]>([]);
+  const [hasMore, setHasMore] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<Error | null>(null);
+  const [version, setVersion] = useState(0);
+
+  useEffect(() => {
+    let current = true;
+    setLoading(true);
+    setError(null);
+    setEntries([]);
+    getAuditLog(filter)
+      .then((result) => { if (current) { setEntries(result); setHasMore(result.length === AUDIT_PAGE); } })
+      .catch((e) => { if (current) setError(e); })
+      .finally(() => { if (current) setLoading(false); });
+    return () => { current = false; };
+  }, [filter, version]);
+
+  const reload = () => setVersion((v) => v + 1);
+
+  const loadMore = () => {
+    setLoading(true);
+    getAuditLog(filter, entries[entries.length - 1]?.id)
+      .then((result) => { setEntries((prev) => [...prev, ...result]); setHasMore(result.length === AUDIT_PAGE); })
+      .catch(setError)
+      .finally(() => setLoading(false));
+  };
+
+  return { entries, hasMore, loadMore, reload, loading, error };
 }
 
 export function useFlaggedCount(enabled: boolean) {

@@ -28,7 +28,8 @@ export default function GalaxySelect({ className, isSelect, selected, callback, 
 
   const isAdvisorPage = !!useMatch('/advisors');
   const isFlaggedPage = !!useMatch('/flagged');
-  const pageName = isAdvisorPage ? 'Advisor Explorer' : isFlaggedPage ? 'Flagged Solutions' : null;
+  const isAuditPage = !!useMatch('/audit');
+  const pageName = isAdvisorPage ? 'Advisor Explorer' : isFlaggedPage ? 'Flagged Solutions' : isAuditPage ? 'Audit Log' : null;
   const { galaxy } = useParams();
   let id = (!isSelect && selected) || parseInt(galaxy || "1", 10);
   id = Math.min(Math.max(id, 1), data.galaxies.length);
@@ -80,6 +81,11 @@ export default function GalaxySelect({ className, isSelect, selected, callback, 
         {isAdmin && !isFlaggedPage && !isSelect && (
           <Link to="/flagged" className={styles.dropdownItem}>
             Flagged Solutions
+          </Link>
+        )}
+        {isAdmin && !isAuditPage && !isSelect && (
+          <Link to="/audit" className={styles.dropdownItem}>
+            Audit Log
           </Link>
         )}
       </div>

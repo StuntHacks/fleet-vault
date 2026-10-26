@@ -1,5 +1,5 @@
 import { supabase } from './supabase';
-import { Galaxy, Solution, SolutionFlag } from './types';
+import { AuditEntry, Galaxy, Solution, SolutionFlag } from './types';
 
 export async function getBattlesForGalaxy(galaxyId: number): Promise<string[]> {
   const { data, error } = await supabase
@@ -286,6 +286,37 @@ export async function getSolutionFlags(solutionId: number): Promise<SolutionFlag
     .order('created_at', { ascending: false });
   if (error) throw error;
   return data;
+}
+
+export const AUDIT_PAGE = 50;
+
+export type AuditFilter = 'actions' | 'all' | 'submissions';
+
+export async function getAuditLog(filter: AuditFilter, beforeId?: number): Promise<AuditEntry[]> {
+  let query = supabase
+    .from('audit_log')
+    .select('*')
+    .order('id', { ascending: false })
+    .limit(AUDIT_PAGE);
+  if (filter === 'actions') query = query.or('table_name.neq.solutions,operation.neq.INSERT');
+  if (filter === 'submissions') query = query.eq('table_name', 'solutions').eq('operation', 'INSERT');
+  if (beforeId) query = query.lt('id', beforeId);
+  const { data, error } = await query;
+  if (error) throw error;
+  return data;
+}
+
+export async function getExistingSolutionIds(ids: number[]): Promise<number[]> {
+  const { data, error } = await supabase.from('solutions').select('id').in('id', ids);
+  if (error) throw error;
+  return data.map((r) => r.id);
+}
+
+export async function undoAuditEntry(entry: AuditEntry, fields: string[]): Promise<void> {
+  const row = Object.fromEntries(fields.map((f) => [f, entry.old_data?.[f] ?? null]));
+  const { data, error } = await supabase.from(entry.table_name).update(row).eq('id', entry.record_id).select('id');
+  if (error) throw error;
+  if (!data.length) throw new Error('Record no longer exists');
 }
 
 export async function adminLogin(token: string): Promise<void> {

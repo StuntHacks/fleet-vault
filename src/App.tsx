@@ -4,6 +4,7 @@ import AdvisorView from './views/advisor';
 import SubmitView from './views/submit';
 import FlaggedView from './views/flagged';
 import EditView from './views/edit';
+import AuditView from './views/audit';
 import { useEffect } from 'react';
 
 export default function App() {
@@ -61,6 +62,7 @@ export default function App() {
       <Route path="/edit/:solution" element={<EditView />} />
       <Route path="/advisors" element={<AdvisorView />} />
       <Route path="/flagged" element={<FlaggedView />} />
+      <Route path="/audit" element={<AuditView />} />
       <Route path="*" element={<GalaxyView />} />
     </Routes>
   );

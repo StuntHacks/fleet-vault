@@ -1,0 +1,139 @@
+.root {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    width: 100%;
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 0 1rem 1rem;
+    box-sizing: border-box;
+}
+
+.toolbar {
+    display: flex;
+    justify-content: flex-end;
+    gap: 1rem;
+    padding: 0.5rem 1rem;
+    border-radius: 0.5rem;
+    color: var(--color-text-secondary);
+    background: var(--color-glass);
+    backdrop-filter: var(--glass-blur);
+}
+
+.entry {
+    background: var(--color-glass);
+    backdrop-filter: var(--glass-blur);
+    border-radius: 0.5rem;
+    box-shadow: 0 0 6px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+}
+
+.summary {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem 0.75rem;
+    padding: 0.75rem 1rem;
+
+    @media screen and (max-width: 699px) {
+        flex-wrap: wrap;
+    }
+}
+
+.side {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 0.5rem 0.75rem;
+    flex-shrink: 0;
+    margin-left: auto;
+}
+
+.operation {
+    display: inline-block;
+    white-space: nowrap;
+    flex-shrink: 0;
+    padding: 0.125rem 0.5rem 0.25rem;
+    font-weight: bold;
+    border-radius: 0.25rem;
+    color: var(--color);
+    background-color: var(--bg-color);
+    --color: var(--color-obsolete);
+    --bg-color: var(--bg-color-obsolete);
+
+    &.INSERT {
+        --color: var(--color-support);
+        --bg-color: var(--bg-color-support);
+    }
+
+    &.DELETE {
+        --color: var(--color-hazard);
+        --bg-color: var(--bg-color-hazard);
+    }
+
+    &.verified {
+        --color: var(--color-verified);
+        --bg-color: var(--bg-color-verified);
+    }
+}
+
+.target {
+    font-weight: bold;
+    color: var(--color-text);
+    text-decoration: none;
+
+    &:is(a):hover {
+        text-decoration: underline;
+    }
+}
+
+.meta {
+    font-size: 0.875rem;
+    color: var(--color-text-secondary);
+}
+
+.changes {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.875rem;
+    table-layout: fixed;
+
+    th,
+    td {
+        border-top: 1px solid var(--color-border);
+        padding: 0.35rem 1rem;
+        text-align: left;
+        vertical-align: top;
+    }
+
+    th {
+        width: 9rem;
+        font-weight: normal;
+        color: var(--color-text-secondary);
+        overflow-wrap: anywhere;
+    }
+
+    td > div {
+        max-height: 8rem;
+        overflow: auto;
+        white-space: pre-wrap;
+        overflow-wrap: anywhere;
+        user-select: text;
+    }
+
+    .before {
+        color: var(--color-hazard);
+    }
+
+    .after {
+        color: var(--color-support);
+    }
+
+    .before + .after {
+        border-left: 1px solid var(--color-border);
+    }
+}
+
+.more {
+    display: flex;
+    justify-content: center;
+}

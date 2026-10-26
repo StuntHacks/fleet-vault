@@ -61,13 +61,13 @@
     --bg-color: var(--bg-color-obsolete);
 
     &.INSERT {
-        --color: var(--color-support);
+        --color: var(--color-verified);
         --bg-color: var(--bg-color-support);
     }
 
     &.DELETE {
-        --color: var(--color-hazard);
-        --bg-color: var(--bg-color-hazard);
+        --color: var(--color-verified);
+        --bg-color: var(--color-hazard);
     }
 
     &.verified {

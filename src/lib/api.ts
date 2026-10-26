@@ -194,11 +194,12 @@ export async function getSolution(id: number): Promise<Solution | null> {
 }
 
 // admin stuff
-export async function updateSolution(id: number, params: SolutionFields, unflag: boolean): Promise<void> {
+export async function updateSolution(id: number, params: SolutionFields, unflag: boolean, verified: boolean): Promise<void> {
   const row = {
     ...solutionRow(params),
     ...(params.screenshot && await uploadScreenshot(params.galaxyId, params.battleId, params.screenshot)),
     ...(unflag && { flagged: false }),
+    verified_at: verified ? new Date().toISOString() : null,
   };
   const { data, error } = await supabase.from('solutions').update(row).eq('id', id).select('id');
   if (error) throw error;

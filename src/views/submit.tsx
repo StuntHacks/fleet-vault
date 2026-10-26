@@ -90,6 +90,7 @@ export function SolutionForm({ galaxy: id, solution: s }: { galaxy?: number, sol
     const [bossDamage, setBossDamage] = useState<string>(optional(s?.boss_damage));
     const [notes, setNotes] = useState<string>(s?.notes ?? "");
     const [unflag, setUnflag] = useState(true);
+    const [verified, setVerified] = useState(s?.verified_at != null);
 
     const battleData = selectedGalaxy && selectedBattle
         ? galaxies[selectedGalaxy - 1]?.battles[selectedBattle - 1]
@@ -139,7 +140,7 @@ export function SolutionForm({ galaxy: id, solution: s }: { galaxy?: number, sol
             bossDamage: showBossResults && Number.isFinite(bossDamageValue) ? bossDamageValue : null,
         };
         const request = s
-            ? updateSolution(s.id, fields, s.flagged && unflag).then(() => s.id)
+            ? updateSolution(s.id, fields, s.flagged && unflag, verified).then(() => s.id)
             : submitSolution({ ...fields, advancedSolution: undefined, submittedBy: "Anonymous" });
         request.then((solutionId) => {
             navigate(`/g/${selectedGalaxy}?solution=${solutionId}`, { replace: editing });
@@ -334,6 +335,9 @@ export function SolutionForm({ galaxy: id, solution: s }: { galaxy?: number, sol
                 </div>
                 {s?.flagged && (
                     <Checkbox checked={unflag} onChange={setUnflag}>Unflag solution</Checkbox>
+                )}
+                {s && (
+                    <Checkbox checked={verified} onChange={setVerified}>Verified</Checkbox>
                 )}
                 <Button disabled={
                     loading ||

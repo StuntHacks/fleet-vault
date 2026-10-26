@@ -15,6 +15,8 @@ interface CombatStatInputProps {
 }
 
 export function CombatStatInput({ className, value, onChange, min, max, step, decimals = 3, stepper = true, allowEmpty = false, disabled }: CombatStatInputProps) {
+    const format = (v: number) => String(parseFloat(v.toFixed(decimals)));
+
     const handleChange = (raw: string) => {
         if (raw === "" || raw === "-") { onChange(raw); return; }
         onChange(raw);
@@ -26,7 +28,7 @@ export function CombatStatInput({ className, value, onChange, min, max, step, de
         if (isNaN(v)) v = min;
         if (v < min) v = min;
         if (max !== undefined && v > max) v = max;
-        onChange(v.toFixed(decimals));
+        onChange(format(v));
     };
 
     const step_ = (dir: number) => {
@@ -34,7 +36,7 @@ export function CombatStatInput({ className, value, onChange, min, max, step, de
         v = parseFloat((v + dir * step).toFixed(decimals));
         if (v < min) v = min;
         if (max !== undefined && v > max) v = max;
-        onChange(v.toFixed(decimals));
+        onChange(format(v));
     };
 
     return (

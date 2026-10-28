@@ -5,7 +5,7 @@ import { BaseLayout } from "../components/baselayout/baselayout";
 import { Button } from "../components/button/button";
 import { Checkbox } from "../components/checkbox/checkbox";
 import { useAdminSession, useAuditLog } from "../lib/hooks";
-import { AuditFilter, getExistingSolutionIds, getSolution, undoAuditEntry } from "../lib/api";
+import { AuditFilter, AuditType, getExistingSolutionIds, getSolution, undoAuditEntry } from "../lib/api";
 import { findBattle } from "../lib/battles";
 import { AuditEntry } from "../lib/types";
 import galaxyStyles from "./galaxy.module.scss";
@@ -13,6 +13,7 @@ import styles from "./audit.module.scss";
 
 const TABLES = { solutions: "Solution", galaxies: "Galaxy", solution_flags: "Flag", solution_updates: "Update" };
 const OPERATIONS = { INSERT: "created", UPDATE: "edited", DELETE: "deleted" };
+const FILTERS: Record<AuditType, string> = { flags: "Flags", changes: "Solution changes", updates: "Updates", submissions: "Submissions" };
 
 function format(value: unknown): string {
     if (value == null) return "";
@@ -75,9 +76,12 @@ function verification(entry: AuditEntry): "verified" | "unverified" | null {
 
 const isFlagEdit = (e: AuditEntry) => e.table_name === "solution_flags" && e.operation === "UPDATE";
 
+function isFlaggedOnly(entry: AuditEntry): boolean {
+    return entry.table_name === "solutions" && entry.operation === "UPDATE" && changes(entry, {}).every((c) => c.key === "flagged");
+}
+
 function isFlagSync(entry: AuditEntry, entries: AuditEntry[]): boolean {
-    if (entry.table_name !== "solutions" || entry.operation !== "UPDATE") return false;
-    if (changes(entry, {}).some((c) => c.key !== "flagged")) return false;
+    if (!isFlaggedOnly(entry)) return false;
     return entries.some((e) => e.table_name === "solution_flags" && e.changed_at === entry.changed_at
         && (e.new_data ?? e.old_data)?.solution_id === entry.record_id);
 }
@@ -164,7 +168,7 @@ function AuditItem({ entry, labels, reasons, solutionExists, onUndone }: { entry
 export default function AuditView() {
     const session = useAdminSession();
     const navigate = useNavigate();
-    const [filter, setFilter] = useState<AuditFilter>("actions");
+    const [filter, setFilter] = useState<AuditFilter>({ flags: true, changes: true, updates: true, submissions: false });
     const log = useAuditLog(filter);
     const [existing, setExisting] = useState<number[]>([]);
     const labels = Object.fromEntries(log.entries.filter((e) => e.actor_id && e.admin_label).map((e) => [e.actor_id, e.admin_label]));
@@ -184,15 +188,14 @@ export default function AuditView() {
         <BaseLayout>
             <div className={styles.root}>
                 <div className={styles.toolbar}>
-                    <Checkbox name="showSubmissions" checked={filter !== "actions"} onChange={(v) => setFilter(v ? "all" : "actions")}>
-                        Show submissions
-                    </Checkbox>
-                    <Checkbox name="onlySubmissions" checked={filter === "submissions"} onChange={(v) => setFilter(v ? "submissions" : "all")}>
-                        Only submissions
-                    </Checkbox>
+                    {(Object.keys(FILTERS) as AuditType[]).map((type) => (
+                        <Checkbox key={type} name={type} checked={filter[type]} onChange={(v) => setFilter({ ...filter, [type]: v })}>
+                            {FILTERS[type]}
+                        </Checkbox>
+                    ))}
                 </div>
                 {log.error && <p className={galaxyStyles.error}>Error loading audit log</p>}
-                {log.entries.filter((e) => !isFlagSync(e, log.entries)).map((e) => <AuditItem entry={e} key={e.id} labels={labels} reasons={flagReasons(e, log.entries)} solutionExists={existing.includes(solutionIdOf(e)!)} onUndone={log.reload} />)}
+                {log.entries.filter((e) => filter.flags ? !isFlagSync(e, log.entries) : !isFlaggedOnly(e)).map((e) => <AuditItem entry={e} key={e.id} labels={labels} reasons={flagReasons(e, log.entries)} solutionExists={existing.includes(solutionIdOf(e)!)} onUndone={log.reload} />)}
                 {log.loading && <p className={galaxyStyles.info}>Loading...</p>}
                 {!log.loading && !log.error && !log.entries.length && <p className={galaxyStyles.info}>No entries</p>}
                 {log.hasMore && !log.loading && (

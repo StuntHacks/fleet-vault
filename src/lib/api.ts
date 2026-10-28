@@ -374,16 +374,25 @@ export async function resolveSolutionUpdate(id: number, applied: boolean): Promi
 
 export const AUDIT_PAGE = 50;
 
-export type AuditFilter = 'actions' | 'all' | 'submissions';
+export type AuditType = 'flags' | 'changes' | 'updates' | 'submissions';
+export type AuditFilter = Record<AuditType, boolean>;
+
+const AUDIT_CONDITIONS: Record<AuditType, string[]> = {
+  flags: ['table_name.eq.solution_flags'],
+  changes: ['and(table_name.eq.solutions,operation.neq.INSERT)', 'table_name.eq.galaxies'],
+  updates: ['table_name.eq.solution_updates'],
+  submissions: ['and(table_name.eq.solutions,operation.eq.INSERT)'],
+};
 
 export async function getAuditLog(filter: AuditFilter, beforeId?: number): Promise<AuditEntry[]> {
+  const conditions = (Object.keys(AUDIT_CONDITIONS) as AuditType[]).filter((t) => filter[t]).flatMap((t) => AUDIT_CONDITIONS[t]);
+  if (!conditions.length) return [];
   let query = supabase
     .from('audit_log')
     .select('*')
+    .or(conditions.join(','))
     .order('id', { ascending: false })
     .limit(AUDIT_PAGE);
-  if (filter === 'actions') query = query.or('table_name.neq.solutions,operation.neq.INSERT');
-  if (filter === 'submissions') query = query.eq('table_name', 'solutions').eq('operation', 'INSERT');
   if (beforeId) query = query.lt('id', beforeId);
   const { data, error } = await query;
   if (error) throw error;

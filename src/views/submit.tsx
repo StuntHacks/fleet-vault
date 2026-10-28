@@ -79,6 +79,20 @@ export function SolutionForm({ galaxy: id, solution: s, suggest, updateId }: { g
         return () => window.removeEventListener('fv:paste-image', handler);
     }, [suggest]);
 
+    const [portrait, setPortrait] = useState(false);
+    useEffect(() => {
+        setPortrait(false);
+        if (!screenshot) return;
+
+        let current = true;
+        createImageBitmap(screenshot).then((bitmap) => {
+            if (current) setPortrait(bitmap.height > bitmap.width);
+            bitmap.close();
+        }).catch(() => { });
+
+        return () => { current = false; };
+    }, [screenshot]);
+
     const [combatStats, setCombatStats] = useState<string>(s ? String(s.combat_stats) : "1");
     const [frUsed, setFrUsed] = useState<string>(s ? String(s.fr_used) : "");
     const [frCommitted, setFrCommitted] = useState<string>(optional(s?.fr_committed));
@@ -190,6 +204,9 @@ export function SolutionForm({ galaxy: id, solution: s, suggest, updateId }: { g
                 />}
                 {screenshotProblem && (
                     <span className={styles.error}>{screenshotProblem}</span>
+                )}
+                {!screenshotProblem && portrait && !editing && (
+                    <span className={styles.error}>This screenshot is in portrait mode (likely mobile). Please use a horizontal screenshot, otherwise your solution will be flagged for manual review.</span>
                 )}
                 <div className={styles.field}>
                     <span className={styles.label}>Galaxy</span>

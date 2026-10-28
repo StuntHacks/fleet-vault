@@ -105,13 +105,13 @@ export interface SolutionFields {
 }
 
 const THUMBNAIL_WIDTH = 480;
+const PORTRAIT_FLAG_REASON = 'Automatic: portrait screenshot (mobile version?)';
 
 function encodeCanvas(canvas: HTMLCanvasElement, type: string, quality: number): Promise<Blob | null> {
   return new Promise((resolve) => canvas.toBlob(resolve, type, quality));
 }
 
-async function makeThumbnail(screenshot: File): Promise<Blob | null> {
-  const bitmap = await createImageBitmap(screenshot);
+async function makeThumbnail(bitmap: ImageBitmap): Promise<Blob | null> {
   const scale = Math.min(1, THUMBNAIL_WIDTH / bitmap.width);
   const canvas = document.createElement('canvas');
   canvas.width = Math.round(bitmap.width * scale);
@@ -136,10 +136,15 @@ async function uploadImage(path: string, image: Blob): Promise<string> {
 
 async function uploadScreenshot(galaxyId: number, battleId: string, screenshot: File) {
   const base = `${galaxyId}/${battleId}/${Date.now()}`;
-  const thumbnail = await makeThumbnail(screenshot).catch(() => null);
+  const bitmap = await createImageBitmap(screenshot).catch(() => null);
+  const portrait = !!bitmap && bitmap.height > bitmap.width;
+  const thumbnail = bitmap && await makeThumbnail(bitmap).catch(() => null);
   return {
-    screenshot_url: await uploadImage(`${base}.${IMAGE_EXTENSIONS[screenshot.type] ?? 'png'}`, screenshot),
-    thumbnail_url: thumbnail && await uploadImage(`${base}.thumb.${IMAGE_EXTENSIONS[thumbnail.type]}`, thumbnail),
+    portrait,
+    images: {
+      screenshot_url: await uploadImage(`${base}.${IMAGE_EXTENSIONS[screenshot.type] ?? 'png'}`, screenshot),
+      thumbnail_url: thumbnail && await uploadImage(`${base}.thumb.${IMAGE_EXTENSIONS[thumbnail.type]}`, thumbnail),
+    },
   };
 }
 
@@ -168,9 +173,9 @@ export async function submitSolution(params: SolutionFields & {
   submittedBy: string;
   advancedSolution?: string;
 }): Promise<number> {
-  const images = params.screenshot
+  const { portrait, images } = params.screenshot
     ? await uploadScreenshot(params.galaxyId, params.battleId, params.screenshot)
-    : { screenshot_url: null, thumbnail_url: null };
+    : { portrait: false, images: { screenshot_url: null, thumbnail_url: null } };
 
   const { data, error } = await supabase.from('solutions').insert({
     ...solutionRow(params),
@@ -180,6 +185,7 @@ export async function submitSolution(params: SolutionFields & {
   }).select('id').single();
 
   if (error) throw error;
+  if (portrait) await flagSolution(data.id, PORTRAIT_FLAG_REASON).catch(() => {});
   return data.id;
 }
 
@@ -221,7 +227,7 @@ export async function getSolution(id: number): Promise<Solution | null> {
 export async function updateSolution(id: number, params: SolutionFields, unflag: boolean, verified: boolean): Promise<void> {
   const row = {
     ...solutionRow(params),
-    ...(params.screenshot && await uploadScreenshot(params.galaxyId, params.battleId, params.screenshot)),
+    ...(params.screenshot && (await uploadScreenshot(params.galaxyId, params.battleId, params.screenshot)).images),
     ...(unflag && { flagged: false }),
     verified_at: verified ? new Date().toISOString() : null,
   };

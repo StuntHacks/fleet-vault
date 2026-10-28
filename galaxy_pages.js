@@ -14,7 +14,10 @@ galaxies.forEach((galaxy, i) => {
   const meta =
     `<meta property="og:title" content="${escape(`${galaxy.name} - Unnamed Space Idle FleetVault`)}"/>` +
     `<meta property="og:description" content="${escape(description)}"/>`;
-  fs.writeFileSync(path.join(buildDir, 'g', `${i + 1}.html`), index.replace('</head>', `${meta}</head>`));
+  const html = index
+    .replace(/<title>[^<]*<\/title>/, `<title>G${i + 1} - Unnamed Space Idle FleetVault</title>`)
+    .replace('</head>', `${meta}</head>`);
+  fs.writeFileSync(path.join(buildDir, 'g', `${i + 1}.html`), html);
 });
 
 console.log(`Wrote ${galaxies.length} galaxy pages to build/g/`);

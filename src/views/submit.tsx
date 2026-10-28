@@ -167,7 +167,7 @@ export function SolutionForm({ galaxy: id, solution: s, suggest, updateId }: { g
                 </Link>
                 {!editing && (
                     <div className={styles.disclaimer}>
-                        <strong>Thank you for submitting to the fleet vault. </strong>Please ensure your screenshot is in horizontal orientation, and any notes you provide are written in english. Ideally, please use the default skin for your ships, and include all relevant information down below.
+                        <strong>Thank you for submitting to the fleet vault. </strong>Please ensure your screenshot is in <strong>horizontal orientation</strong>, and any notes you provide are written in <strong>english</strong>. Ideally, please use the default skin for your ships, and include all relevant information down below.
                     </div>
                 )}
                 {(!suggest || s?.screenshot_url) && <FileUpload

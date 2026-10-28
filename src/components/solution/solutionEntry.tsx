@@ -58,6 +58,7 @@ export function SolutionEntry({ solution, obsolete = false, onOpen, preloadImage
 
     return (
         <div
+            id={`solution-${s.id}`}
             className={`${styles.solution} ${obsolete ? styles.obsolete : ""} ${s.flagged && isAdmin ? styles.flagged : ""}`}
             role="button"
             tabIndex={0}

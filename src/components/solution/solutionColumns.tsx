@@ -4,9 +4,9 @@ export function SolutionColumns({ ref, children }: { ref?: React.Ref<HTMLDivElem
     return <div className={styles.battles} ref={ref}>{children}</div>;
 }
 
-export function SolutionColumn({ title, boss, count, children }: { title: string, boss?: boolean, count: number, children: React.ReactNode }) {
+export function SolutionColumn({ id, title, boss, count, children }: { id?: string, title: string, boss?: boolean, count: number, children: React.ReactNode }) {
     return (
-        <div className={styles.battle}>
+        <div className={styles.battle} id={id}>
             <div className={styles.battleName}>
                 {title}
                 {boss && <span className={styles.hasBoss}>Boss</span>}

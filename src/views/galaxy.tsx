@@ -124,6 +124,27 @@ export default function GalaxyView() {
             .find((s) => s.id === selectedId) ?? null;
     }, [solutions.byBattle, selectedId]);
 
+    const listReady = !solutions.loading && !solutions.error && allowed;
+    const scrolledTo = useRef<number | null>(null);
+
+    useEffect(() => {
+        if (!listReady || selectedId == null || scrolledTo.current === selectedId) return;
+
+        const target =
+            document.getElementById(`solution-${selectedId}`)
+            ?? (selected && document.getElementById(`battle-${selected.battle_id}`));
+
+        if (!target || !listRef.current) return;
+
+        const align = scrolledTo.current == null ? "center" : "nearest";
+        scrolledTo.current = selectedId;
+        const scroll = () => target.scrollIntoView({ block: align, inline: align });
+
+        const observer = new ResizeObserver(scroll);
+        observer.observe(listRef.current);
+        setTimeout(() => observer.disconnect(), 2000);
+    }, [listReady, selectedId, selected]);
+
     const [navStats, setNavStats] = useState<number | null>(null);
 
     useEffect(() => {
@@ -158,7 +179,7 @@ export default function GalaxyView() {
         <BaseLayout>
             {(solutions.loading || !allowed) && <p className={styles.info}>Loading...</p>}
             {solutions.error && <p className={styles.error}>Error loading solutions</p>}
-            {!solutions.loading && !solutions.error && allowed && (
+            {listReady && (
                 <>
                     <div className={styles.menuBar}>
                         <div className={styles.settings}>
@@ -195,7 +216,7 @@ export default function GalaxyView() {
                     <SolutionColumns ref={listRef}>
                         {flaggedOnly && !columns.length && <p className={styles.info}>No flagged solutions</p>}
                         {columns.map(({ battle: b, results }) => (
-                            <SolutionColumn key={b.id} title={b.name} boss={isBossBattle(b)} count={results.best.length}>
+                            <SolutionColumn key={b.id} id={`battle-${b.id}`} title={b.name} boss={isBossBattle(b)} count={results.best.length}>
                                 <Solutions
                                     solutions={results}
                                     onOpen={openSolution}

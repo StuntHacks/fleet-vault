@@ -46,9 +46,10 @@
         }
     }
 
-    &.flag {
-        color: var(--color-hazard);
-        border-color: var(--color-hazard);
+    &.flag,
+    &.update {
+        color: var(--color);
+        border-color: var(--color);
         white-space: nowrap;
 
         span {
@@ -58,9 +59,19 @@
 
         &:hover,
         &:active {
-            color: var(--color-hazard-dark);
-            border-color: var(--color-hazard-dark);
+            color: var(--color-dark);
+            border-color: var(--color-dark);
         }
+    }
+
+    &.flag {
+        --color: var(--color-hazard);
+        --color-dark: var(--color-hazard-dark);
+    }
+
+    &.update {
+        --color: var(--bg-color-verified);
+        --color-dark: var(--bg-color-verified-dark);
     }
 
     span {

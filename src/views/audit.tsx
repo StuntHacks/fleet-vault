@@ -11,7 +11,7 @@ import { AuditEntry } from "../lib/types";
 import galaxyStyles from "./galaxy.module.scss";
 import styles from "./audit.module.scss";
 
-const TABLES = { solutions: "Solution", galaxies: "Galaxy", solution_flags: "Flag" };
+const TABLES = { solutions: "Solution", galaxies: "Galaxy", solution_flags: "Flag", solution_updates: "Update" };
 const OPERATIONS = { INSERT: "created", UPDATE: "edited", DELETE: "deleted" };
 
 function format(value: unknown): string {
@@ -43,6 +43,9 @@ function Target({ entry }: { entry: AuditEntry }) {
     if (entry.table_name === "solution_flags") {
         return <span className={styles.target}>Flag on solution #{row.solution_id}</span>;
     }
+    if (entry.table_name === "solution_updates") {
+        return <span className={styles.target}>Update on solution #{row.solution_id}</span>;
+    }
     const battle = findBattle(row.galaxy_id, row.battle_id)?.name ?? row.battle_id;
     return (
         <Link className={styles.target} to={`/g/${row.galaxy_id}?solution=${entry.record_id}`}>
@@ -58,7 +61,7 @@ function Value({ value }: { value: string }) {
 
 function solutionIdOf(entry: AuditEntry): number | null {
     if (entry.table_name === "solutions") return entry.record_id;
-    if (entry.table_name === "solution_flags") return Number((entry.new_data ?? entry.old_data)?.solution_id);
+    if (entry.table_name === "solution_flags" || entry.table_name === "solution_updates") return Number((entry.new_data ?? entry.old_data)?.solution_id);
     return null;
 }
 
@@ -79,7 +82,7 @@ function isFlagSync(entry: AuditEntry, entries: AuditEntry[]): boolean {
         && (e.new_data ?? e.old_data)?.solution_id === entry.record_id);
 }
 
-function badge(entry: AuditEntry, diff: { key: string }[]): [label: string, tone: string] {
+function badge(entry: AuditEntry, diff: { key: string }[]): [label: string, color: string] {
     const verified = verification(entry);
     if (verified) {
         const label = diff.every((c) => c.key.startsWith("verified_")) ? `Solution ${verified}` : `Solution edited & ${verified}`;
@@ -89,6 +92,10 @@ function badge(entry: AuditEntry, diff: { key: string }[]): [label: string, tone
         return entry.new_data?.resolved_at == null ? ["Flag reopened", "DELETE"] : ["Flag resolved", "UPDATE"];
     }
     if (entry.table_name === "solution_flags" && entry.operation === "INSERT") return ["Flag added", "DELETE"];
+    if (entry.table_name === "solution_updates" && entry.operation === "INSERT") return ["Update suggested", "INSERT"];
+    if (entry.table_name === "solution_updates" && entry.operation === "UPDATE" && entry.new_data?.resolved_at != null) {
+        return entry.new_data?.applied ? ["Update applied", "verified"] : ["Update rejected", "DELETE"];
+    }
     return [`${TABLES[entry.table_name] ?? entry.table_name} ${OPERATIONS[entry.operation]}`, entry.operation];
 }
 
@@ -103,7 +110,7 @@ function flagReasons(entry: AuditEntry, entries: AuditEntry[]): (string | null)[
 function AuditItem({ entry, labels, reasons, solutionExists, onUndone }: { entry: AuditEntry; labels: Record<string, string>; reasons: (string | null)[]; solutionExists: boolean; onUndone: () => void }) {
     const navigate = useNavigate();
     const diff = changes(entry, labels);
-    const [label, tone] = badge(entry, diff);
+    const [label, color] = badge(entry, diff);
 
     const goToSolution = async () => {
         const solution = await getSolution(solutionIdOf(entry)!).catch(() => null);
@@ -121,7 +128,7 @@ function AuditItem({ entry, labels, reasons, solutionExists, onUndone }: { entry
     return (
         <div className={styles.entry}>
             <div className={styles.summary}>
-                <span className={clsx(styles.operation, styles[tone])}>
+                <span className={clsx(styles.operation, styles[color])}>
                     {label}
                 </span>
                 <Target entry={entry} />

@@ -343,6 +343,22 @@
                 user-select: text;
                 cursor: auto;
             }
+
+            .removed,
+            .added {
+                display: block;
+                margin-top: 0.25rem;
+                padding: 0.25rem 0.5rem;
+                border-radius: 0.25rem;
+            }
+
+            .removed {
+                background: var(--bg-color-hazard);
+            }
+
+            .added {
+                background: var(--bg-color-support);
+            }
         }
     }
 
@@ -360,6 +376,14 @@
         }
     }
 
+    .row {
+        width: 100%;
+        display: flex;
+        gap: 0.5rem;
+        border-bottom: 1px solid var(--color-border);
+        padding-bottom: 0.5rem;
+    }
+
     .curation {
         display: flex;
         gap: 0.5rem;
@@ -373,6 +397,11 @@
 
         .flagged {
             color: var(--color-hazard);
+            width: 100%;
+        }
+
+        .suggested {
+            color: var(--color-support);
             width: 100%;
         }
 
@@ -392,6 +421,10 @@
             white-space: pre-wrap;
             user-select: text;
             cursor: auto;
+
+            &.update {
+                border-left-color: var(--bg-color-verified);
+            }
         }
 
         .flagging {

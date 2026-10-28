@@ -5,7 +5,8 @@ import { Modal } from "../components/modal/modal";
 import { SolutionColumn, SolutionColumns } from "../components/solution/solutionColumns";
 import { SolutionEntry } from "../components/solution/solutionEntry";
 import { SolutionPopup } from "../components/solution/solutionPopup";
-import { useAdminSession, useFlaggedSolutions, useSelectedSolution } from "../lib/hooks";
+import { getFlaggedSolutions } from "../lib/api";
+import { useAdminSession, useSelectedSolution, useSolutionQueue } from "../lib/hooks";
 import { findBattle, galaxies } from "../lib/battles";
 import { Solution } from "../lib/types";
 import styles from "./galaxy.module.scss";
@@ -13,10 +14,14 @@ import styles from "./galaxy.module.scss";
 const battleIndex = (s: Solution) => galaxies[s.galaxy_id - 1]?.battles.findIndex((b) => b.id === s.battle_id) ?? -1;
 
 export default function FlaggedView() {
+    return <SolutionQueue load={getFlaggedSolutions} empty="No flagged solutions" />;
+}
+
+export function SolutionQueue({ load, empty }: { load: () => Promise<Solution[]>, empty: string }) {
     const session = useAdminSession();
     const isAdmin = !!session;
     const navigate = useNavigate();
-    const solutions = useFlaggedSolutions();
+    const solutions = useSolutionQueue(load);
     const listRef = useRef<HTMLDivElement>(null);
     const { selectedId, openSolution, closeSolution } = useSelectedSolution();
 
@@ -56,7 +61,7 @@ export default function FlaggedView() {
                         </div>
                     </div>
                     <SolutionColumns ref={listRef}>
-                        {!solutions.solutions.length && <p className={styles.info}>No flagged solutions</p>}
+                        {!solutions.solutions.length && <p className={styles.info}>{empty}</p>}
                         {Object.entries(byGalaxy).map(([galaxyId, list]) => (
                             <SolutionColumn key={galaxyId} title={`Galaxy ${galaxyId}`} count={list.length}>
                                 {list.map((s) => (
@@ -83,6 +88,7 @@ export default function FlaggedView() {
                         isAdmin={isAdmin}
                         showGalaxy
                         onFlagsChanged={() => { closeSolution(); refreshSolutions(); }}
+                        onUpdatesChanged={() => { closeSolution(); refreshSolutions(); }}
                         onVerified={refreshSolutions}
                         onDeleted={() => { closeSolution(); refreshSolutions(); }}
                     />

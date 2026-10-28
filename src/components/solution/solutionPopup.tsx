@@ -1,9 +1,9 @@
-import { useEffect, useRef, useState } from "react";
+import { Fragment, useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { clsx } from "clsx";
-import { deleteSolution, flagSolution, getSolutionFlags, setSolutionVerified, unflagSolution } from "../../lib/api";
-import { findBattle, getConditionNodes } from "../../lib/battles";
-import { Solution, SolutionFlag } from "../../lib/types";
+import { deleteSolution, flagSolution, getOpenUpdateIds, getSolutionFlags, getSolutionUpdates, resolveSolutionUpdate, setSolutionVerified, unflagSolution } from "../../lib/api";
+import { findBattle, getConditionNodes, getGalaxyUnlocks } from "../../lib/battles";
+import { Solution, SolutionFlag, SolutionUpdate } from "../../lib/types";
 import { Extras, formatStats } from "./solutionEntry";
 import styles from "./solution.module.scss";
 
@@ -24,6 +24,15 @@ const rememberFlagged = (id: number) => {
     localStorage.setItem(flaggedKey, JSON.stringify([...flagged.filter((x) => x !== id), id]))
 }
 
+const suggestedKey = 'fleetvault_suggested_updates';
+const readSuggested = () => JSON.parse(localStorage.getItem(suggestedKey) ?? '{}') as Record<number, number[]>;
+
+export const rememberSuggestion = (solutionId: number, updateId: number) => {
+    const suggested = readSuggested();
+    suggested[solutionId] = [...(suggested[solutionId] ?? []), updateId];
+    localStorage.setItem(suggestedKey, JSON.stringify(suggested));
+}
+
 const getPopupValues = (s: Solution): string[] => {
     const values: string[] = [];
     if (s.boss_alive === false) values.push("Boss dead");
@@ -33,6 +42,18 @@ const getPopupValues = (s: Solution): string[] => {
     if (s.fr_total != null) values.push(`Total FR: ${s.fr_total}`);
     return values;
 }
+
+const UPDATE_LABELS: Record<string, string> = {
+    fr_committed: "FR committed",
+    hazard_nodes: "Hazards",
+    support_nodes: "Supports",
+    boss_alive: "Boss",
+    unlocks: "Required unlocks",
+    purchases: "Ship selection",
+    shots: "Shots",
+    fr_total: "Total FR",
+    boss_damage: "Damage done",
+};
 
 function Screenshot({ url, thumbnailUrl }: { url: string, thumbnailUrl: string | null }) {
     const [thumbnailFailed, setThumbnailFailed] = useState(false);
@@ -53,7 +74,7 @@ function Screenshot({ url, thumbnailUrl }: { url: string, thumbnailUrl: string |
     );
 }
 
-export function SolutionPopup({ solution: s, isAdmin, showGalaxy, onFlagsChanged, onVerified, onDeleted }: { solution: Solution, isAdmin: boolean, showGalaxy?: boolean, onFlagsChanged: () => void, onVerified: () => void, onDeleted: () => void }) {
+export function SolutionPopup({ solution: s, isAdmin, showGalaxy, onFlagsChanged, onUpdatesChanged, onVerified, onDeleted }: { solution: Solution, isAdmin: boolean, showGalaxy?: boolean, onFlagsChanged: () => void, onUpdatesChanged?: () => void, onVerified: () => void, onDeleted: () => void }) {
     const battle = findBattle(s.galaxy_id, s.battle_id);
     const { hazards, supports } = getConditionNodes(battle);
     const nodeLabel = (nodes: { id: string, label: string }[], id: string) => nodes.find((n) => n.id === id)?.label ?? id;
@@ -67,11 +88,30 @@ export function SolutionPopup({ solution: s, isAdmin, showGalaxy, onFlagsChanged
     const [flagError, setFlagError] = useState(false);
     const [reason, setReason] = useState('');
     const [flagReasons, setFlagReasons] = useState<SolutionFlag[]>([]);
+    const [updates, setUpdates] = useState<SolutionUpdate[]>([]);
+    const noteUpdates = updates.filter((u) => u.changes.notes != null);
     const [adminBusy, setAdminBusy] = useState(false);
     const [adminError, setAdminError] = useState<string | null>(null);
     const flagBox = useRef<HTMLDivElement>(null);
     const flagTrigger = useRef<HTMLButtonElement>(null);
     const showFlagged = flagged || (isAdmin && s.flagged);
+    const [suggested, setSuggested] = useState(() => !!readSuggested()[s.id]?.length);
+
+    useEffect(() => {
+        const ids = readSuggested()[s.id];
+        if (!ids?.length) return;
+        let current = true;
+        getOpenUpdateIds(ids)
+            .then((open) => {
+                const stored = readSuggested();
+                if (open.length) stored[s.id] = open;
+                else delete stored[s.id];
+                localStorage.setItem(suggestedKey, JSON.stringify(stored));
+                if (current) setSuggested(open.length > 0);
+            })
+            .catch(() => {});
+        return () => { current = false; };
+    }, [s.id]);
 
     useEffect(() => {
         if (!isAdmin || !s.flagged) return;
@@ -81,6 +121,24 @@ export function SolutionPopup({ solution: s, isAdmin, showGalaxy, onFlagsChanged
             .catch(() => {});
         return () => { current = false; };
     }, [isAdmin, s.id, s.flagged]);
+
+    useEffect(() => {
+        if (!isAdmin) return;
+        let current = true;
+        getSolutionUpdates(s.id)
+            .then((result) => { if (current) setUpdates(result); })
+            .catch(() => {});
+        return () => { current = false; };
+    }, [isAdmin, s.id]);
+
+    const formatUpdate = (key: string, value: unknown): string => {
+        if (key === "boss_alive") return value ? "Alive" : "Dead";
+        if (key === "hazard_nodes") return (value as string[]).map((id) => nodeLabel(hazards, id)).join(", ");
+        if (key === "support_nodes") return (value as string[]).map((id) => nodeLabel(supports, id)).join(", ");
+        if (key === "unlocks") return (value as string[]).map((u) => getGalaxyUnlocks(s.galaxy_id).find((g) => g.code === u)?.name ?? u).join(", ");
+        if (key === "purchases") return Object.entries(value as Record<string, string>).map(([node, ship]) => `${node}: ${ship}`).join(", ");
+        return String(value);
+    };
 
     useEffect(() => {
         if (!flagging) return;
@@ -125,6 +183,21 @@ export function SolutionPopup({ solution: s, isAdmin, showGalaxy, onFlagsChanged
             onFlagsChanged();
         } catch {
             setAdminError('Unflagging failed, please try again');
+        } finally {
+            setAdminBusy(false);
+        }
+    }
+
+    const rejectUpdate = async (id: number) => {
+        setAdminBusy(true);
+        setAdminError(null);
+        try {
+            await resolveSolutionUpdate(id, false);
+            window.dispatchEvent(new Event('fv:updates-changed'));
+            setUpdates((prev) => prev.filter((u) => u.id !== id));
+            onUpdatesChanged?.();
+        } catch {
+            setAdminError('Rejecting failed, please try again');
         } finally {
             setAdminBusy(false);
         }
@@ -204,9 +277,15 @@ export function SolutionPopup({ solution: s, isAdmin, showGalaxy, onFlagsChanged
                         {s.non_standard && <span className={styles.nonStandard}>Non-standard path</span>}
                     </div>
                 )}
-                {s.notes &&
+                {(s.notes || noteUpdates.length > 0) &&
                     <div className={styles.notes}>
-                        <strong>Notes: </strong>{s.notes}
+                        <strong>Notes: </strong>
+                        {noteUpdates.length ? (
+                            <>
+                                {s.notes && <span className={styles.removed}>{s.notes}</span>}
+                                {noteUpdates.map((u) => <span className={styles.added} key={u.id}>{u.changes.notes}</span>)}
+                            </>
+                        ) : s.notes}
                     </div>
                 }
                 <Extras solution={s} />
@@ -228,8 +307,25 @@ export function SolutionPopup({ solution: s, isAdmin, showGalaxy, onFlagsChanged
                         <button className={styles.flag} onClick={flag} disabled={submitting}>Flag</button>
                     </div>
 
+                    {isAdmin && updates.map((u) => (
+                        <Fragment key={u.id}>
+                            <strong className={styles.reasons}>Missing information provided:</strong>
+                            {Object.keys(u.changes).some((key) => key !== "notes") && (
+                                <div className={clsx(styles.reason, styles.update)}>
+                                    {Object.entries(u.changes).filter(([key]) => key !== "notes").map(([key, value]) => (
+                                        <span key={key}>{UPDATE_LABELS[key] ?? key}: {formatUpdate(key, value)}</span>
+                                    ))}
+                                </div>
+                            )}
+                            <div className={styles.row}>
+                                <button className={styles.verify} onClick={() => navigate(`/edit/${s.id}?update=${u.id}`)} disabled={adminBusy}>Apply</button>
+                                <button onClick={() => rejectUpdate(u.id)} disabled={adminBusy}>Reject</button>
+                            </div>
+                        </Fragment>
+                    ))}
 
                     {!showFlagged && <button ref={flagTrigger} className={styles.flag} onClick={() => setFlagging(true)}>Flag as incorrect</button>}
+                    {!isAdmin && !suggested && <button onClick={() => navigate(`/suggest/${s.id}`)}>Fill in missing information</button>}
                     {isAdmin && (
                         <>
                             <button className={styles.flag} onClick={remove} disabled={adminBusy}>Delete</button>
@@ -241,6 +337,7 @@ export function SolutionPopup({ solution: s, isAdmin, showGalaxy, onFlagsChanged
                     )}
 
                     {showFlagged && <span className={styles.flagged}>Flagged as incorrect</span>}
+                    {!isAdmin && suggested && <span className={styles.suggested}>Missing information suggested</span>}
 
                     {isAdmin && flagReasons.length > 0 && (
                         <>

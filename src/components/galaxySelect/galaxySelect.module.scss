@@ -31,7 +31,12 @@
     }
 
     &:hover {
-        
+
+    }
+
+    &.disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
     }
 
     &.shown {
@@ -74,12 +79,18 @@
         padding-top: 37px;
         top: -5px;
         z-index: 1;
-        max-height: 500px;
+        max-height: 525px;
         overflow-y: auto;
         scrollbar-width: thin;
         scrollbar-color: #fff6 transparent;
         -webkit-scrollbar-width: thin;
         -webkit-scrollbar-color: #fff6 transparent;
+
+        .divider {
+            height: 1px;
+            background-color: var(--color-border);
+            margin: 0.35rem 1rem 0.25rem;
+        }
 
         a {
             white-space: nowrap;

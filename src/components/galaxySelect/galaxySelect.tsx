@@ -10,7 +10,7 @@ export interface SelectItem {
   value: number;
 }
 
-export default function GalaxySelect({ className, isSelect, selected, callback, items, placeholder = 'Select Galaxy' }: { className?: string; isSelect?: boolean; selected?: number; callback?: (id: number) => void; items?: SelectItem[]; placeholder?: string }) {
+export default function GalaxySelect({ className, isSelect, selected, callback, items, placeholder = 'Select Galaxy', disabled }: { className?: string; isSelect?: boolean; selected?: number; callback?: (id: number) => void; items?: SelectItem[]; placeholder?: string; disabled?: boolean }) {
   const [shown, setShown] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
 
@@ -28,8 +28,9 @@ export default function GalaxySelect({ className, isSelect, selected, callback, 
 
   const isAdvisorPage = !!useMatch('/advisors');
   const isFlaggedPage = !!useMatch('/flagged');
+  const isUpdatesPage = !!useMatch('/updates');
   const isAuditPage = !!useMatch('/audit');
-  const pageName = isAdvisorPage ? 'Advisor Explorer' : isFlaggedPage ? 'Flagged Solutions' : isAuditPage ? 'Audit Log' : null;
+  const pageName = isAdvisorPage ? 'Advisor Explorer' : isFlaggedPage ? 'Flagged Solutions' : isUpdatesPage ? 'Pending Updates' : isAuditPage ? 'Audit Log' : null;
   const { galaxy } = useParams();
   let id = (!isSelect && selected) || parseInt(galaxy || "1", 10);
   id = Math.min(Math.max(id, 1), data.galaxies.length);
@@ -49,8 +50,8 @@ export default function GalaxySelect({ className, isSelect, selected, callback, 
   return (
     <div
       ref={ref}
-      className={clsx(styles.galaxySelect, className, { [styles.shown]: shown, [styles.nav]: !isSelect && !pageName })}
-      onClick={() => setShown(!shown)}
+      className={clsx(styles.galaxySelect, className, { [styles.shown]: shown, [styles.nav]: !isSelect && !pageName, [styles.disabled]: disabled })}
+      onClick={() => !disabled && setShown(!shown)}
     >
       {isSelect && (
         <span className={styles.current}>
@@ -73,6 +74,7 @@ export default function GalaxySelect({ className, isSelect, selected, callback, 
               </Link>
             ))
         }
+        {isAdmin && <div className={styles.divider} />}
         {isAdmin && !isAdvisorPage && !isSelect && (
           <Link to="/advisors" className={styles.dropdownItem}>
             Advisor Explorer
@@ -81,6 +83,11 @@ export default function GalaxySelect({ className, isSelect, selected, callback, 
         {isAdmin && !isFlaggedPage && !isSelect && (
           <Link to="/flagged" className={styles.dropdownItem}>
             Flagged Solutions
+          </Link>
+        )}
+        {isAdmin && !isUpdatesPage && !isSelect && (
+          <Link to="/updates" className={styles.dropdownItem}>
+            Pending Updates
           </Link>
         )}
         {isAdmin && !isAuditPage && !isSelect && (

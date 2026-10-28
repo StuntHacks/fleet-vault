@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import { useLocation, useNavigate, useSearchParams } from 'react-router-dom';
 import { Session } from '@supabase/supabase-js';
 import { supabase } from './supabase';
-import { getSolutionsForBattle, getSolutionsForGalaxy, getBattlesForGalaxy, getGalaxy, getFlaggedSolutions, getFlaggedCount, getGalaxies, getAuditLog, AUDIT_PAGE } from './api';
+import { getSolutionsForBattle, getSolutionsForGalaxy, getBattlesForGalaxy, getGalaxy, getFlaggedCount, getUpdateCount, getGalaxies, getAuditLog, AUDIT_PAGE } from './api';
 import { galaxies } from './battles';
 import type { AuditFilter, RankedSolutions } from './api';
 import type { Solution, Galaxy, AuditEntry } from './types';
@@ -121,21 +121,21 @@ export function useGalaxySolutions(galaxyId: number) {
   return { byBattle, forBattle, reload, loading, error };
 }
 
-export function useFlaggedSolutions() {
+export function useSolutionQueue(load: () => Promise<Solution[]>) {
   const [solutions, setSolutions] = useState<Solution[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<Error | null>(null);
 
   useEffect(() => {
     let current = true;
-    getFlaggedSolutions()
+    load()
       .then((result) => { if (current) setSolutions(result); })
       .catch((e) => { if (current) setError(e); })
       .finally(() => { if (current) setLoading(false); });
     return () => { current = false; };
-  }, []);
+  }, [load]);
 
-  const reload = () => getFlaggedSolutions().then(setSolutions);
+  const reload = () => load().then(setSolutions);
   return { solutions, reload, loading, error };
 }
 
@@ -171,7 +171,7 @@ export function useAuditLog(filter: AuditFilter) {
   return { entries, hasMore, loadMore, reload, loading, error };
 }
 
-export function useFlaggedCount(enabled: boolean) {
+function usePendingCount(enabled: boolean, load: () => Promise<number>, event: string) {
   const [count, setCount] = useState(0);
 
   useEffect(() => {
@@ -180,17 +180,20 @@ export function useFlaggedCount(enabled: boolean) {
       return;
     }
     let current = true;
-    const load = () => { getFlaggedCount().then((c) => { if (current) setCount(c); }).catch(() => {}); };
-    load();
-    window.addEventListener('fv:flags-changed', load);
+    const reload = () => { load().then((c) => { if (current) setCount(c); }).catch(() => {}); };
+    reload();
+    window.addEventListener(event, reload);
     return () => {
       current = false;
-      window.removeEventListener('fv:flags-changed', load);
+      window.removeEventListener(event, reload);
     };
-  }, [enabled]);
+  }, [enabled, load, event]);
 
   return count;
 }
+
+export const useFlaggedCount = (enabled: boolean) => usePendingCount(enabled, getFlaggedCount, 'fv:flags-changed');
+export const useUpdateCount = (enabled: boolean) => usePendingCount(enabled, getUpdateCount, 'fv:updates-changed');
 
 export function useSelectedSolution() {
   const location = useLocation();

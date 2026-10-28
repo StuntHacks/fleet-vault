@@ -37,13 +37,23 @@ export interface SolutionFlag {
   resolved_by: string | null;
 }
 
+export interface SolutionUpdate {
+  id: number;
+  solution_id: number;
+  changes: Partial<Solution>;
+  created_at: string;
+  resolved_at: string | null;
+  resolved_by: string | null;
+  applied: boolean | null;
+}
+
 export interface FlaggedSolution extends Solution {
   solution_flags: SolutionFlag[];
 }
 
 export interface AuditEntry {
   id: number;
-  table_name: "solutions" | "galaxies" | "solution_flags";
+  table_name: "solutions" | "galaxies" | "solution_flags" | "solution_updates";
   operation: "INSERT" | "UPDATE" | "DELETE";
   record_id: number | null;
   admin_label: string | null;

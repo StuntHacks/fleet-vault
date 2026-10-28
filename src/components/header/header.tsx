@@ -3,7 +3,7 @@ import { clsx } from "clsx";
 import logo from "../../assets/logo.png";
 import data from '../../data.json';
 import { adminLogin, adminLogout } from "../../lib/api";
-import { useAdminSession, useFlaggedCount, useGalaxyAccess } from "../../lib/hooks";
+import { useAdminSession, useFlaggedCount, useGalaxyAccess, useUpdateCount } from "../../lib/hooks";
 import { Button } from "../button/button";
 import GalaxySelect from "../galaxySelect/galaxySelect";
 import styles from './header.module.scss';
@@ -15,7 +15,9 @@ export default function Header({ galaxy: current }: { galaxy?: number }) {
   const { galaxy } = useParams();
   const id = current ?? parseInt(galaxy || "1", 10);
   const flaggedCount = useFlaggedCount(isAdmin);
+  const updateCount = useUpdateCount(isAdmin);
   const isFlaggedPage = !!useMatch('/flagged');
+  const isUpdatesPage = !!useMatch('/updates');
   const isAdvisorPage = !!useMatch('/advisors');
   const isAuditPage = !!useMatch('/audit');
   const access = useGalaxyAccess();
@@ -23,7 +25,7 @@ export default function Header({ galaxy: current }: { galaxy?: number }) {
   const galaxyIds = data.galaxies.map((_, i) => i + 1).filter(g => access.canView(g));
   const prev = galaxyIds.filter(g => g < id).pop();
   const next = galaxyIds.find(g => g > id);
-  const showArrows = !isFlaggedPage && !isAdvisorPage && !isAuditPage;
+  const showArrows = !isFlaggedPage && !isUpdatesPage && !isAdvisorPage && !isAuditPage;
 
   const arrow = (target: number | undefined, dir: 'prev' | 'next') => target ? (
     <Link className={clsx(styles.arrow, styles[dir])} to={`/g/${target}`} />
@@ -45,7 +47,12 @@ export default function Header({ galaxy: current }: { galaxy?: number }) {
       <div className={styles.login}>
         {flaggedCount > 0 && !isFlaggedPage && (
           <Button variant="flag" onClick={() => navigate('/flagged')}>
-            {flaggedCount} flagged<span>{flaggedCount === 1 ? 'solution' : 'solutions'} pending</span>
+            {flaggedCount} flagged<span>pending</span>
+          </Button>
+        )}
+        {updateCount > 0 && !isUpdatesPage && (
+          <Button variant="update" onClick={() => navigate('/updates')}>
+            {updateCount} {updateCount === 1 ? 'update' : 'updates'}<span>pending</span>
           </Button>
         )}
         {isAdmin ?

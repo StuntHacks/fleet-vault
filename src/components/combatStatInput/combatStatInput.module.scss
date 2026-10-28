@@ -28,6 +28,11 @@
         outline: none;
         border-color: var(--color-primary-active);
     }
+
+    &:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+    }
 }
 
 .stepBtn {

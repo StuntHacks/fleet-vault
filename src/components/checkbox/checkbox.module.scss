@@ -11,4 +11,13 @@
         height: 1rem;
         margin: 0;
     }
+
+    &.disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+
+        input[type="checkbox"] {
+            cursor: not-allowed;
+        }
+    }
 }

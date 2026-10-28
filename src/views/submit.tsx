@@ -4,7 +4,7 @@ import { FileUpload } from "../components/fileUpload/fileUpload";
 import GalaxySelect from "../components/galaxySelect/galaxySelect";
 import { CombatStatInput } from "../components/combatStatInput/combatStatInput";
 import { Checkbox } from "../components/checkbox/checkbox";
-import { submitSolution, updateSolution } from "../lib/api";
+import { isEmpty, missingInfo, resolveSolutionUpdate, submitSolution, suggestSolutionUpdate, updateSolution } from "../lib/api";
 import { Solution } from "../lib/types";
 import { useGalaxyAccess } from "../lib/hooks";
 import { ConditionNode, galaxies, getConditionNodes, getGalaxyPurchases, getGalaxyUnlocks, isBossBattle, SHIPS_BY_CLASS } from "../lib/battles";
@@ -12,6 +12,7 @@ import styles from "./submit.module.scss";
 import clsx from "clsx";
 import { Link, Navigate, useParams, useLocation, useNavigate } from "react-router-dom";
 import { Button } from "../components/button/button";
+import { rememberSuggestion } from "../components/solution/solutionPopup";
 
 const SCREENSHOT_TYPES = ["image/png", "image/jpeg", "image/webp"];
 const MAX_SCREENSHOT_MB = 10;
@@ -49,9 +50,10 @@ export default function SubmitView() {
     return <SolutionForm galaxy={id} />;
 }
 
-export function SolutionForm({ galaxy: id, solution: s }: { galaxy?: number, solution?: Solution }) {
+export function SolutionForm({ galaxy: id, solution: s, suggest, updateId }: { galaxy?: number, solution?: Solution, suggest?: boolean, updateId?: number }) {
     const navigate = useNavigate();
     const editing = !!s;
+    const locked = (value: unknown) => !!suggest && !isEmpty(value);
     const [selectedGalaxy, setSelectedGalaxy] = useState<number | undefined>(s ? s.galaxy_id : id);
     const [selectedBattle, setSelectedBattle] = useState<number | undefined>(() => {
         if (!s) return undefined;
@@ -117,35 +119,39 @@ export function SolutionForm({ galaxy: id, solution: s }: { galaxy?: number, sol
     const toggleNode = (setter: (update: (prev: string[]) => string[]) => void) => (nodeId: string, checked: boolean) =>
         setter((prev) => checked ? [...prev, nodeId] : prev.filter((n) => n !== nodeId));
 
+    const fields = battleData && {
+        galaxyId: selectedGalaxy!,
+        battleId: battleData.id,
+        combatStats: parseFloat(combatStats.replace(",", ".")),
+        frUsed: frUsedValue,
+        frCommitted: frCommittedValue,
+        notes: notes,
+        screenshot: screenshot || undefined,
+        hazards: hazard,
+        hazardNodes: selectedNodes(hazard, hazardOptions, hazardNodes),
+        support: support,
+        supportNodes: selectedNodes(support, supportOptions, supportNodes),
+        bossAlive: isBoss && (bossDefeated || !suggest || s?.boss_alive != null || shotsValue > 0 || Number.isFinite(bossDamageValue)) ? !bossDefeated : null,
+        unlocks: unlocks.filter((u) => galaxyUnlocks.some((g) => g.code === u)),
+        purchases: Object.fromEntries(Object.entries(purchases).filter(([node, ship]) => ship && galaxyPurchases.some((p) => p.name === node))),
+        shots: showBossResults && shotsValue > 0 ? shotsValue : null,
+        frTotal: multiShot && Number.isFinite(frTotalValue) ? frTotalValue : null,
+        bossDamage: showBossResults && Number.isFinite(bossDamageValue) ? bossDamageValue : null,
+    };
+    const filledIn = suggest && s && fields ? missingInfo(s, fields) : {};
+
     const submit = () => {
-        if (!battleData) return;
+        if (!fields) return;
         setLoading(true);
-        const fields = {
-            galaxyId: selectedGalaxy!,
-            battleId: battleData.id,
-            combatStats: parseFloat(combatStats.replace(",", ".")),
-            frUsed: frUsedValue,
-            frCommitted: frCommittedValue,
-            notes: notes,
-            screenshot: screenshot || undefined,
-            hazards: hazard,
-            hazardNodes: selectedNodes(hazard, hazardOptions, hazardNodes),
-            support: support,
-            supportNodes: selectedNodes(support, supportOptions, supportNodes),
-            bossAlive: isBoss ? !bossDefeated : null,
-            unlocks: unlocks.filter((u) => galaxyUnlocks.some((g) => g.code === u)),
-            purchases: Object.fromEntries(Object.entries(purchases).filter(([node, ship]) => ship && galaxyPurchases.some((p) => p.name === node))),
-            shots: showBossResults && shotsValue > 0 ? shotsValue : null,
-            frTotal: multiShot && Number.isFinite(frTotalValue) ? frTotalValue : null,
-            bossDamage: showBossResults && Number.isFinite(bossDamageValue) ? bossDamageValue : null,
-        };
-        const request = s
-            ? updateSolution(s.id, fields, s.flagged && unflag, verified).then(() => s.id)
+        const request = suggest && s
+            ? suggestSolutionUpdate(s.id, filledIn).then((updateId) => { rememberSuggestion(s.id, updateId); return s.id; })
+            : s
+            ? updateSolution(s.id, fields, s.flagged && unflag, verified).then(() => updateId ? resolveSolutionUpdate(updateId, true) : undefined).then(() => s.id)
             : submitSolution({ ...fields, advancedSolution: undefined, submittedBy: "Anonymous" });
         request.then((solutionId) => {
             navigate(`/g/${selectedGalaxy}?solution=${solutionId}`, { replace: editing });
         }).catch((e) => {
-            alert(`Failed to ${editing ? "save" : "submit"} solution: ` + e.message);
+            alert(`Failed to ${suggest ? "submit changes" : editing ? "save solution" : "submit solution"}: ` + e.message);
             console.error(e);
             setLoading(false);
         });
@@ -162,7 +168,7 @@ export function SolutionForm({ galaxy: id, solution: s }: { galaxy?: number, sol
                         <strong>Thank you for submitting to the fleet vault. </strong>Please ensure your screenshot is in horizontal orientation, and any notes you provide are written in english. Ideally, please use the default skin for your ships, and include all relevant information down below.
                     </div>
                 )}
-                <FileUpload
+                {!suggest && <FileUpload
                     accept={SCREENSHOT_TYPES.join(",")}
                     preview
                     file={screenshot}
@@ -170,13 +176,13 @@ export function SolutionForm({ galaxy: id, solution: s }: { galaxy?: number, sol
                     className={styles.fileUpload}
                     onFileSelected={(file) => setScreenshot(file)}
                     idleText={screenshot ? screenshot.name : "Click or drag a screenshot to upload"}
-                />
+                />}
                 {screenshotProblem && (
                     <span className={styles.error}>{screenshotProblem}</span>
                 )}
                 <div className={styles.field}>
                     <span className={styles.label}>Galaxy</span>
-                    <GalaxySelect isSelect selected={selectedGalaxy} className={styles.galaxySelect} callback={(galaxyId) => { setSelectedGalaxy(galaxyId); setSelectedBattle(undefined); setCombatStats("1"); setUnlocks([]); setPurchases({}); }} />
+                    <GalaxySelect isSelect selected={selectedGalaxy} className={styles.galaxySelect} disabled={suggest} callback={(galaxyId) => { setSelectedGalaxy(galaxyId); setSelectedBattle(undefined); setCombatStats("1"); setUnlocks([]); setPurchases({}); }} />
                 </div>
                 <div className={clsx(styles.field, {[styles.hidden]: !selectedGalaxy})}>
                     <span className={styles.label}>Battle</span>
@@ -185,6 +191,7 @@ export function SolutionForm({ galaxy: id, solution: s }: { galaxy?: number, sol
                         selected={selectedBattle}
                         className={styles.galaxySelect}
                         placeholder="Select Battle"
+                        disabled={suggest}
                         items={selectedGalaxy
                             ? galaxies[selectedGalaxy - 1]?.battles.map((b, i) => ({ label: b.name, value: i + 1 }))
                             : []}
@@ -209,7 +216,7 @@ export function SolutionForm({ galaxy: id, solution: s }: { galaxy?: number, sol
                         min={selectedGalaxy ? galaxies[selectedGalaxy - 1].minStats : 1}
                         max={selectedGalaxy ? galaxies[selectedGalaxy - 1].maxStats : 1}
                         step={selectedGalaxy ? galaxies[selectedGalaxy - 1].step : 0.025}
-                        disabled={!selectedGalaxy}
+                        disabled={!selectedGalaxy || suggest}
                     />
                 </div>
                 <div className={clsx(styles.field, { [styles.hidden]: !selectedGalaxy })}>
@@ -222,7 +229,7 @@ export function SolutionForm({ galaxy: id, solution: s }: { galaxy?: number, sol
                         decimals={2}
                         stepper={false}
                         allowEmpty
-                        disabled={!selectedGalaxy}
+                        disabled={!selectedGalaxy || suggest}
                     />
                 </div>
                 <div className={clsx(styles.field, { [styles.hidden]: !selectedGalaxy })}>
@@ -235,7 +242,7 @@ export function SolutionForm({ galaxy: id, solution: s }: { galaxy?: number, sol
                         decimals={2}
                         stepper={false}
                         allowEmpty
-                        disabled={!selectedGalaxy}
+                        disabled={!selectedGalaxy || locked(s?.fr_committed)}
                     />
                 </div>
                 {frCommittedTooLow && (
@@ -246,19 +253,19 @@ export function SolutionForm({ galaxy: id, solution: s }: { galaxy?: number, sol
                         <span className={styles.label}>Active</span>
                         <div className={styles.checkboxes}>
                             {hazardOptions.length > 0 && (
-                                <Checkbox checked={hazard} onChange={setHazard}>Hazard</Checkbox>
+                                <Checkbox checked={hazard} onChange={setHazard} disabled={suggest}>Hazard</Checkbox>
                             )}
                             {supportOptions.length > 0 && (
-                                <Checkbox checked={support} onChange={setSupport}>Support</Checkbox>
+                                <Checkbox checked={support} onChange={setSupport} disabled={suggest}>Support</Checkbox>
                             )}
                         </div>
                     </div>
                 )}
                 {hazard && hazardOptions.length > 1 && (
-                    <NodeField label="Which hazards? (optional)" options={hazardOptions} selected={hazardNodes} onToggle={toggleNode(setHazardNodes)} />
+                    <NodeField label="Which hazards? (optional)" options={hazardOptions} selected={hazardNodes} onToggle={toggleNode(setHazardNodes)} disabled={locked(s?.hazard_nodes)} />
                 )}
                 {support && supportOptions.length > 1 && (
-                    <NodeField label="Which supports? (optional)" options={supportOptions} selected={supportNodes} onToggle={toggleNode(setSupportNodes)} />
+                    <NodeField label="Which supports? (optional)" options={supportOptions} selected={supportNodes} onToggle={toggleNode(setSupportNodes)} disabled={locked(s?.support_nodes)} />
                 )}
                 {galaxyUnlocks.length > 0 && (
                     <div className={clsx(styles.field, { [styles.hidden]: !selectedBattle })}>
@@ -269,6 +276,7 @@ export function SolutionForm({ galaxy: id, solution: s }: { galaxy?: number, sol
                                     key={u.code}
                                     checked={unlocks.includes(u.code)}
                                     onChange={(checked) => setUnlocks((prev) => checked ? [...prev, u.code] : prev.filter((c) => c !== u.code))}
+                                    disabled={locked(s?.unlocks)}
                                 >
                                     {u.code} ({u.name})
                                 </Checkbox>
@@ -286,6 +294,7 @@ export function SolutionForm({ galaxy: id, solution: s }: { galaxy?: number, sol
                                     <select
                                         value={purchases[p.name] ?? ""}
                                         onChange={(e) => setPurchases((prev) => ({ ...prev, [p.name]: e.target.value }))}
+                                        disabled={locked(s?.purchases?.[p.name])}
                                     >
                                         <option value="">–</option>
                                         <option value="none">None</option>
@@ -299,24 +308,24 @@ export function SolutionForm({ galaxy: id, solution: s }: { galaxy?: number, sol
                 {isBoss && (
                     <div className={styles.field}>
                         <span className={styles.label}>Boss</span>
-                        <Checkbox checked={bossDefeated} onChange={setBossDefeated}>Already defeated</Checkbox>
+                        <Checkbox checked={bossDefeated} onChange={setBossDefeated} disabled={locked(s?.boss_alive)}>Already defeated</Checkbox>
                     </div>
                 )}
                 {showBossResults && (
                     <>
                         <div className={styles.field}>
                             <span className={styles.label}>Shots (optional)</span>
-                            <CombatStatInput value={shots} onChange={setShots} min={1} step={1} decimals={0} allowEmpty />
+                            <CombatStatInput value={shots} onChange={setShots} min={1} step={1} decimals={0} allowEmpty disabled={locked(s?.shots)} />
                         </div>
                         {multiShot && (
                             <div className={styles.field}>
                                 <span className={styles.label}>FR Total (all shots)</span>
-                                <CombatStatInput value={frTotal} onChange={setFrTotal} min={0} step={0.01} decimals={2} stepper={false} allowEmpty />
+                                <CombatStatInput value={frTotal} onChange={setFrTotal} min={0} step={0.01} decimals={2} stepper={false} allowEmpty disabled={locked(s?.fr_total)} />
                             </div>
                         )}
                         <div className={styles.field}>
                             <span className={styles.label}>Boss Damage (optional)</span>
-                            <CombatStatInput value={bossDamage} onChange={setBossDamage} min={0} step={0.01} decimals={2} stepper={false} allowEmpty />
+                            <CombatStatInput value={bossDamage} onChange={setBossDamage} min={0} step={0.01} decimals={2} stepper={false} allowEmpty disabled={locked(s?.boss_damage)} />
                         </div>
                         {frTotalTooLow && (
                             <span className={styles.error}>FR Total can't be lower than FR Used</span>
@@ -333,10 +342,10 @@ export function SolutionForm({ galaxy: id, solution: s }: { galaxy?: number, sol
                         onChange={(e) => setNotes(e.target.value)}
                     />
                 </div>
-                {s?.flagged && (
+                {s?.flagged && !suggest && (
                     <Checkbox checked={unflag} onChange={setUnflag}>Unflag solution</Checkbox>
                 )}
-                {s && (
+                {s && !suggest && (
                     <Checkbox checked={verified} onChange={setVerified}>Verified</Checkbox>
                 )}
                 <Button disabled={
@@ -348,27 +357,29 @@ export function SolutionForm({ galaxy: id, solution: s }: { galaxy?: number, sol
                     !!screenshotProblem ||
                     !selectedGalaxy ||
                     !selectedBattle ||
-                    !combatStats
+                    !combatStats ||
+                    (suggest && !Object.keys(filledIn).length)
                 } onClick={() => submit()}>
-                    {editing ? (loading ? "Saving..." : "Save") : (loading ? "Submitting..." : "Submit")}
+                    {suggest ? (loading ? "Submitting..." : "Submit changes") : editing ? (loading ? "Saving..." : "Save") : (loading ? "Submitting..." : "Submit")}
                 </Button>
             </div>
         </BaseLayout>
     );
 }
 
-function NodeField({ label, options, selected, onToggle }: {
+function NodeField({ label, options, selected, onToggle, disabled }: {
     label: string;
     options: ConditionNode[];
     selected: string[];
     onToggle: (id: string, checked: boolean) => void;
+    disabled?: boolean;
 }) {
     return (
         <div className={styles.field}>
             <span className={styles.label}>{label}</span>
             <div className={clsx(styles.checkboxes, styles.nodeList)}>
                 {options.map((o) => (
-                    <Checkbox key={o.id} checked={selected.includes(o.id)} onChange={(checked) => onToggle(o.id, checked)}>
+                    <Checkbox key={o.id} checked={selected.includes(o.id)} onChange={(checked) => onToggle(o.id, checked)} disabled={disabled}>
                         {o.label}
                     </Checkbox>
                 ))}

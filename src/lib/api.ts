@@ -1,5 +1,5 @@
 import { supabase } from './supabase';
-import { AuditEntry, Galaxy, Solution, SolutionFlag } from './types';
+import { AuditEntry, Galaxy, Solution, SolutionFlag, SolutionUpdate } from './types';
 
 export async function getBattlesForGalaxy(galaxyId: number): Promise<string[]> {
   const { data, error } = await supabase
@@ -183,6 +183,30 @@ export async function submitSolution(params: SolutionFields & {
   return data.id;
 }
 
+export const isEmpty = (value: unknown) =>
+  value == null || value === '' || (typeof value === 'object' && !Object.keys(value).length);
+
+export function missingInfo(s: Solution, params: SolutionFields): Partial<Solution> {
+  const row = {
+    ...solutionRow(params),
+    purchases: Object.fromEntries(Object.entries(params.purchases).filter(([node]) => !s.purchases?.[node])),
+  };
+  return Object.fromEntries(Object.entries(row).filter(([key, value]) =>
+    !isEmpty(value) && (key === 'purchases' || (key === 'notes' ? value !== s.notes : isEmpty(s[key as keyof Solution])))));
+}
+
+export async function suggestSolutionUpdate(id: number, changes: Partial<Solution>): Promise<number> {
+  const { data, error } = await supabase.rpc('suggest_solution_update', { solution_id: id, changes });
+  if (error) throw error;
+  return data;
+}
+
+export async function getOpenUpdateIds(ids: number[]): Promise<number[]> {
+  const { data, error } = await supabase.rpc('open_solution_updates', { update_ids: ids });
+  if (error) throw error;
+  return data;
+}
+
 export async function getSolution(id: number): Promise<Solution | null> {
   const { data, error } = await supabase
     .from('solutions')
@@ -286,6 +310,60 @@ export async function getSolutionFlags(solutionId: number): Promise<SolutionFlag
     .order('created_at', { ascending: false });
   if (error) throw error;
   return data;
+}
+
+export async function getUpdatedSolutions(): Promise<Solution[]> {
+  const { data, error } = await supabase.from('solution_updates').select('solution_id').is('resolved_at', null);
+  if (error) throw error;
+  const ids = [...new Set(data.map((u) => u.solution_id))];
+  if (!ids.length) return [];
+  const { data: solutions, error: solutionsError } = await supabase
+    .from('solutions_ranked')
+    .select('*')
+    .in('id', ids)
+    .order('galaxy_id')
+    .order('battle_id')
+    .order('combat_stats')
+    .order('rank_in_group')
+    .order('id');
+  if (solutionsError) throw solutionsError;
+  return solutions as Solution[];
+}
+
+export async function getUpdateCount(): Promise<number> {
+  const { count, error } = await supabase
+    .from('solution_updates')
+    .select('id', { count: 'exact', head: true })
+    .is('resolved_at', null);
+  if (error) throw error;
+  return count ?? 0;
+}
+
+export async function getSolutionUpdates(solutionId: number): Promise<SolutionUpdate[]> {
+  const { data, error } = await supabase
+    .from('solution_updates')
+    .select('*')
+    .eq('solution_id', solutionId)
+    .is('resolved_at', null)
+    .order('created_at');
+  if (error) throw error;
+  return data;
+}
+
+export async function getSolutionUpdate(id: number): Promise<SolutionUpdate | null> {
+  const { data, error } = await supabase
+    .from('solution_updates')
+    .select('*')
+    .eq('id', id)
+    .is('resolved_at', null)
+    .maybeSingle();
+  if (error) throw error;
+  return data;
+}
+
+export async function resolveSolutionUpdate(id: number, applied: boolean): Promise<void> {
+  const { error } = await supabase.rpc('resolve_solution_update', { update_id: id, applied });
+  if (error) throw error;
 }
 
 export const AUDIT_PAGE = 50;

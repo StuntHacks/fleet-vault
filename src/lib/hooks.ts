@@ -171,6 +171,7 @@ export function useAuditLog(filter: AuditFilter) {
   return { entries, hasMore, loadMore, reload, loading, error };
 }
 
+
 function usePendingCount(enabled: boolean, load: () => Promise<number>, event: string) {
   const [count, setCount] = useState(0);
 
@@ -179,13 +180,22 @@ function usePendingCount(enabled: boolean, load: () => Promise<number>, event: s
       setCount(0);
       return;
     }
+
     let current = true;
-    const reload = () => { load().then((c) => { if (current) setCount(c); }).catch(() => {}); };
+    const reload = () => { load().then((c) => { if (current) setCount(c); }).catch(() => { }); };
+
+    const poll = () => { if (document.visibilityState === 'visible') reload(); };
+    const interval = setInterval(poll, 60000);
+    
     reload();
     window.addEventListener(event, reload);
+    document.addEventListener('visibilitychange', poll);
+
     return () => {
       current = false;
+      clearInterval(interval);
       window.removeEventListener(event, reload);
+      document.removeEventListener('visibilitychange', poll);
     };
   }, [enabled, load, event]);
 

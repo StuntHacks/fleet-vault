@@ -337,7 +337,7 @@ export function SolutionPopup({ solution: s, isAdmin, showGalaxy, onFlagsChanged
                     )}
 
                     {showFlagged && <span className={styles.flagged}>Flagged as incorrect</span>}
-                    {!isAdmin && suggested && <span className={styles.suggested}>Missing information suggested</span>}
+                    {!isAdmin && suggested && <span className={styles.suggested}>Missing information submitted for review</span>}
 
                     {isAdmin && flagReasons.length > 0 && (
                         <>

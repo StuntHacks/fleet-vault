@@ -17,12 +17,23 @@ import { HiddenGalaxy } from "../components/hiddenGalaxy/hiddenGalaxy";
 
 const statFilterKey = (galaxyId: number) => `fleetvault_stat_filter_${galaxyId}`;
 const combatStatsKey = (galaxyId: number) => `fleetvault_combat_stats_${galaxyId}`;
+const upToStatsKey = (galaxyId: number) => `fleetvault_up_to_stats_${galaxyId}`;
 
 const nearestStats = (solutions: Solution[], stats: number) =>
     Math.max(...solutions.map((s) => s.combat_stats).filter((c) => c <= stats + 1e-6));
 
-const filterByStats = (solutions: RankedSolutions, stats: number | null): RankedSolutions => {
+const highestFirst = (solutions: Solution[]) => [...solutions].sort((a, b) => b.combat_stats - a.combat_stats);
+
+const filterByStats = (solutions: RankedSolutions, stats: number | null, upTo: boolean): RankedSolutions => {
     if (stats == null) return solutions;
+    if (upTo) {
+        const matches = (s: Solution) => s.combat_stats <= stats + 1e-6;
+        return {
+            best: highestFirst(solutions.best.filter(matches)),
+            obsolete: highestFirst(solutions.obsolete.filter(matches)),
+            flagged: solutions.flagged.filter(matches),
+        };
+    }
     const nearest = nearestStats(solutions.best, stats);
     const matches = (s: Solution) => Math.abs(s.combat_stats - nearest) < 1e-6;
     return {
@@ -90,6 +101,7 @@ export default function GalaxyView() {
     const [flaggedOnly, setFlaggedOnly] = useState(false);
     const [filter, setFilter] = useState(() => localStorage.getItem(statFilterKey(id)) === 'true');
     const [combatStats, setCombatStats] = useState(() => localStorage.getItem(combatStatsKey(id)) ?? "1");
+    const [upToStats, setUpToStats] = useState(() => localStorage.getItem(upToStatsKey(id)) === 'true');
 
     const parsedStats = parseFloat(combatStats);
     const statFilter = filter && !isNaN(parsedStats) ? parsedStats : null;
@@ -97,11 +109,17 @@ export default function GalaxyView() {
     useEffect(() => {
         setFilter(localStorage.getItem(statFilterKey(id)) === 'true');
         setCombatStats(localStorage.getItem(combatStatsKey(id)) ?? "1");
+        setUpToStats(localStorage.getItem(upToStatsKey(id)) === 'true');
     }, [id]);
 
     const changeFilter = (value: boolean) => {
         setFilter(value);
         localStorage.setItem(statFilterKey(id), String(value));
+    };
+
+    const changeUpToStats = (value: boolean) => {
+        setUpToStats(value);
+        localStorage.setItem(upToStatsKey(id), String(value));
     };
 
     const changeCombatStats = (value: string) => {
@@ -163,7 +181,7 @@ export default function GalaxyView() {
     };
 
     const columns = galaxies[id - 1].battles
-        .map((b) => ({ battle: b, results: filterByStats(solutions.forBattle(b.id), statFilter) }))
+        .map((b) => ({ battle: b, results: filterByStats(solutions.forBattle(b.id), statFilter, upToStats) }))
         .filter(({ results }) => !flaggedOnly || results.best.some((s) => s.flagged) || (showObsolete && results.obsolete.some((s) => s.flagged)));
 
     const refreshSolutions = () => { solutions.reload().catch(() => {}); };
@@ -193,6 +211,9 @@ export default function GalaxyView() {
                                 max={galaxies[id - 1].maxStats ?? 1}
                                 step={galaxies[id - 1].step ?? 0.025}
                             />
+                            <Checkbox name="upToStats" checked={upToStats} onChange={changeUpToStats} disabled={!filter}>
+                                Include lower stats
+                            </Checkbox>
                         </div>
                         <div className={styles.scrollable} onWheel={handleScroll}>
                             ← Scroll here →

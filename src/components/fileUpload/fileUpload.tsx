@@ -11,6 +11,7 @@ interface FileUploadProps {
     preview?: boolean;
     previewSrc?: string;
     file?: File;
+    disabled?: boolean;
 }
 
 export function FileUpload(props: FileUploadProps) {
@@ -23,6 +24,7 @@ export function FileUpload(props: FileUploadProps) {
         preview = false,
         previewSrc,
         file,
+        disabled,
     } = props;
 
     const [isDragging, setIsDragging] = useState(false);
@@ -43,7 +45,7 @@ export function FileUpload(props: FileUploadProps) {
 
     const onDragOver = (e: React.DragEvent) => {
         e.preventDefault();
-        setIsDragging(true);
+        if (!disabled) setIsDragging(true);
     };
 
     const onDragLeave = (e: React.DragEvent) => {
@@ -55,11 +57,11 @@ export function FileUpload(props: FileUploadProps) {
         e.preventDefault();
         setIsDragging(false);
         const file = e.dataTransfer.files[0];
-        if (file) onFileSelected(file);
+        if (file && !disabled) onFileSelected(file);
     };
 
     const onClick = () => {
-        inputRef.current?.click();
+        if (!disabled) inputRef.current?.click();
     };
 
     const onInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -70,13 +72,13 @@ export function FileUpload(props: FileUploadProps) {
 
     return (
         <div
-            className={clsx(styles.dropzone, { [styles.dragging]: isDragging }, className)}
+            className={clsx(styles.dropzone, { [styles.dragging]: isDragging, [styles.disabled]: disabled }, className)}
             onClick={onClick}
             onDragOver={onDragOver}
             onDragLeave={onDragLeave}
             onDrop={onDrop}
-            role="button"
-            tabIndex={0}
+            role={disabled ? undefined : "button"}
+            tabIndex={disabled ? -1 : 0}
             onKeyDown={(e) => e.key === "Enter" && onClick()}
         >
             <input

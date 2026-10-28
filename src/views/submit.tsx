@@ -73,10 +73,12 @@ export function SolutionForm({ galaxy: id, solution: s, suggest, updateId }: { g
     }, []);
 
     useEffect(() => {
+        if (suggest) return;
         const handler = (e: Event) => setScreenshot((e as CustomEvent<File>).detail);
         window.addEventListener('fv:paste-image', handler);
         return () => window.removeEventListener('fv:paste-image', handler);
-    }, []);
+    }, [suggest]);
+
     const [combatStats, setCombatStats] = useState<string>(s ? String(s.combat_stats) : "1");
     const [frUsed, setFrUsed] = useState<string>(s ? String(s.fr_used) : "");
     const [frCommitted, setFrCommitted] = useState<string>(optional(s?.fr_committed));
@@ -168,7 +170,7 @@ export function SolutionForm({ galaxy: id, solution: s, suggest, updateId }: { g
                         <strong>Thank you for submitting to the fleet vault. </strong>Please ensure your screenshot is in horizontal orientation, and any notes you provide are written in english. Ideally, please use the default skin for your ships, and include all relevant information down below.
                     </div>
                 )}
-                {!suggest && <FileUpload
+                {(!suggest || s?.screenshot_url) && <FileUpload
                     accept={SCREENSHOT_TYPES.join(",")}
                     preview
                     file={screenshot}
@@ -176,6 +178,7 @@ export function SolutionForm({ galaxy: id, solution: s, suggest, updateId }: { g
                     className={styles.fileUpload}
                     onFileSelected={(file) => setScreenshot(file)}
                     idleText={screenshot ? screenshot.name : "Click or drag a screenshot to upload"}
+                    disabled={suggest}
                 />}
                 {screenshotProblem && (
                     <span className={styles.error}>{screenshotProblem}</span>

@@ -72,6 +72,13 @@ function verification(entry: AuditEntry): "verified" | "unverified" | null {
 
 const isFlagEdit = (e: AuditEntry) => e.table_name === "solution_flags" && e.operation === "UPDATE";
 
+function isFlagSync(entry: AuditEntry, entries: AuditEntry[]): boolean {
+    if (entry.table_name !== "solutions" || entry.operation !== "UPDATE") return false;
+    if (changes(entry, {}).some((c) => c.key !== "flagged")) return false;
+    return entries.some((e) => e.table_name === "solution_flags" && e.changed_at === entry.changed_at
+        && (e.new_data ?? e.old_data)?.solution_id === entry.record_id);
+}
+
 function badge(entry: AuditEntry, diff: { key: string }[]): [label: string, tone: string] {
     const verified = verification(entry);
     if (verified) {
@@ -178,7 +185,7 @@ export default function AuditView() {
                     </Checkbox>
                 </div>
                 {log.error && <p className={galaxyStyles.error}>Error loading audit log</p>}
-                {log.entries.map((e) => <AuditItem entry={e} key={e.id} labels={labels} reasons={flagReasons(e, log.entries)} solutionExists={existing.includes(solutionIdOf(e)!)} onUndone={log.reload} />)}
+                {log.entries.filter((e) => !isFlagSync(e, log.entries)).map((e) => <AuditItem entry={e} key={e.id} labels={labels} reasons={flagReasons(e, log.entries)} solutionExists={existing.includes(solutionIdOf(e)!)} onUndone={log.reload} />)}
                 {log.loading && <p className={galaxyStyles.info}>Loading...</p>}
                 {!log.loading && !log.error && !log.entries.length && <p className={galaxyStyles.info}>No entries</p>}
                 {log.hasMore && !log.loading && (

@@ -1,5 +1,5 @@
 import { supabase } from './supabase';
-import { AuditEntry, Galaxy, Solution, SolutionFlag, SolutionUpdate } from './types';
+import { AuditEntry, ChainRun, Galaxy, Solution, SolutionFlag, SolutionUpdate } from './types';
 
 export async function getBattlesForGalaxy(galaxyId: number): Promise<string[]> {
   const { data, error } = await supabase
@@ -102,6 +102,14 @@ export interface SolutionFields {
   shots: number | null;
   frTotal: number | null;
   bossDamage: number | null;
+  chain: RunFields[];
+}
+
+export interface RunFields {
+  frUsed: number;
+  frCommitted?: number;
+  screenshot?: File;
+  uploaded?: ChainRun;
 }
 
 const THUMBNAIL_WIDTH = 480;
@@ -121,6 +129,7 @@ async function makeThumbnail(bitmap: ImageBitmap): Promise<Blob | null> {
   ctx.imageSmoothingQuality = 'high';
   ctx.drawImage(bitmap, 0, 0, canvas.width, canvas.height);
   bitmap.close();
+
   // no webP for safari :'(
   const webp = await encodeCanvas(canvas, 'image/webp', 0.75);
   return webp?.type === 'image/webp' ? webp : encodeCanvas(canvas, 'image/jpeg', 0.8);
@@ -130,7 +139,9 @@ async function uploadImage(path: string, image: Blob): Promise<string> {
   const { data: upload, error: uploadError } = await supabase.storage
     .from('screenshots')
     .upload(path, image, { contentType: image.type });
+
   if (uploadError) throw uploadError;
+
   return supabase.storage.from('screenshots').getPublicUrl(upload.path).data.publicUrl;
 }
 
@@ -139,6 +150,7 @@ async function uploadScreenshot(galaxyId: number, battleId: string, screenshot: 
   const bitmap = await createImageBitmap(screenshot).catch(() => null);
   const portrait = !!bitmap && bitmap.height > bitmap.width;
   const thumbnail = bitmap && await makeThumbnail(bitmap).catch(() => null);
+
   return {
     portrait,
     images: {
@@ -146,6 +158,24 @@ async function uploadScreenshot(galaxyId: number, battleId: string, screenshot: 
       thumbnail_url: thumbnail && await uploadImage(`${base}.thumb.${IMAGE_EXTENSIONS[thumbnail.type]}`, thumbnail),
     },
   };
+}
+
+async function uploadChain(params: SolutionFields) {
+  let portrait = false;
+  const chain: ChainRun[] = [];
+
+  for (const run of params.chain) {
+    const upload = run.screenshot ? await uploadScreenshot(params.galaxyId, params.battleId, run.screenshot) : null;
+    portrait ||= !!upload?.portrait;
+    chain.push({
+      fr_used: run.frUsed,
+      fr_committed: Number.isFinite(run.frCommitted) ? run.frCommitted! : null,
+      screenshot_url: upload ? upload.images.screenshot_url : run.uploaded?.screenshot_url ?? null,
+      thumbnail_url: upload ? upload.images.thumbnail_url : run.uploaded?.thumbnail_url ?? null,
+    });
+  }
+
+  return { portrait, chain };
 }
 
 function solutionRow(params: SolutionFields) {
@@ -176,16 +206,19 @@ export async function submitSolution(params: SolutionFields & {
   const { portrait, images } = params.screenshot
     ? await uploadScreenshot(params.galaxyId, params.battleId, params.screenshot)
     : { portrait: false, images: { screenshot_url: null, thumbnail_url: null } };
+  const { portrait: portraitRun, chain } = await uploadChain(params);
 
   const { data, error } = await supabase.from('solutions').insert({
     ...solutionRow(params),
     submitted_by: params.submittedBy,
     ...images,
     advanced_solution: params.advancedSolution ?? null,
+    chain,
   }).select('id').single();
 
   if (error) throw error;
-  if (portrait) await flagSolution(data.id, PORTRAIT_FLAG_REASON).catch(() => {});
+  if (portrait || portraitRun) await flagSolution(data.id, PORTRAIT_FLAG_REASON).catch(() => { });
+
   return data.id;
 }
 
@@ -197,6 +230,7 @@ export function missingInfo(s: Solution, params: SolutionFields): Partial<Soluti
     ...solutionRow(params),
     purchases: Object.fromEntries(Object.entries(params.purchases).filter(([node]) => !s.purchases?.[node])),
   };
+
   return Object.fromEntries(Object.entries(row).filter(([key, value]) =>
     !isEmpty(value) && (key === 'purchases' || (key === 'notes' ? value !== s.notes : isEmpty(s[key as keyof Solution])))));
 }
@@ -204,12 +238,14 @@ export function missingInfo(s: Solution, params: SolutionFields): Partial<Soluti
 export async function suggestSolutionUpdate(id: number, changes: Partial<Solution>): Promise<number> {
   const { data, error } = await supabase.rpc('suggest_solution_update', { solution_id: id, changes });
   if (error) throw error;
+
   return data;
 }
 
 export async function getOpenUpdateIds(ids: number[]): Promise<number[]> {
   const { data, error } = await supabase.rpc('open_solution_updates', { update_ids: ids });
   if (error) throw error;
+
   return data;
 }
 
@@ -220,6 +256,7 @@ export async function getSolution(id: number): Promise<Solution | null> {
     .eq('id', id)
     .maybeSingle();
   if (error) throw error;
+
   return data;
 }
 
@@ -228,16 +265,20 @@ export async function updateSolution(id: number, params: SolutionFields, unflag:
   const row = {
     ...solutionRow(params),
     ...(params.screenshot && (await uploadScreenshot(params.galaxyId, params.battleId, params.screenshot)).images),
+    chain: (await uploadChain(params)).chain,
     ...(unflag && { flagged: false }),
     verified_at: verified ? new Date().toISOString() : null,
   };
+
   const { data, error } = await supabase.from('solutions').update(row).eq('id', id).select('id');
+
   if (error) throw error;
   if (!data.length) throw new Error('Solution not updated');
 }
 
 export async function deleteSolution(id: number): Promise<void> {
   const { data, error } = await supabase.from('solutions').delete().eq('id', id).select('id');
+
   if (error) throw error;
   if (!data.length) throw new Error('Solution not deleted');
 }
@@ -245,17 +286,20 @@ export async function deleteSolution(id: number): Promise<void> {
 export async function getGalaxies(): Promise<Galaxy[]> {
   const { data, error } = await supabase.from('galaxies').select('*');
   if (error) throw error;
+
   return data;
 }
 
 export async function enableGalaxy(galaxyId: number): Promise<void> {
   const { data, error } = await supabase.from('galaxies').update({ hidden: false }).eq('id', galaxyId).select('id');
+
   if (error) throw error;
   if (!data.length) throw new Error('Galaxy not enabled');
 }
 
 export async function updateGalaxyNotes(galaxyId: number, notes: string | null): Promise<void> {
   const { data, error } = await supabase.from('galaxies').update({ notes }).eq('id', galaxyId).select('id');
+
   if (error) throw error;
   if (!data.length) throw new Error('Galaxy notes not saved');
 }
@@ -271,6 +315,7 @@ export async function unflagSolution(id: number): Promise<void> {
     .update({ flagged: false })
     .eq('id', id)
     .select('id');
+
   if (error) throw error;
   if (!data.length) throw new Error('Solution not unflagged');
 }
@@ -281,6 +326,7 @@ export async function setSolutionVerified(id: number, verified: boolean): Promis
     .update({ verified_at: verified ? new Date().toISOString() : null })
     .eq('id', id)
     .select('id');
+
   if (error) throw error;
   if (!data.length) throw new Error(`Solution not ${verified ? 'verified' : 'unverified'}`);
 }
@@ -295,6 +341,7 @@ export async function getFlaggedSolutions(): Promise<Solution[]> {
     .order('combat_stats')
     .order('rank_in_group')
     .order('id');
+
   if (error) throw error;
   return data as Solution[];
 }
@@ -304,6 +351,7 @@ export async function getFlaggedCount(): Promise<number> {
     .from('solutions')
     .select('id', { count: 'exact', head: true })
     .eq('flagged', true);
+
   if (error) throw error;
   return count ?? 0;
 }
@@ -314,6 +362,7 @@ export async function getSolutionFlags(solutionId: number): Promise<SolutionFlag
     .select('*')
     .eq('solution_id', solutionId)
     .order('created_at', { ascending: false });
+
   if (error) throw error;
   return data;
 }
@@ -321,8 +370,10 @@ export async function getSolutionFlags(solutionId: number): Promise<SolutionFlag
 export async function getUpdatedSolutions(): Promise<Solution[]> {
   const { data, error } = await supabase.from('solution_updates').select('solution_id').is('resolved_at', null);
   if (error) throw error;
+
   const ids = [...new Set(data.map((u) => u.solution_id))];
   if (!ids.length) return [];
+
   const { data: solutions, error: solutionsError } = await supabase
     .from('solutions_ranked')
     .select('*')
@@ -332,6 +383,7 @@ export async function getUpdatedSolutions(): Promise<Solution[]> {
     .order('combat_stats')
     .order('rank_in_group')
     .order('id');
+
   if (solutionsError) throw solutionsError;
   return solutions as Solution[];
 }
@@ -341,6 +393,7 @@ export async function getUpdateCount(): Promise<number> {
     .from('solution_updates')
     .select('id', { count: 'exact', head: true })
     .is('resolved_at', null);
+
   if (error) throw error;
   return count ?? 0;
 }
@@ -352,6 +405,7 @@ export async function getSolutionUpdates(solutionId: number): Promise<SolutionUp
     .eq('solution_id', solutionId)
     .is('resolved_at', null)
     .order('created_at');
+
   if (error) throw error;
   return data;
 }
@@ -363,6 +417,7 @@ export async function getSolutionUpdate(id: number): Promise<SolutionUpdate | nu
     .eq('id', id)
     .is('resolved_at', null)
     .maybeSingle();
+
   if (error) throw error;
   return data;
 }
@@ -387,15 +442,18 @@ const AUDIT_CONDITIONS: Record<AuditType, string[]> = {
 export async function getAuditLog(filter: AuditFilter, beforeId?: number): Promise<AuditEntry[]> {
   const conditions = (Object.keys(AUDIT_CONDITIONS) as AuditType[]).filter((t) => filter[t]).flatMap((t) => AUDIT_CONDITIONS[t]);
   if (!conditions.length) return [];
+
   let query = supabase
     .from('audit_log')
     .select('*')
     .or(conditions.join(','))
     .order('id', { ascending: false })
     .limit(AUDIT_PAGE);
+
   if (beforeId) query = query.lt('id', beforeId);
   const { data, error } = await query;
   if (error) throw error;
+
   return data;
 }
 
@@ -408,6 +466,7 @@ export async function getExistingSolutionIds(ids: number[]): Promise<number[]> {
 export async function undoAuditEntry(entry: AuditEntry, fields: string[]): Promise<void> {
   const row = Object.fromEntries(fields.map((f) => [f, entry.old_data?.[f] ?? null]));
   const { data, error } = await supabase.from(entry.table_name).update(row).eq('id', entry.record_id).select('id');
+
   if (error) throw error;
   if (!data.length) throw new Error('Record no longer exists');
 }

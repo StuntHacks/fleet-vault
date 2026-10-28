@@ -1,3 +1,10 @@
+export interface ChainRun {
+  fr_used: number;
+  fr_committed: number | null;
+  screenshot_url: string | null;
+  thumbnail_url: string | null;
+}
+
 export interface Solution {
   id: number;
   battle_id: string;
@@ -26,6 +33,7 @@ export interface Solution {
   boss_damage: number | null;
   source: "site" | "spreadsheet";
   verified_at: string | null;
+  chain: ChainRun[];
 }
 
 export interface SolutionFlag {

@@ -41,6 +41,7 @@
         align-items: center;
         justify-content: space-between;
         transition: opacity 150ms;
+        gap: 1.5rem;
 
         &.hidden {
             opacity: 0;
@@ -93,6 +94,15 @@
         flex-wrap: wrap;
         justify-content: flex-end;
         gap: 0.5rem 1.5rem;
+    }
+
+    .run {
+        display: flex;
+        flex-direction: column;
+        gap: 1.5rem;
+        padding: 1rem;
+        border: 2px solid var(--color-border);
+        border-radius: 10px;
     }
 
     .purchases {

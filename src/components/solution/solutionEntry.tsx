@@ -11,7 +11,7 @@ export const formatStats = (stats: number) => `${Number.isInteger(stats) ? stats
 
 const getBossInfo = (s: Solution) => {
     if (s.boss_alive === false) return "Boss dead";
-    if (s.shots) return s.shots === 1 ? "Oneshot" : `${s.shots} shots`;
+    if (s.shots) return s.shots === 1 ? "Oneshot" : `${s.shots} ${s.chain.length ? "runs" : "shots"}`;
     if (s.boss_alive) return "Boss alive";
     return null;
 }
@@ -43,7 +43,8 @@ export function Extras({ solution: s }: { solution: Solution }) {
 
 export function SolutionEntry({ solution, obsolete = false, onOpen, preloadImages, isAdmin, battleName }: { solution: Solution, obsolete?: boolean, onOpen: (s: Solution) => void, preloadImages: boolean, isAdmin: boolean, battleName?: string }) {
     const s = solution;
-    const perShot = !!s.shots && s.shots > 1;
+    const chained = s.chain.length > 0;
+    const perShot = !chained && !!s.shots && s.shots > 1;
     const bossInfo = getBossInfo(s);
     const purchases = Object.entries(s.purchases ?? {});
     const verified = s.verified_at != null;
@@ -76,11 +77,18 @@ export function SolutionEntry({ solution, obsolete = false, onOpen, preloadImage
                     <span className={styles.stats} title="Combat stats">
                         {formatStats(s.combat_stats)}
                     </span>
-                    <span className={styles.resources} title={perShot ? 'FR used per shot / committed' : 'FR used / committed'}>
-                        {s.fr_used}
-                        {s.fr_committed != null && <span className={styles.small}> / {s.fr_committed}</span>}
-                        <span className={styles.small}> FR{perShot && '/shot'}</span>
-                    </span>
+                    {chained ? (
+                        <span className={styles.resources} title="FR used in all runs">
+                            {s.fr_total}
+                            <span className={styles.small}> FR total</span>
+                        </span>
+                    ) : (
+                        <span className={styles.resources} title={perShot ? 'FR used per shot / committed' : 'FR used / committed'}>
+                            {s.fr_used}
+                            {s.fr_committed != null && <span className={styles.small}> / {s.fr_committed}</span>}
+                            <span className={styles.small}> FR{perShot && '/shot'}</span>
+                        </span>
+                    )}
                 </div>
             </div>
             {(battleName || hasData || purchases.length > 0 || s.unlocks?.length > 0 || s.notes) && (

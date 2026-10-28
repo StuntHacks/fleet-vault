@@ -17,20 +17,26 @@ const FILTERS: Record<AuditType, string> = { flags: "Flags", changes: "Solution 
 
 function format(value: unknown): string {
     if (value == null) return "";
-    if (Array.isArray(value)) return value.join(", ");
+
+    if (Array.isArray(value)) return value.map((v) => typeof v === "object" && v ? `(${format(v)})` : String(v)).join(", ");
+
     if (typeof value === "object") return Object.entries(value).map(([k, v]) => `${k}: ${v}`).join(", ");
+
     return String(value);
 }
 
 function display(key: string, value: unknown, labels: Record<string, string>): string {
     if (typeof value === "string" && key.endsWith("_at")) return new Date(value).toLocaleString();
+
     if (typeof value === "string" && key.endsWith("_by")) return labels[value] ?? value;
+
     return format(value);
 }
 
 function changes(entry: AuditEntry, labels: Record<string, string>) {
     const before = entry.old_data ?? {};
     const after = entry.new_data ?? {};
+
     return Object.keys({ ...before, ...after })
         .filter((key) => key !== "id" && format(before[key]) !== format(after[key]))
         .map((key) => ({ key, before: display(key, before[key], labels), after: display(key, after[key], labels) }));
@@ -41,13 +47,17 @@ function Target({ entry }: { entry: AuditEntry }) {
     if (entry.table_name === "galaxies") {
         return <Link className={styles.target} to={`/g/${entry.record_id}`}>Galaxy {entry.record_id}</Link>;
     }
+
     if (entry.table_name === "solution_flags") {
         return <span className={styles.target}>Flag on solution #{row.solution_id}</span>;
     }
+
     if (entry.table_name === "solution_updates") {
         return <span className={styles.target}>Update on solution #{row.solution_id}</span>;
     }
+
     const battle = findBattle(row.galaxy_id, row.battle_id)?.name ?? row.battle_id;
+
     return (
         <Link className={styles.target} to={`/g/${row.galaxy_id}?solution=${entry.record_id}`}>
             Solution #{entry.record_id} · Galaxy {row.galaxy_id} {battle}
@@ -57,20 +67,25 @@ function Target({ entry }: { entry: AuditEntry }) {
 
 function Value({ value }: { value: string }) {
     if (value.startsWith("https://")) return <a href={value} target="_blank" rel="noreferrer">{value}</a>;
+
     return <>{value}</>;
 }
 
 function solutionIdOf(entry: AuditEntry): number | null {
     if (entry.table_name === "solutions") return entry.record_id;
     if (entry.table_name === "solution_flags" || entry.table_name === "solution_updates") return Number((entry.new_data ?? entry.old_data)?.solution_id);
+
     return null;
 }
 
 function verification(entry: AuditEntry): "verified" | "unverified" | null {
     if (entry.table_name !== "solutions" || entry.operation !== "UPDATE") return null;
+
     const was = entry.old_data?.verified_at != null;
     const is = entry.new_data?.verified_at != null;
+
     if (was === is) return null;
+
     return is ? "verified" : "unverified";
 }
 
@@ -82,30 +97,38 @@ function isFlaggedOnly(entry: AuditEntry): boolean {
 
 function isFlagSync(entry: AuditEntry, entries: AuditEntry[]): boolean {
     if (!isFlaggedOnly(entry)) return false;
+
     return entries.some((e) => e.table_name === "solution_flags" && e.changed_at === entry.changed_at
         && (e.new_data ?? e.old_data)?.solution_id === entry.record_id);
 }
 
 function badge(entry: AuditEntry, diff: { key: string }[]): [label: string, color: string] {
     const verified = verification(entry);
+
     if (verified) {
         const label = diff.every((c) => c.key.startsWith("verified_")) ? `Solution ${verified}` : `Solution edited & ${verified}`;
         return [label, verified === "verified" ? "verified" : "UPDATE"];
     }
+
     if (isFlagEdit(entry) && (entry.old_data?.resolved_at == null) !== (entry.new_data?.resolved_at == null)) {
         return entry.new_data?.resolved_at == null ? ["Flag reopened", "DELETE"] : ["Flag resolved", "UPDATE"];
     }
+
     if (entry.table_name === "solution_flags" && entry.operation === "INSERT") return ["Flag added", "DELETE"];
+
     if (entry.table_name === "solution_updates" && entry.operation === "INSERT") return ["Update suggested", "INSERT"];
+
     if (entry.table_name === "solution_updates" && entry.operation === "UPDATE" && entry.new_data?.resolved_at != null) {
         return entry.new_data?.applied ? ["Update applied", "verified"] : ["Update rejected", "DELETE"];
     }
+
     return [`${TABLES[entry.table_name] ?? entry.table_name} ${OPERATIONS[entry.operation]}`, entry.operation];
 }
 
 function flagReasons(entry: AuditEntry, entries: AuditEntry[]): (string | null)[] {
     if (isFlagEdit(entry)) return [entry.new_data?.reason as string | null];
     if (entry.table_name !== "solutions" || entry.old_data?.flagged !== true || entry.new_data?.flagged !== false) return [];
+
     return entries
         .filter((e) => isFlagEdit(e) && e.changed_at === entry.changed_at && e.new_data?.solution_id === entry.record_id)
         .map((e) => e.new_data?.reason as string | null);

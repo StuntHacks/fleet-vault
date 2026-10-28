@@ -48,7 +48,7 @@ const pickBest = (solutions: Solution[], stats: number): Solution | null => {
     return solutions
         .filter((s) => Math.abs(s.combat_stats - nearest) < 1e-6)
         .sort((a, b) => Number(a.flagged) - Number(b.flagged)
-            || a.fr_used - b.fr_used
+            || (a.fr_total ?? a.fr_used) - (b.fr_total ?? b.fr_used)
             || Number(b.verified_at != null) - Number(a.verified_at != null))[0] ?? null;
 }
 

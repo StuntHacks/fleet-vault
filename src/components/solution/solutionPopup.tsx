@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { clsx } from "clsx";
 import { deleteSolution, flagSolution, getOpenUpdateIds, getSolutionFlags, getSolutionUpdates, resolveSolutionUpdate, setSolutionVerified, unflagSolution } from "../../lib/api";
 import { findBattle, getConditionNodes, getGalaxyUnlocks } from "../../lib/battles";
-import { Solution, SolutionFlag, SolutionUpdate } from "../../lib/types";
+import { ChainRun, Solution, SolutionFlag, SolutionUpdate } from "../../lib/types";
 import { Extras, formatStats } from "./solutionEntry";
 import styles from "./solution.module.scss";
 
@@ -12,9 +12,11 @@ const flaggedThisSession = new Set<number>();
 
 const isFlaggedByUser = (s: Solution) => {
     const ids = JSON.parse(localStorage.getItem(flaggedKey) ?? '[]') as number[];
+
     if (!ids.includes(s.id)) return false;
     if (s.flagged || flaggedThisSession.has(s.id)) return true;
     localStorage.setItem(flaggedKey, JSON.stringify(ids.filter((id) => id !== s.id)))
+
     return false;
 }
 
@@ -35,11 +37,13 @@ export const rememberSuggestion = (solutionId: number, updateId: number) => {
 
 const getPopupValues = (s: Solution): string[] => {
     const values: string[] = [];
+
     if (s.boss_alive === false) values.push("Boss dead");
-    if (s.shots) values.push(s.shots === 1 ? "Oneshot" : `${s.shots} shots`);
+    if (s.shots) values.push(s.shots === 1 ? "Oneshot" : `${s.shots} ${s.chain.length ? "runs" : "shots"}`);
     if (s.boss_alive && !s.shots) values.push("Boss alive");
     if (s.boss_damage != null) values.push(`Damage done: ${s.boss_damage.toLocaleString()}`);
     if (s.fr_total != null) values.push(`Total FR: ${s.fr_total}`);
+
     return values;
 }
 
@@ -76,12 +80,16 @@ function Screenshot({ url, thumbnailUrl }: { url: string, thumbnailUrl: string |
 
 export function SolutionPopup({ solution: s, isAdmin, showGalaxy, onFlagsChanged, onUpdatesChanged, onVerified, onDeleted }: { solution: Solution, isAdmin: boolean, showGalaxy?: boolean, onFlagsChanged: () => void, onUpdatesChanged?: () => void, onVerified: () => void, onDeleted: () => void }) {
     const battle = findBattle(s.galaxy_id, s.battle_id);
+
     const { hazards, supports } = getConditionNodes(battle);
     const nodeLabel = (nodes: { id: string, label: string }[], id: string) => nodes.find((n) => n.id === id)?.label ?? id;
-    const perShot = !!s.shots && s.shots > 1;
-    const obsolete = s.rank_in_group != null && s.rank_in_group > 1;
-    const values = getPopupValues(s);
-    const navigate = useNavigate();
+
+    const chained = s.chain.length > 0;
+    const runs: ChainRun[] = [s, ...s.chain];
+    const [runIndex, setRunIndex] = useState(0);
+
+    const run = runs[runIndex] ?? runs[0];
+    
     const [flagged, setFlagged] = useState(() => isFlaggedByUser(s));
     const [flagging, setFlagging] = useState(false);
     const [submitting, setSubmitting] = useState(false);
@@ -92,15 +100,24 @@ export function SolutionPopup({ solution: s, isAdmin, showGalaxy, onFlagsChanged
     const noteUpdates = updates.filter((u) => u.changes.notes != null);
     const [adminBusy, setAdminBusy] = useState(false);
     const [adminError, setAdminError] = useState<string | null>(null);
-    const flagBox = useRef<HTMLDivElement>(null);
-    const flagTrigger = useRef<HTMLButtonElement>(null);
-    const showFlagged = flagged || (isAdmin && s.flagged);
+    
+    const perShot = !chained && !!s.shots && s.shots > 1;
+    const obsolete = s.rank_in_group != null && s.rank_in_group > 1;
+    const values = getPopupValues(s);
+    const navigate = useNavigate();
+    
     const [suggested, setSuggested] = useState(() => !!readSuggested()[s.id]?.length);
+    
+    const showFlagged = flagged || (isAdmin && s.flagged);
+    const flagTrigger = useRef<HTMLButtonElement>(null);
+    const flagBox = useRef<HTMLDivElement>(null);
+    const touchedAt = useRef<{ x: number, y: number } | null>(null);
 
     useEffect(() => {
         const ids = readSuggested()[s.id];
         if (!ids?.length) return;
         let current = true;
+
         getOpenUpdateIds(ids)
             .then((open) => {
                 const stored = readSuggested();
@@ -109,25 +126,30 @@ export function SolutionPopup({ solution: s, isAdmin, showGalaxy, onFlagsChanged
                 localStorage.setItem(suggestedKey, JSON.stringify(stored));
                 if (current) setSuggested(open.length > 0);
             })
-            .catch(() => {});
+            .catch(() => { });
+
         return () => { current = false; };
     }, [s.id]);
 
     useEffect(() => {
         if (!isAdmin || !s.flagged) return;
         let current = true;
+
         getSolutionFlags(s.id)
             .then((flags) => { if (current) setFlagReasons(flags.filter((f) => f.resolved_at == null && f.reason)); })
-            .catch(() => {});
+            .catch(() => { });
+
         return () => { current = false; };
     }, [isAdmin, s.id, s.flagged]);
 
     useEffect(() => {
         if (!isAdmin) return;
         let current = true;
+
         getSolutionUpdates(s.id)
             .then((result) => { if (current) setUpdates(result); })
-            .catch(() => {});
+            .catch(() => { });
+
         return () => { current = false; };
     }, [isAdmin, s.id]);
 
@@ -137,6 +159,7 @@ export function SolutionPopup({ solution: s, isAdmin, showGalaxy, onFlagsChanged
         if (key === "support_nodes") return (value as string[]).map((id) => nodeLabel(supports, id)).join(", ");
         if (key === "unlocks") return (value as string[]).map((u) => getGalaxyUnlocks(s.galaxy_id).find((g) => g.code === u)?.name ?? u).join(", ");
         if (key === "purchases") return Object.entries(value as Record<string, string>).map(([node, ship]) => `${node}: ${ship}`).join(", ");
+
         return String(value);
     };
 
@@ -157,11 +180,13 @@ export function SolutionPopup({ solution: s, isAdmin, showGalaxy, onFlagsChanged
     const flag = async () => {
         setSubmitting(true);
         setFlagError(false);
+
         try {
             await flagSolution(s.id, reason);
             rememberFlagged(s.id);
             setFlagged(true);
             setFlagging(false);
+
             if (isAdmin) {
                 window.dispatchEvent(new Event('fv:flags-changed'));
                 onFlagsChanged();
@@ -176,6 +201,7 @@ export function SolutionPopup({ solution: s, isAdmin, showGalaxy, onFlagsChanged
     const unflag = async () => {
         setAdminBusy(true);
         setAdminError(null);
+
         try {
             await unflagSolution(s.id);
             window.dispatchEvent(new Event('fv:flags-changed'));
@@ -191,6 +217,7 @@ export function SolutionPopup({ solution: s, isAdmin, showGalaxy, onFlagsChanged
     const rejectUpdate = async (id: number) => {
         setAdminBusy(true);
         setAdminError(null);
+
         try {
             await resolveSolutionUpdate(id, false);
             window.dispatchEvent(new Event('fv:updates-changed'));
@@ -207,6 +234,7 @@ export function SolutionPopup({ solution: s, isAdmin, showGalaxy, onFlagsChanged
         const verify = s.verified_at == null;
         setAdminBusy(true);
         setAdminError(null);
+
         try {
             await setSolutionVerified(s.id, verify);
             onVerified();
@@ -217,10 +245,28 @@ export function SolutionPopup({ solution: s, isAdmin, showGalaxy, onFlagsChanged
         }
     }
 
+    const touchStart = (e: React.TouchEvent) => {
+        touchedAt.current = e.touches.length === 1 ? { x: e.touches[0].clientX, y: e.touches[0].clientY } : null;
+    };
+
+    const swipe = (e: React.TouchEvent) => {
+        const start = touchedAt.current;
+        touchedAt.current = null;
+        if (!start) return;
+
+        const dx = e.changedTouches[0].clientX - start.x;
+        const dy = e.changedTouches[0].clientY - start.y;
+        if (Math.abs(dx) < 50 || Math.abs(dx) < Math.abs(dy) * 2) return;
+
+        setRunIndex((i) => Math.min(Math.max(i - Math.sign(dx), 0), runs.length - 1));
+    };
+
     const remove = async () => {
         if (!window.confirm('Delete this solution? This cannot be undone.')) return;
+
         setAdminBusy(true);
         setAdminError(null);
+
         try {
             await deleteSolution(s.id);
             window.dispatchEvent(new Event('fv:flags-changed'));
@@ -232,13 +278,13 @@ export function SolutionPopup({ solution: s, isAdmin, showGalaxy, onFlagsChanged
     }
 
     return (
-        <div className={styles.popup}>
+        <div className={styles.popup} onTouchStart={chained ? touchStart : undefined} onTouchEnd={chained ? swipe : undefined}>
             <div className={styles.titleBar}>
                 <span className={styles.stats}>
                     {formatStats(s.combat_stats)}&nbsp;·&nbsp;
-                    {s.fr_used}
-                    {s.fr_committed != null && <span className={styles.small}> / {s.fr_committed}</span>}
-                    <span className={styles.small}> FR{perShot && '/shot'}</span>
+                    {chained ? s.fr_total : s.fr_used}
+                    {!chained && s.fr_committed != null && <span className={styles.small}> / {s.fr_committed}</span>}
+                    <span className={styles.small}> FR{perShot && '/shot'}{chained && ' total'}</span>
                 </span>
                 <div className={styles.title}>
                     <h2>{showGalaxy && `G${s.galaxy_id} · `}{battle?.name}</h2>
@@ -246,20 +292,40 @@ export function SolutionPopup({ solution: s, isAdmin, showGalaxy, onFlagsChanged
                     {obsolete && <span className={styles.obsoleteLabel}>Obsolete</span>}
                 </div>
             </div>
-            {s.screenshot_url && (
+
+            {chained && (
+                <div className={styles.runs}>
+                    <button className={styles.runArrow} onClick={() => setRunIndex(runIndex - 1)} disabled={runIndex === 0} aria-label="Previous run">‹</button>
+                    <div className={styles.runTitle}>
+                        Run {runIndex + 1} of {runs.length}&nbsp;·&nbsp;{run.fr_used}
+                        {run.fr_committed != null && <span className={styles.small}> / {run.fr_committed}</span>}
+                        <span className={styles.small}> FR</span>
+                        <div className={styles.runDots}>
+                            {runs.map((_, i) => (
+                                <button key={i} className={clsx(styles.runDot, i === runIndex && styles.active)} onClick={() => setRunIndex(i)} aria-label={`Run ${i + 1}`} />
+                            ))}
+                        </div>
+                    </div>
+                    <button className={styles.runArrow} onClick={() => setRunIndex(runIndex + 1)} disabled={runIndex === runs.length - 1} aria-label="Next run">›</button>
+                </div>
+            )}
+
+            {run.screenshot_url && (
                 <>
-                    <Screenshot key={s.id} url={s.screenshot_url} thumbnailUrl={s.thumbnail_url} />
+                    <Screenshot key={`${s.id}-${runIndex}`} url={run.screenshot_url} thumbnailUrl={run.thumbnail_url} />
                     <div className={styles.caption}>
                         Click to open full size
                     </div>
                 </>
             )}
+
             <div className={styles.details}>
                 {values.length > 0 && (
                     <div className={styles.values}>
                         {values.join(' • ')}
                     </div>
                 )}
+
                 {(s.support || s.hazards || s.non_standard) && (
                     <div className={styles.data}>
                         {(s.support || s.hazards) && (
@@ -277,6 +343,7 @@ export function SolutionPopup({ solution: s, isAdmin, showGalaxy, onFlagsChanged
                         {s.non_standard && <span className={styles.nonStandard}>Non-standard path</span>}
                     </div>
                 )}
+
                 {(s.notes || noteUpdates.length > 0) &&
                     <div className={styles.notes}>
                         <strong>Notes: </strong>
@@ -288,6 +355,7 @@ export function SolutionPopup({ solution: s, isAdmin, showGalaxy, onFlagsChanged
                         ) : s.notes}
                     </div>
                 }
+
                 <Extras solution={s} />
                 <div className={styles.curation}>
                     <div ref={flagBox} className={`${styles.flagging} ${flagging ? '' : styles.hidden}`}>

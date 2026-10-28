@@ -5,7 +5,7 @@ import GalaxySelect from "../components/galaxySelect/galaxySelect";
 import { CombatStatInput } from "../components/combatStatInput/combatStatInput";
 import { Checkbox } from "../components/checkbox/checkbox";
 import { isEmpty, missingInfo, resolveSolutionUpdate, submitSolution, suggestSolutionUpdate, updateSolution } from "../lib/api";
-import { Solution } from "../lib/types";
+import { ChainRun, Solution } from "../lib/types";
 import { useGalaxyAccess } from "../lib/hooks";
 import { ConditionNode, galaxies, getConditionNodes, getGalaxyPurchases, getGalaxyUnlocks, isBossBattle, SHIPS_BY_CLASS } from "../lib/battles";
 import styles from "./submit.module.scss";
@@ -31,6 +31,13 @@ function selectedNodes(active: boolean, options: ConditionNode[], chosen: string
 }
 
 const optional = (value?: number | null) => value != null ? String(value) : "";
+
+interface RunInput {
+    frUsed: string;
+    frCommitted: string;
+    screenshot?: File;
+    uploaded?: ChainRun;
+}
 
 export default function SubmitView() {
     const { galaxy } = useParams();
@@ -72,13 +79,6 @@ export function SolutionForm({ galaxy: id, solution: s, suggest, updateId }: { g
     // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
-    useEffect(() => {
-        if (suggest) return;
-        const handler = (e: Event) => setScreenshot((e as CustomEvent<File>).detail);
-        window.addEventListener('fv:paste-image', handler);
-        return () => window.removeEventListener('fv:paste-image', handler);
-    }, [suggest]);
-
     const [portrait, setPortrait] = useState(false);
     useEffect(() => {
         setPortrait(false);
@@ -103,8 +103,12 @@ export function SolutionForm({ galaxy: id, solution: s, suggest, updateId }: { g
     const [bossDefeated, setBossDefeated] = useState(s?.boss_alive === false);
     const [unlocks, setUnlocks] = useState<string[]>(s?.unlocks ?? []);
     const [purchases, setPurchases] = useState<Record<string, string>>(s?.purchases ?? {});
-    const [shots, setShots] = useState<string>(optional(s?.shots));
-    const [frTotal, setFrTotal] = useState<string>(optional(s?.fr_total));
+    const [shots, setShots] = useState<string>(optional(s?.chain.length ? null : s?.shots));
+    const [frTotal, setFrTotal] = useState<string>(optional(s?.chain.length ? null : s?.fr_total));
+
+    const [runs, setRuns] = useState<RunInput[]>(() =>
+        s?.chain.map((run) => ({ frUsed: String(run.fr_used), frCommitted: optional(run.fr_committed), uploaded: run })) ?? []);
+
     const [bossDamage, setBossDamage] = useState<string>(optional(s?.boss_damage));
     const [notes, setNotes] = useState<string>(s?.notes ?? "");
     const [unflag, setUnflag] = useState(true);
@@ -125,12 +129,45 @@ export function SolutionForm({ galaxy: id, solution: s, suggest, updateId }: { g
     const galaxyUnlocks = getGalaxyUnlocks(selectedGalaxy);
     const galaxyPurchases = getGalaxyPurchases(selectedGalaxy);
     const showBossResults = isBoss && !bossDefeated;
+    const chained = showBossResults && runs.length > 0;
     const shotsValue = parseInt(shots, 10);
-    const multiShot = showBossResults && shotsValue > 1;
+    const multiShot = showBossResults && !chained && shotsValue > 1;
     const frTotalValue = parseFloat(frTotal.replace(",", "."));
     const bossDamageValue = parseFloat(bossDamage.replace(",", "."));
     const frTotalTooLow = multiShot && !isNaN(frUsedValue) && !isNaN(frTotalValue) && frTotalValue < frUsedValue;
     const screenshotProblem = screenshotError(screenshot);
+
+    const runValues = runs.map((run) => ({
+        frUsed: parseFloat(run.frUsed.replace(",", ".")),
+        frCommitted: parseFloat(run.frCommitted.replace(",", ".")),
+        screenshot: run.screenshot,
+        uploaded: run.uploaded,
+    }));
+
+    const runCommittedTooLow = runValues.map((run) => !isNaN(run.frUsed) && !isNaN(run.frCommitted) && run.frCommitted < run.frUsed);
+
+    const runsIncomplete = chained && runs.some((run, i) =>
+        isNaN(runValues[i].frUsed) || runCommittedTooLow[i] || !!screenshotError(run.screenshot) || (!editing && !run.screenshot));
+
+    const chainTotal = frUsedValue + runValues.reduce((sum, run) => sum + run.frUsed, 0);
+
+    const updateRun = (index: number, change: Partial<RunInput>) =>
+        setRuns((prev) => prev.map((run, i) => i === index ? { ...run, ...change } : run));
+
+    const lastRun = chained ? runs.length - 1 : -1;
+    useEffect(() => {
+        if (suggest) return;
+
+        const handler = (e: Event) => {
+            const file = (e as CustomEvent<File>).detail;
+            if (lastRun < 0) setScreenshot(file);
+            else setRuns((prev) => prev.map((run, i) => i === lastRun ? { ...run, screenshot: file } : run));
+        };
+
+        window.addEventListener('fv:paste-image', handler);
+
+        return () => window.removeEventListener('fv:paste-image', handler);
+    }, [suggest, lastRun]);
 
     const toggleNode = (setter: (update: (prev: string[]) => string[]) => void) => (nodeId: string, checked: boolean) =>
         setter((prev) => checked ? [...prev, nodeId] : prev.filter((n) => n !== nodeId));
@@ -150,9 +187,10 @@ export function SolutionForm({ galaxy: id, solution: s, suggest, updateId }: { g
         bossAlive: isBoss && (bossDefeated || !suggest || s?.boss_alive != null || shotsValue > 0 || Number.isFinite(bossDamageValue)) ? !bossDefeated : null,
         unlocks: unlocks.filter((u) => galaxyUnlocks.some((g) => g.code === u)),
         purchases: Object.fromEntries(Object.entries(purchases).filter(([node, ship]) => ship && galaxyPurchases.some((p) => p.name === node))),
-        shots: showBossResults && shotsValue > 0 ? shotsValue : null,
+        shots: showBossResults && !chained && shotsValue > 0 ? shotsValue : null,
         frTotal: multiShot && Number.isFinite(frTotalValue) ? frTotalValue : null,
         bossDamage: showBossResults && Number.isFinite(bossDamageValue) ? bossDamageValue : null,
+        chain: chained ? runValues : [],
     };
     const filledIn = suggest && s && fields ? missingInfo(s, fields) : {};
     const optionalNodes = editing ? " (optional)" : "";
@@ -199,7 +237,7 @@ export function SolutionForm({ galaxy: id, solution: s, suggest, updateId }: { g
                     previewSrc={s?.screenshot_url ?? undefined}
                     className={styles.fileUpload}
                     onFileSelected={(file) => setScreenshot(file)}
-                    idleText={screenshot ? screenshot.name : "Click or drag a screenshot to upload"}
+                    idleText={screenshot ? screenshot.name : chained ? "Click or drag the screenshot of run 1" : "Click or drag a screenshot to upload"}
                     disabled={suggest}
                 />}
                 {screenshotProblem && (
@@ -233,6 +271,7 @@ export function SolutionForm({ galaxy: id, solution: s, suggest, updateId }: { g
                             setShots("");
                             setFrTotal("");
                             setBossDamage("");
+                            setRuns([]);
                         }}
                     />
                 </div>
@@ -248,7 +287,7 @@ export function SolutionForm({ galaxy: id, solution: s, suggest, updateId }: { g
                     />
                 </div>
                 <div className={clsx(styles.field, { [styles.hidden]: !selectedGalaxy })}>
-                    <span className={styles.label}>{multiShot ? "FR Used (per shot)" : "FR Used"}</span>
+                    <span className={styles.label}>{chained ? "FR Used (run 1)" : multiShot ? "FR Used (per shot)" : "FR Used"}</span>
                     <CombatStatInput
                         value={frUsed}
                         onChange={setFrUsed}
@@ -261,7 +300,7 @@ export function SolutionForm({ galaxy: id, solution: s, suggest, updateId }: { g
                     />
                 </div>
                 <div className={clsx(styles.field, { [styles.hidden]: !selectedGalaxy })}>
-                    <span className={styles.label}>FR Committed</span>
+                    <span className={styles.label}>{chained ? "FR Committed (run 1)" : "FR Committed"}</span>
                     <CombatStatInput
                         value={frCommitted}
                         onChange={setFrCommitted}
@@ -289,12 +328,15 @@ export function SolutionForm({ galaxy: id, solution: s, suggest, updateId }: { g
                         </div>
                     </div>
                 )}
+
                 {hazard && hazardOptions.length > 1 && (
                     <NodeField label={`Which hazards?${optionalNodes}`} options={hazardOptions} selected={hazardNodes} onToggle={toggleNode(setHazardNodes)} disabled={locked(s?.hazard_nodes)} />
                 )}
+
                 {support && supportOptions.length > 1 && (
                     <NodeField label={`Which supports?${optionalNodes}`} options={supportOptions} selected={supportNodes} onToggle={toggleNode(setSupportNodes)} disabled={locked(s?.support_nodes)} />
                 )}
+
                 {galaxyUnlocks.length > 0 && (
                     <div className={clsx(styles.field, { [styles.hidden]: !selectedBattle })}>
                         <span className={styles.label}>Unlocked</span>
@@ -312,6 +354,7 @@ export function SolutionForm({ galaxy: id, solution: s, suggest, updateId }: { g
                         </div>
                     </div>
                 )}
+
                 {galaxyPurchases.length > 0 && (
                     <details className={clsx(styles.purchases, { [styles.hidden]: !selectedBattle })}>
                         <summary className={styles.label}>Ship purchases &amp; patrols (optional)</summary>
@@ -333,33 +376,89 @@ export function SolutionForm({ galaxy: id, solution: s, suggest, updateId }: { g
                         </div>
                     </details>
                 )}
+
                 {isBoss && (
                     <div className={styles.field}>
                         <span className={styles.label}>Boss</span>
                         <Checkbox checked={bossDefeated} onChange={setBossDefeated} disabled={locked(s?.boss_alive)}>Already defeated</Checkbox>
                     </div>
                 )}
+
                 {showBossResults && (
                     <>
+                        {!chained && (
+                            <div className={styles.field}>
+                                <span className={styles.label}>Shots (optional)</span>
+                                <CombatStatInput value={shots} onChange={setShots} min={1} step={1} decimals={0} allowEmpty disabled={locked(s?.shots)} />
+                            </div>
+                        )}
+
                         <div className={styles.field}>
-                            <span className={styles.label}>Shots (optional)</span>
-                            <CombatStatInput value={shots} onChange={setShots} min={1} step={1} decimals={0} allowEmpty disabled={locked(s?.shots)} />
+                            <span className={styles.label}>Boss Damage (optional)</span>
+                            <CombatStatInput value={bossDamage} onChange={setBossDamage} min={0} step={0.01} decimals={2} stepper={false} allowEmpty disabled={locked(s?.boss_damage)} />
                         </div>
+
                         {multiShot && (
                             <div className={styles.field}>
                                 <span className={styles.label}>FR Total (all shots)</span>
                                 <CombatStatInput value={frTotal} onChange={setFrTotal} min={0} step={0.01} decimals={2} stepper={false} allowEmpty disabled={locked(s?.fr_total)} />
                             </div>
                         )}
-                        <div className={styles.field}>
-                            <span className={styles.label}>Boss Damage (optional)</span>
-                            <CombatStatInput value={bossDamage} onChange={setBossDamage} min={0} step={0.01} decimals={2} stepper={false} allowEmpty disabled={locked(s?.boss_damage)} />
-                        </div>
+
                         {frTotalTooLow && (
                             <span className={styles.error}>FR Total can't be lower than FR Used</span>
                         )}
+
+                        {runs.map((run, i) => (
+                            <div key={i} className={styles.run}>
+                                <div className={styles.field}>
+                                    <span className={styles.label}>Run {i + 2}</span>
+                                    {!suggest && <Button variant="flag" onClick={() => setRuns((prev) => prev.filter((_, j) => j !== i))}>Remove</Button>}
+                                </div>
+                                <FileUpload
+                                    accept={SCREENSHOT_TYPES.join(",")}
+                                    preview
+                                    file={run.screenshot}
+                                    previewSrc={run.uploaded?.screenshot_url ?? undefined}
+                                    onFileSelected={(file) => updateRun(i, { screenshot: file })}
+                                    idleText={`Click or drag the screenshot of run ${i + 2}`}
+                                    disabled={suggest}
+                                />
+
+                                {screenshotError(run.screenshot) && (
+                                    <span className={styles.error}>{screenshotError(run.screenshot)}</span>
+                                )}
+
+                                <div className={styles.field}>
+                                    <span className={styles.label}>FR Used</span>
+                                    <CombatStatInput value={run.frUsed} onChange={(value) => updateRun(i, { frUsed: value })} min={0} step={0.01} decimals={2} stepper={false} allowEmpty disabled={suggest} />
+                                </div>
+                                <div className={styles.field}>
+                                    <span className={styles.label}>FR Committed</span>
+                                    <CombatStatInput value={run.frCommitted} onChange={(value) => updateRun(i, { frCommitted: value })} min={0} step={0.01} decimals={2} stepper={false} allowEmpty disabled={suggest} />
+                                </div>
+
+                                {runCommittedTooLow[i] && (
+                                    <span className={styles.error}>FR Committed can't be lower than FR Used</span>
+                                )}
+                            </div>
+                        ))}
+
+                        {chained && (
+                            <div className={styles.field}>
+                                <span className={styles.label}>FR Total (all runs)</span>
+                                <span>{isNaN(chainTotal) ? "–" : parseFloat(chainTotal.toFixed(2))}</span>
+                            </div>
+                        )}
+
+                        {!suggest && (
+                            <Button variant="secondary" onClick={() => setRuns((prev) => [...prev, { frUsed: "", frCommitted: "" }])}>
+                                Add another run (different build)
+                            </Button>
+                        )}
                     </>
                 )}
+
                 <div className={clsx(styles.field, styles.vertical)}>
                     <span className={styles.label}>Notes</span>
                     <textarea
@@ -370,17 +469,20 @@ export function SolutionForm({ galaxy: id, solution: s, suggest, updateId }: { g
                         onChange={(e) => setNotes(e.target.value)}
                     />
                 </div>
+
                 {s?.flagged && !suggest && (
                     <Checkbox checked={unflag} onChange={setUnflag}>Unflag solution</Checkbox>
                 )}
                 {s && !suggest && (
                     <Checkbox checked={verified} onChange={setVerified}>Verified</Checkbox>
                 )}
+
                 <Button disabled={
                     loading ||
                     !frUsed ||
                     frCommittedTooLow ||
                     frTotalTooLow ||
+                    runsIncomplete ||
                     (!screenshot && !editing) ||
                     !!screenshotProblem ||
                     !selectedGalaxy ||

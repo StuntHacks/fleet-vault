@@ -50,15 +50,18 @@ export default function Header({ galaxy: current }: { galaxy?: number }) {
             {flaggedCount} flagged<span>pending</span>
           </Button>
         )}
+
         {updateCount > 0 && !isUpdatesPage && (
           <Button variant="update" onClick={() => navigate('/updates')}>
             {updateCount} {updateCount === 1 ? 'update' : 'updates'}<span>pending</span>
           </Button>
         )}
+
         {isAdmin ?
           <Button variant="secondary" onClick={() => adminLogout()}>Logout</Button> :
           <Button variant="secondary" onClick={() => {adminLogin(window.prompt() || "").catch(() => alert("Invalid token"))}}>Login</Button>
         }
+
         <Button onClick={() => navigate(`/g/${id}/submit`)}>
           Submit
           <span>(Ctrl + V)</span>

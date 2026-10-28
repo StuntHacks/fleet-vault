@@ -204,6 +204,9 @@ export default function GalaxyView() {
                             <Checkbox name="filterStats" checked={filter} onChange={changeFilter}>
                                 Filter by stats
                             </Checkbox>
+                            <Checkbox name="upToStats" checked={upToStats} onChange={changeUpToStats} disabled={!filter}>
+                                Include lower stats
+                            </Checkbox>
                             <CombatStatInput
                                 value={combatStats}
                                 onChange={changeCombatStats}
@@ -211,9 +214,6 @@ export default function GalaxyView() {
                                 max={galaxies[id - 1].maxStats ?? 1}
                                 step={galaxies[id - 1].step ?? 0.025}
                             />
-                            <Checkbox name="upToStats" checked={upToStats} onChange={changeUpToStats} disabled={!filter}>
-                                Include lower stats
-                            </Checkbox>
                         </div>
                         <div className={styles.scrollable} onWheel={handleScroll}>
                             ← Scroll here →

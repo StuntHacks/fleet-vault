@@ -43,14 +43,7 @@
         margin-right: 0.5rem;
         display: flex;
         flex-direction: column;
-        gap: 0.1rem;
         align-items: center;
-
-        @media screen and (pointer: coarse) {
-            flex-direction: row;
-            gap: 0.75rem;
-            margin-right: 0;
-        }
 
         input,
         button {
@@ -59,6 +52,20 @@
 
         input:disabled {
             opacity: 0.5;
+        }
+
+        label:last-of-type {
+            margin-bottom: 0.1rem;
+        }
+
+        @media screen and (pointer: coarse) {
+            flex-direction: row;
+            gap: 0.75rem;
+            margin-right: 0;
+
+            label:last-of-type {
+                margin-bottom: 0;
+            }
         }
     }
 

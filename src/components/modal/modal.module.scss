@@ -42,8 +42,9 @@
     }
 
     .panel {
+        --panel-width: max(1000px, min(60vw, (100vh - 10rem) * 16 / 9));
         border-radius: 0.5rem;
-        width: min(1000px, calc(100% - 2rem));
+        width: min(var(--panel-width), calc(100% - 2rem));
         max-height: calc(100% - 2rem);
         overflow-y: auto;
         background: var(--color-glass-popup);
@@ -53,7 +54,7 @@
     }
 
     &.navigable .panel {
-        width: min(1000px, calc(100% - 9rem));
+        width: min(var(--panel-width), calc(100% - 9rem));
     }
 
     .arrow {

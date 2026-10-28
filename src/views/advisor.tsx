@@ -91,7 +91,10 @@ export default function AdvisorView() {
     const handleStatChange = (raw: string) => setStatValue(raw);
 
     const handleHazardChange = (id: string, checked: boolean) => {
-        setHazardIds((prev) => checked ? [...prev, id] : prev.filter((h) => h !== id));
+        const order = battleData?.hazard?.map((h) => h.id) ?? [];
+        setHazardIds((prev) => checked
+            ? [...prev, id].sort((a, b) => order.indexOf(a) - order.indexOf(b))
+            : prev.filter((h) => h !== id));
     };
 
     const canSearch = !!selectedGalaxyId && !!selectedBattleId && !!statValue;

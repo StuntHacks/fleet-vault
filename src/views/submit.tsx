@@ -141,6 +141,9 @@ export function SolutionForm({ galaxy: id, solution: s, suggest, updateId }: { g
         bossDamage: showBossResults && Number.isFinite(bossDamageValue) ? bossDamageValue : null,
     };
     const filledIn = suggest && s && fields ? missingInfo(s, fields) : {};
+    const optionalNodes = editing ? " (optional)" : "";
+    const nodesMissing = !editing && !!fields &&
+        ((hazard && !fields.hazardNodes.length) || (support && !fields.supportNodes.length));
 
     const submit = () => {
         if (!fields) return;
@@ -270,10 +273,10 @@ export function SolutionForm({ galaxy: id, solution: s, suggest, updateId }: { g
                     </div>
                 )}
                 {hazard && hazardOptions.length > 1 && (
-                    <NodeField label="Which hazards? (optional)" options={hazardOptions} selected={hazardNodes} onToggle={toggleNode(setHazardNodes)} disabled={locked(s?.hazard_nodes)} />
+                    <NodeField label={`Which hazards?${optionalNodes}`} options={hazardOptions} selected={hazardNodes} onToggle={toggleNode(setHazardNodes)} disabled={locked(s?.hazard_nodes)} />
                 )}
                 {support && supportOptions.length > 1 && (
-                    <NodeField label="Which supports? (optional)" options={supportOptions} selected={supportNodes} onToggle={toggleNode(setSupportNodes)} disabled={locked(s?.support_nodes)} />
+                    <NodeField label={`Which supports?${optionalNodes}`} options={supportOptions} selected={supportNodes} onToggle={toggleNode(setSupportNodes)} disabled={locked(s?.support_nodes)} />
                 )}
                 {galaxyUnlocks.length > 0 && (
                     <div className={clsx(styles.field, { [styles.hidden]: !selectedBattle })}>
@@ -366,6 +369,7 @@ export function SolutionForm({ galaxy: id, solution: s, suggest, updateId }: { g
                     !selectedGalaxy ||
                     !selectedBattle ||
                     !combatStats ||
+                    nodesMissing ||
                     (suggest && !Object.keys(filledIn).length)
                 } onClick={() => submit()}>
                     {suggest ? (loading ? "Submitting..." : "Submit changes") : editing ? (loading ? "Saving..." : "Save") : (loading ? "Submitting..." : "Submit")}

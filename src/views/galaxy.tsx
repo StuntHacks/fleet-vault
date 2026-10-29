@@ -97,7 +97,7 @@ export default function GalaxyView() {
     const { selectedId, openSolution, switchSolution, closeSolution } = useSelectedSolution();
 
     const [showObsolete, setShowObsolete] = useState(() => localStorage.getItem('fleetvault_show_obsolete') === 'true');
-    const [preloadImages, setPreloadImages] = useState(() => (localStorage.getItem('fleetvault_preload_images_') ?? 'false') === 'true');
+    const [preloadImages, setPreloadImages] = useState(() => (localStorage.getItem('fleetvault_preload_images') ?? 'true') === 'true');
     const [flaggedOnly, setFlaggedOnly] = useState(false);
     const [filter, setFilter] = useState(() => localStorage.getItem(statFilterKey(id)) === 'true');
     const [combatStats, setCombatStats] = useState(() => localStorage.getItem(combatStatsKey(id)) ?? "1");
@@ -132,7 +132,7 @@ export default function GalaxyView() {
     }, [showObsolete]);
 
     useEffect(() => {
-        localStorage.setItem('fleetvault_preload_images_', String(preloadImages));
+        localStorage.setItem('fleetvault_preload_images', String(preloadImages));
     }, [preloadImages]);
 
     const selected = useMemo(() => {

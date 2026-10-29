@@ -262,7 +262,7 @@ export function SolutionPopup({ solution: s, isAdmin, showGalaxy, onFlagsChanged
     };
 
     const remove = async () => {
-        if (!window.confirm('Delete this solution? This cannot be undone.')) return;
+        if (!window.confirm('Really delete this solution?')) return;
 
         setAdminBusy(true);
         setAdminError(null);

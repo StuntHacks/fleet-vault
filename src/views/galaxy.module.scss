@@ -34,12 +34,12 @@
         position: relative;
         align-self: stretch;
 
-        @media screen and (pointer: coarse) {
+        @media screen and (pointer: coarse), screen and (max-width: 640px) {
             display: none;
         }
     }
 
-    .settings:first-child {
+    .settings:first-of-type {
         margin-right: 0.5rem;
         display: flex;
         flex-direction: column;
@@ -69,7 +69,7 @@
         }
     }
 
-    .settings:last-child {
+    .settings:last-of-type {
         margin-left: 0.5rem;
 
         @media screen and (pointer: coarse) {
@@ -80,6 +80,49 @@
             margin-left: 0;
         }
     }
+
+    .settingsToggle {
+        display: none;
+    }
+
+    @media screen and (max-width: 640px) {
+        .settingsToggle {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            width: 100%;
+            padding: 0.5rem 1rem;
+            border: none;
+            border-radius: 0.5rem;
+            background: var(--color-glass);
+            backdrop-filter: var(--glass-blur);
+            box-shadow: 0 0 6px rgba(0, 0, 0, 0.1);
+            color: var(--color-text);
+            font-size: 1rem;
+            font-weight: bold;
+            cursor: pointer;
+
+            span {
+                font-weight: normal;
+                color: var(--color-text-secondary);
+            }
+
+            .arrow {
+                margin-left: auto;
+                color: var(--color-primary);
+                margin-bottom: -3px;
+                font-size: 1.5rem;
+            }
+        }
+
+        &.open .settingsToggle {
+            margin-bottom: 0.25rem;
+        }
+
+        &:not(.open) .settings {
+            display: none;
+        }
+    }
 }
 
 .obsoleteHeader {
@@ -87,4 +130,10 @@
     text-align: center;
     color: var(--color-text-secondary);
     margin-bottom: 1rem;
+
+    @media screen and (max-width: 640px) {
+        width: 5rem;
+        margin: 0.5rem;
+        align-self: center;
+    }
 }

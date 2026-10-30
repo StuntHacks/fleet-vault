@@ -14,7 +14,7 @@ export function SolutionColumn({ id, title, boss, count, children }: { id?: stri
                     {count}
                 </span>
             </div>
-            {children}
+            <div className={styles.entries}>{children}</div>
         </div>
     );
 }

@@ -49,6 +49,41 @@
             }
         }
     }
+
+    @media screen and (max-width: 640px) {
+        flex-direction: column;
+        flex-grow: 0;
+        height: auto;
+        overflow-x: visible;
+
+        .battle {
+            width: auto;
+            min-width: 0;
+            flex-shrink: 0;
+            overflow: hidden;
+
+            .battleName {
+                position: static;
+                margin-bottom: 0;
+            }
+
+            .entries {
+                display: flex;
+                align-items: flex-start;
+                overflow-x: auto;
+                scroll-snap-type: x mandatory;
+
+                > * {
+                    flex: 0 0 auto;
+                }
+
+                > .solution {
+                    width: min(300px, 80vw);
+                    scroll-snap-align: center;
+                }
+            }
+        }
+    }
 }
 
 .solution {

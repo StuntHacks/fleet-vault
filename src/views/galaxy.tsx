@@ -5,11 +5,12 @@ import { useAdminSession, useGalaxyAccess, useGalaxySolutions, useSelectedSoluti
 import { type RankedSolutions } from "../lib/api";
 import { galaxies, isBossBattle } from "../lib/battles";
 import styles from "./galaxy.module.scss";
+import { clsx } from "clsx";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { Solution } from "../lib/types";
 import { Checkbox } from "../components/checkbox/checkbox";
 import { CombatStatInput } from "../components/combatStatInput/combatStatInput";
-import { SolutionEntry } from "../components/solution/solutionEntry";
+import { formatStats, SolutionEntry } from "../components/solution/solutionEntry";
 import { SolutionPopup } from "../components/solution/solutionPopup";
 import { SolutionColumn, SolutionColumns } from "../components/solution/solutionColumns";
 import { GalaxyNotes } from "../components/galaxyNotes/galaxyNotes";
@@ -99,6 +100,7 @@ export default function GalaxyView() {
     const [showObsolete, setShowObsolete] = useState(() => localStorage.getItem('fleetvault_show_obsolete') === 'true');
     const [preloadImages, setPreloadImages] = useState(() => (localStorage.getItem('fleetvault_preload_images') ?? 'true') === 'true');
     const [flaggedOnly, setFlaggedOnly] = useState(false);
+    const [settingsOpen, setSettingsOpen] = useState(false);
     const [filter, setFilter] = useState(() => localStorage.getItem(statFilterKey(id)) === 'true');
     const [combatStats, setCombatStats] = useState(() => localStorage.getItem(combatStatsKey(id)) ?? "1");
     const [upToStats, setUpToStats] = useState(() => localStorage.getItem(upToStatsKey(id)) === 'true');
@@ -199,7 +201,12 @@ export default function GalaxyView() {
             {solutions.error && <p className={styles.error}>Error loading solutions</p>}
             {listReady && (
                 <>
-                    <div className={styles.menuBar}>
+                    <div className={clsx(styles.menuBar, settingsOpen && styles.open)}>
+                        <button className={styles.settingsToggle} onClick={() => setSettingsOpen(!settingsOpen)}>
+                            Settings & Filters
+                            {statFilter != null && <span>{upToStats ? "Up to " : "At "}{formatStats(statFilter)}</span>}
+                            <span className={styles.arrow}>{settingsOpen ? "▴" : "▾"}</span>
+                        </button>
                         <div className={styles.settings}>
                             <Checkbox name="filterStats" checked={filter} onChange={changeFilter}>
                                 Filter by stats

@@ -28,7 +28,10 @@ export function GalaxyNotes({ galaxyId, isAdmin }: { galaxyId: number, isAdmin: 
         const outer = viewport.current;
         const inner = content.current;
         if (expanded || !outer || !inner) return;
-        const check = () => setOverflowing(inner.offsetHeight > outer.clientHeight + 1);
+        const check = () => {
+            const first = inner.firstElementChild;
+            setOverflowing(inner.offsetHeight > outer.clientHeight + 1 || (!!first && first.scrollWidth > first.clientWidth + 1));
+        };
         const observer = new ResizeObserver(check);
         observer.observe(outer);
         observer.observe(inner);
@@ -118,7 +121,8 @@ export function GalaxyNotes({ galaxyId, isAdmin }: { galaxyId: number, isAdmin: 
                 <div className={clsx(styles.actions, expanded && styles.expanded)}>
                     {canToggle && (
                         <button className={styles.toggle} onClick={() => setExpanded(!expanded)}>
-                            {expanded ? 'Show less ▴' : 'Show more ▾'}
+                            <span className={styles.toggleLabel}>{expanded ? 'Show less ' : 'Show more '}</span>
+                            {expanded ? '▴' : '▾'}
                         </button>
                     )}
                     {isAdmin && <Button variant="secondary" onClick={startEditing}>{notes ? 'Edit' : 'Add galaxy notes'}</Button>}

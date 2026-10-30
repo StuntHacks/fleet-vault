@@ -44,10 +44,14 @@ const filterByStats = (solutions: RankedSolutions, stats: number | null, upTo: b
     };
 }
 
-const pickBest = (solutions: Solution[], stats: number): Solution | null => {
+const sameUnlocks = (a: string[], b: string[]) =>
+    a.length === b.length && a.every((u) => b.includes(u));
+
+const pickBest = (solutions: Solution[], stats: number, unlocks: string[]): Solution | null => {
     const nearest = nearestStats(solutions, stats);
-    return solutions
-        .filter((s) => Math.abs(s.combat_stats - nearest) < 1e-6)
+    const atStats = solutions.filter((s) => Math.abs(s.combat_stats - nearest) < 1e-6);
+    const matching = atStats.filter((s) => sameUnlocks(s.unlocks, unlocks));
+    return (matching.length ? matching : atStats)
         .sort((a, b) => Number(a.flagged) - Number(b.flagged)
             || (a.fr_total ?? a.fr_used) - (b.fr_total ?? b.fr_used)
             || Number(b.verified_at != null) - Number(a.verified_at != null))[0] ?? null;
@@ -165,19 +169,19 @@ export default function GalaxyView() {
         setTimeout(() => observer.disconnect(), 2000);
     }, [listReady, selectedId, selected]);
 
-    const [navStats, setNavStats] = useState<number | null>(null);
+    const [navOrigin, setNavOrigin] = useState<{ stats: number, unlocks: string[] } | null>(null);
 
     useEffect(() => {
-        if (selectedId == null) setNavStats(null);
+        if (selectedId == null) setNavOrigin(null);
     }, [selectedId]);
 
     const neighbor = (direction: 1 | -1): ModalTarget | null => {
         if (!selected) return null;
         const battles = galaxies[id - 1].battles;
-        const stats = navStats ?? selected.combat_stats;
+        const origin = navOrigin ?? { stats: selected.combat_stats, unlocks: selected.unlocks };
         for (let i = battles.findIndex((b) => b.id === selected.battle_id) + direction; i >= 0 && i < battles.length; i += direction) {
-            const best = pickBest(solutions.forBattle(battles[i].id).best, stats);
-            if (best) return { title: battles[i].name, onSelect: () => { setNavStats(stats); switchSolution(best); } };
+            const best = pickBest(solutions.forBattle(battles[i].id).best, origin.stats, origin.unlocks);
+            if (best) return { title: battles[i].name, onSelect: () => { setNavOrigin(origin); switchSolution(best); } };
         }
         return null;
     };

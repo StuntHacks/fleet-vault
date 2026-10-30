@@ -77,13 +77,6 @@ export async function getGalaxy(galaxyId: number): Promise<Galaxy> {
   return data;
 }
 
-const IMAGE_EXTENSIONS: Record<string, string> = {
-  'image/png': 'png',
-  'image/jpeg': 'jpg',
-  'image/webp': 'webp',
-  'image/gif': 'gif',
-};
-
 export interface SolutionFields {
   galaxyId: number;
   battleId: string;
@@ -135,29 +128,22 @@ async function makeThumbnail(bitmap: ImageBitmap): Promise<Blob | null> {
   return webp?.type === 'image/webp' ? webp : encodeCanvas(canvas, 'image/jpeg', 0.8);
 }
 
-async function uploadImage(path: string, image: Blob): Promise<string> {
-  const { data: upload, error: uploadError } = await supabase.storage
-    .from('screenshots')
-    .upload(path, image, { contentType: image.type });
-
-  if (uploadError) throw uploadError;
-
-  return supabase.storage.from('screenshots').getPublicUrl(upload.path).data.publicUrl;
-}
-
 async function uploadScreenshot(galaxyId: number, battleId: string, screenshot: File) {
-  const base = `${galaxyId}/${battleId}/${Date.now()}`;
   const bitmap = await createImageBitmap(screenshot).catch(() => null);
   const portrait = !!bitmap && bitmap.height > bitmap.width;
   const thumbnail = bitmap && await makeThumbnail(bitmap).catch(() => null);
 
-  return {
-    portrait,
-    images: {
-      screenshot_url: await uploadImage(`${base}.${IMAGE_EXTENSIONS[screenshot.type] ?? 'png'}`, screenshot),
-      thumbnail_url: thumbnail && await uploadImage(`${base}.thumb.${IMAGE_EXTENSIONS[thumbnail.type]}`, thumbnail),
-    },
-  };
+  const form = new FormData();
+  form.append('galaxyId', String(galaxyId));
+  form.append('battleId', battleId);
+  form.append('screenshot', screenshot);
+  if (thumbnail) form.append('thumbnail', thumbnail);
+
+  const res = await fetch(`${process.env.REACT_APP_IMAGES_URL}/upload`, { method: 'POST', body: form });
+  if (!res.ok) throw new Error(`Screenshot upload failed: ${await res.text()}`);
+
+  const images: { screenshot_url: string; thumbnail_url: string | null } = await res.json();
+  return { portrait, images };
 }
 
 async function uploadChain(params: SolutionFields) {

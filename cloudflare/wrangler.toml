@@ -1,0 +1,11 @@
+name = "fleet-vault-images"
+main = "index.js"
+compatibility_date = "2026-10-01"
+
+[[r2_buckets]]
+binding = "BUCKET"
+bucket_name = "fleet-vault-screenshots"
+
+[vars]
+PUBLIC_URL = "https://img.stunthacks.net"
+ALLOWED_ORIGINS = "https://stunthacks.github.io,http://localhost:3000"

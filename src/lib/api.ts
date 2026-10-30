@@ -290,6 +290,13 @@ export async function updateGalaxyNotes(galaxyId: number, notes: string | null):
   if (!data.length) throw new Error('Galaxy notes not saved');
 }
 
+export async function updateBattleOrder(galaxyId: number, battleOrder: string[] | null): Promise<void> {
+  const { data, error } = await supabase.from('galaxies').update({ battle_order: battleOrder }).eq('id', galaxyId).select('id');
+
+  if (error) throw error;
+  if (!data.length) throw new Error('Battle order not saved');
+}
+
 export async function flagSolution(id: number, reason?: string): Promise<void> {
   const { error } = await supabase.rpc('flag_solution', { solution_id: id, reason: reason?.trim() || null });
   if (error) throw error;

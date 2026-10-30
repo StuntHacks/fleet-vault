@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { enableGalaxy } from "../../lib/api";
-import { refreshHiddenGalaxies } from "../../lib/hooks";
+import { refreshGalaxies } from "../../lib/hooks";
 import { Button } from "../button/button";
 import styles from "./hiddenGalaxy.module.scss";
 
@@ -14,7 +14,7 @@ export function HiddenGalaxy({ galaxyId }: { galaxyId: number }) {
         setError(false);
         try {
             await enableGalaxy(galaxyId);
-            refreshHiddenGalaxies();
+            refreshGalaxies();
         } catch {
             setError(true);
             setBusy(false);

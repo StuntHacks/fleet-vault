@@ -6,7 +6,7 @@ import { CombatStatInput } from "../components/combatStatInput/combatStatInput";
 import { Checkbox } from "../components/checkbox/checkbox";
 import { isEmpty, missingInfo, resolveSolutionUpdate, submitSolution, suggestSolutionUpdate, updateSolution } from "../lib/api";
 import { ChainRun, Solution } from "../lib/types";
-import { useGalaxyAccess } from "../lib/hooks";
+import { useGalaxyAccess, useGalaxyBattles } from "../lib/hooks";
 import { ConditionNode, galaxies, getConditionNodes, getGalaxyPurchases, getGalaxyUnlocks, isBossBattle, SHIPS_BY_CLASS } from "../lib/battles";
 import styles from "./submit.module.scss";
 import clsx from "clsx";
@@ -62,6 +62,7 @@ export function SolutionForm({ galaxy: id, solution: s, suggest, updateId }: { g
     const editing = !!s;
     const locked = (value: unknown) => !!suggest && !isEmpty(value);
     const [selectedGalaxy, setSelectedGalaxy] = useState<number | undefined>(s ? s.galaxy_id : id);
+    const orderedBattles = useGalaxyBattles(selectedGalaxy ?? 0);
     const [selectedBattle, setSelectedBattle] = useState<number | undefined>(() => {
         if (!s) return undefined;
         const index = galaxies[s.galaxy_id - 1]?.battles.findIndex((b) => b.id === s.battle_id) ?? -1;
@@ -259,7 +260,7 @@ export function SolutionForm({ galaxy: id, solution: s, suggest, updateId }: { g
                         placeholder="Select Battle"
                         disabled={suggest}
                         items={selectedGalaxy
-                            ? galaxies[selectedGalaxy - 1]?.battles.map((b, i) => ({ label: b.name, value: i + 1 }))
+                            ? orderedBattles.map((b) => ({ label: b.name, value: galaxies[selectedGalaxy - 1].battles.indexOf(b) + 1 }))
                             : []}
                         callback={(battleId) => {
                             setSelectedBattle(battleId);

@@ -1,9 +1,9 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { useLocation, useNavigate, useSearchParams } from 'react-router-dom';
 import { Session } from '@supabase/supabase-js';
 import { supabase } from './supabase';
 import { getSolutionsForBattle, getSolutionsForGalaxy, getBattlesForGalaxy, getGalaxy, getFlaggedCount, getUpdateCount, getGalaxies, getAuditLog, AUDIT_PAGE } from './api';
-import { galaxies } from './battles';
+import { galaxies, orderBattles } from './battles';
 import type { AuditFilter, RankedSolutions } from './api';
 import type { Solution, Galaxy, AuditEntry } from './types';
 
@@ -41,26 +41,21 @@ export function useAdminSession() {
   return session;
 }
 
-let hiddenGalaxies: Promise<number[]> | null = null;
-const loadHiddenGalaxies = () => hiddenGalaxies ??= getGalaxies()
-  .then((rows) => galaxies.map((_, i) => i + 1).filter((id) => {
-    const row = rows.find((r) => r.id === id);
-    return !row || !!row.hidden;
-  }))
-  .catch(() => []);
+let galaxyRows: Promise<Galaxy[] | null> | null = null;
+const loadGalaxyRows = () => galaxyRows ??= getGalaxies().catch(() => null);
 
-export function refreshHiddenGalaxies() {
-  hiddenGalaxies = null;
+export function refreshGalaxies() {
+  galaxyRows = null;
   window.dispatchEvent(new Event('fv:galaxies-changed'));
+  return loadGalaxyRows();
 }
 
-export function useGalaxyAccess() {
-  const session = useAdminSession();
-  const [hidden, setHidden] = useState<number[] | undefined>(undefined);
+function useGalaxyRows() {
+  const [rows, setRows] = useState<Galaxy[] | null | undefined>(undefined);
 
   useEffect(() => {
     let current = true;
-    const load = () => { loadHiddenGalaxies().then((ids) => { if (current) setHidden(ids); }); };
+    const load = () => { loadGalaxyRows().then((r) => { if (current) setRows(r); }); };
     load();
     window.addEventListener('fv:galaxies-changed', load);
     return () => {
@@ -69,12 +64,29 @@ export function useGalaxyAccess() {
     };
   }, []);
 
+  return rows;
+}
+
+export function useGalaxyAccess() {
+  const session = useAdminSession();
+  const rows = useGalaxyRows();
+  const hidden = rows === undefined ? undefined : !rows ? [] : galaxies.map((_, i) => i + 1).filter((id) => {
+    const row = rows.find((r) => r.id === id);
+    return !row || !!row.hidden;
+  });
+
   const loading = session === undefined || hidden === undefined;
   return {
     loading,
     isHidden: (galaxyId: number) => !!hidden?.includes(galaxyId),
     canView: (galaxyId: number) => !loading && (!!session || !hidden!.includes(galaxyId)),
   };
+}
+
+export function useGalaxyBattles(galaxyId: number) {
+  const rows = useGalaxyRows();
+  const order = rows?.find((r) => r.id === galaxyId)?.battle_order;
+  return useMemo(() => orderBattles(galaxyId, order), [galaxyId, order]);
 }
 
 export function useUsername(): string | null {

@@ -47,6 +47,36 @@
                 font-size: 0.9rem;
                 color: var(--color-text-secondary);
             }
+
+            .move {
+                display: flex;
+                gap: 0.25rem;
+                margin-left: 0.75rem;
+                margin-bottom: -3px;
+
+                button {
+                    width: 1.75rem;
+                    height: 1.75rem;
+                    padding: 0 0 0.15rem;
+                    border: none;
+                    border-radius: 50%;
+                    background: var(--color-glass);
+                    color: var(--color-text);
+                    font-size: 1.25rem;
+                    line-height: 1;
+                    cursor: pointer;
+                    transition: background 150ms, opacity 150ms;
+
+                    &:hover:not(:disabled) {
+                        background: var(--color-border);
+                    }
+
+                    &:disabled {
+                        opacity: 0.3;
+                        cursor: default;
+                    }
+                }
+            }
         }
     }
 
@@ -65,6 +95,10 @@
             .battleName {
                 position: static;
                 margin-bottom: 0;
+
+                .move button {
+                    transform: rotate(90deg);
+                }
             }
 
             .entries {

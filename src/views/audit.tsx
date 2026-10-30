@@ -30,6 +30,8 @@ function display(key: string, value: unknown, labels: Record<string, string>): s
 
     if (typeof value === "string" && key.endsWith("_by")) return labels[value] ?? value;
 
+    if (key === "battle_order" && Array.isArray(value)) return value.map((id) => findBattle(parseInt(id.slice(1), 10), id)?.name ?? id).join(", ");
+
     return format(value);
 }
 

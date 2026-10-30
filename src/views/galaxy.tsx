@@ -1,8 +1,8 @@
 import { useNavigate, useParams } from "react-router-dom";
 import { BaseLayout } from "../components/baselayout/baselayout";
 import { Modal, ModalTarget } from "../components/modal/modal";
-import { useAdminSession, useGalaxyAccess, useGalaxySolutions, useSelectedSolution } from "../lib/hooks";
-import { type RankedSolutions } from "../lib/api";
+import { refreshGalaxies, useAdminSession, useGalaxyAccess, useGalaxyBattles, useGalaxySolutions, useSelectedSolution } from "../lib/hooks";
+import { type RankedSolutions, updateBattleOrder } from "../lib/api";
 import { galaxies, isBossBattle } from "../lib/battles";
 import styles from "./galaxy.module.scss";
 import { clsx } from "clsx";
@@ -91,6 +91,7 @@ export default function GalaxyView() {
     const solutions = useGalaxySolutions(id);
     const isAdmin = !!useAdminSession();
     const access = useGalaxyAccess();
+    const battles = useGalaxyBattles(id);
     const allowed = access.canView(id);
     const navigate = useNavigate();
 
@@ -104,6 +105,7 @@ export default function GalaxyView() {
     const [showObsolete, setShowObsolete] = useState(() => localStorage.getItem('fleetvault_show_obsolete') === 'true');
     const [preloadImages, setPreloadImages] = useState(() => (localStorage.getItem('fleetvault_preload_images') ?? 'true') === 'true');
     const [flaggedOnly, setFlaggedOnly] = useState(false);
+    const [savingOrder, setSavingOrder] = useState(false);
     const [settingsOpen, setSettingsOpen] = useState(false);
     const [filter, setFilter] = useState(() => localStorage.getItem(statFilterKey(id)) === 'true');
     const [combatStats, setCombatStats] = useState(() => localStorage.getItem(combatStatsKey(id)) ?? "1");
@@ -177,7 +179,6 @@ export default function GalaxyView() {
 
     const neighbor = (direction: 1 | -1): ModalTarget | null => {
         if (!selected) return null;
-        const battles = galaxies[id - 1].battles;
         const origin = navOrigin ?? { stats: selected.combat_stats, unlocks: selected.unlocks };
         for (let i = battles.findIndex((b) => b.id === selected.battle_id) + direction; i >= 0 && i < battles.length; i += direction) {
             const best = pickBest(solutions.forBattle(battles[i].id).best, origin.stats, origin.unlocks);
@@ -186,11 +187,34 @@ export default function GalaxyView() {
         return null;
     };
 
-    const columns = galaxies[id - 1].battles
+    const columns = battles
         .map((b) => ({ battle: b, results: filterByStats(solutions.forBattle(b.id), statFilter, upToStats) }))
         .filter(({ results }) => !flaggedOnly || results.best.some((s) => s.flagged) || (showObsolete && results.obsolete.some((s) => s.flagged)));
 
     const refreshSolutions = () => { solutions.reload().catch(() => {}); };
+
+    const moveBattle = async (from: number, direction: 1 | -1) => {
+        const order = battles.map((b) => b.id);
+        [order[from], order[from + direction]] = [order[from + direction], order[from]];
+        setSavingOrder(true);
+        try {
+            await updateBattleOrder(id, order);
+            await refreshGalaxies();
+        } catch {
+            alert("Saving battle order failed, please try again");
+        } finally {
+            setSavingOrder(false);
+        }
+    };
+
+    const columnMove = (battleId: string) => {
+        if (!isAdmin || flaggedOnly) return undefined;
+        const index = battles.findIndex((b) => b.id === battleId);
+        return {
+            earlier: !savingOrder && index > 0 ? () => moveBattle(index, -1) : null,
+            later: !savingOrder && index < battles.length - 1 ? () => moveBattle(index, 1) : null,
+        };
+    };
 
     const handleScroll = (e: React.WheelEvent<HTMLDivElement>) => {
         if (e.deltaY === 0) return;
@@ -248,7 +272,7 @@ export default function GalaxyView() {
                     <SolutionColumns ref={listRef}>
                         {flaggedOnly && !columns.length && <p className={styles.info}>No flagged solutions</p>}
                         {columns.map(({ battle: b, results }) => (
-                            <SolutionColumn key={b.id} id={`battle-${b.id}`} title={b.name} boss={isBossBattle(b)} count={results.best.length}>
+                            <SolutionColumn key={b.id} id={`battle-${b.id}`} title={b.name} boss={isBossBattle(b)} count={results.best.length} move={columnMove(b.id)}>
                                 <Solutions
                                     solutions={results}
                                     onOpen={openSolution}

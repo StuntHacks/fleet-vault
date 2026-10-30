@@ -75,4 +75,5 @@ export interface Galaxy {
   id: number;
   notes: string | null;
   hidden: boolean;
+  battle_order: string[] | null;
 }

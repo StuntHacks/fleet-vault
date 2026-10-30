@@ -43,6 +43,13 @@ export function getGalaxyData(galaxyId: number): Galaxy | undefined {
     return galaxies[galaxyId - 1];
 }
 
+export function orderBattles(galaxyId: number, order: string[] | null | undefined): Battle[] {
+    const battles = getGalaxyData(galaxyId)?.battles ?? [];
+    if (!order?.length) return battles;
+    const ordered = order.map((id) => battles.find((b) => b.id === id)).filter((b): b is Battle => !!b);
+    return [...ordered, ...battles.filter((b) => !ordered.includes(b))];
+}
+
 export function findBattle(galaxyId: number, battleKey: string): Battle | undefined {
     return getGalaxyData(galaxyId)?.battles.find((b) => b.id === battleKey);
 }

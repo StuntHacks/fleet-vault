@@ -4,7 +4,10 @@ import { Solution } from "../../lib/types";
 import styles from "./solution.module.scss";
 
 const getUnlockName = (galaxyId: number, unlock: string) => {
-    return getGalaxyUnlocks(galaxyId).find((u) => u.code === unlock)?.name ?? unlock;
+    const u = getGalaxyUnlocks(galaxyId).find((g) => g.code === unlock);
+
+    if (!u) return unlock;
+    return `${u.name} (${u.code})`;
 }
 
 export const formatStats = (stats: number) => `${Number.isInteger(stats) ? stats.toFixed(1) : stats}x`;

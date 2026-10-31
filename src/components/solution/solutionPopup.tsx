@@ -157,7 +157,16 @@ export function SolutionPopup({ solution: s, isAdmin, showGalaxy, onFlagsChanged
         if (key === "boss_alive") return value ? "Alive" : "Dead";
         if (key === "hazard_nodes") return (value as string[]).map((id) => nodeLabel(hazards, id)).join(", ");
         if (key === "support_nodes") return (value as string[]).map((id) => nodeLabel(supports, id)).join(", ");
-        if (key === "unlocks") return (value as string[]).map((u) => getGalaxyUnlocks(s.galaxy_id).find((g) => g.code === u)?.name ?? u).join(", ");
+
+        if (key === "unlocks") {
+            return (value as string[]).map((u) => {
+                const unlock = getGalaxyUnlocks(s.galaxy_id).find((g) => g.code === u);
+
+                if (!unlock) return u;
+                return `${unlock.name} (${unlock.code})`;
+            }).join(", ");
+        }
+
         if (key === "purchases") return Object.entries(value as Record<string, string>).map(([node, ship]) => `${node}: ${ship}`).join(", ");
 
         return String(value);

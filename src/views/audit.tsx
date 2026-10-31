@@ -13,7 +13,7 @@ import styles from "./audit.module.scss";
 
 const TABLES = { solutions: "Solution", galaxies: "Galaxy", solution_flags: "Flag", solution_updates: "Update" };
 const OPERATIONS = { INSERT: "created", UPDATE: "edited", DELETE: "deleted" };
-const FILTERS: Record<AuditType, string> = { flags: "Flags", changes: "Solution changes", updates: "Updates", submissions: "Submissions" };
+const FILTERS: Record<AuditType, string> = { flags: "Flags", changes: "Solution changes", galaxies: "Galaxy changes", updates: "Updates", submissions: "Submissions" };
 
 function format(value: unknown): string {
     if (value == null) return "";
@@ -193,7 +193,7 @@ function AuditItem({ entry, labels, reasons, solutionExists, onUndone }: { entry
 export default function AuditView() {
     const session = useAdminSession();
     const navigate = useNavigate();
-    const [filter, setFilter] = useState<AuditFilter>({ flags: true, changes: true, updates: true, submissions: false });
+    const [filter, setFilter] = useState<AuditFilter>({ flags: true, changes: true, galaxies: true, updates: true, submissions: false });
     const log = useAuditLog(filter);
     const [existing, setExisting] = useState<number[]>([]);
     const labels = Object.fromEntries(log.entries.filter((e) => e.actor_id && e.admin_label).map((e) => [e.actor_id, e.admin_label]));

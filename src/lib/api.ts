@@ -422,12 +422,13 @@ export async function resolveSolutionUpdate(id: number, applied: boolean): Promi
 
 export const AUDIT_PAGE = 50;
 
-export type AuditType = 'flags' | 'changes' | 'updates' | 'submissions';
+export type AuditType = 'flags' | 'changes' | 'galaxies' | 'updates' | 'submissions';
 export type AuditFilter = Record<AuditType, boolean>;
 
 const AUDIT_CONDITIONS: Record<AuditType, string[]> = {
   flags: ['table_name.eq.solution_flags'],
-  changes: ['and(table_name.eq.solutions,operation.neq.INSERT)', 'table_name.eq.galaxies'],
+  changes: ['and(table_name.eq.solutions,operation.neq.INSERT)'],
+  galaxies: ['table_name.eq.galaxies'],
   updates: ['table_name.eq.solution_updates'],
   submissions: ['and(table_name.eq.solutions,operation.eq.INSERT)'],
 };

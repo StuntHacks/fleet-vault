@@ -18,6 +18,11 @@
     color: var(--color-text-secondary);
     background: var(--color-glass);
     backdrop-filter: var(--glass-blur);
+
+    @media screen and (max-width: 669px) {
+        justify-content: flex-start;
+        flex-wrap: wrap;
+    }
 }
 
 .entry {

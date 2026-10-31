@@ -5,14 +5,15 @@ interface CheckboxProps {
     className?: string;
     checked: boolean;
     onChange: (checked: boolean) => void;
+    onRightClick?: (event: React.MouseEvent<HTMLLabelElement>) => void;
     children: React.ReactNode;
     name?: string;
     disabled?: boolean;
 }
 
-export function Checkbox({ className, checked, onChange, children, name, disabled }: CheckboxProps) {
+export function Checkbox({ className, checked, onChange, onRightClick, children, name, disabled }: CheckboxProps) {
     return (
-        <label className={clsx(styles.checkbox, className, { [styles.disabled]: disabled })}>
+        <label className={clsx(styles.checkbox, className, { [styles.disabled]: disabled })} onContextMenu={onRightClick}>
             <input
                 type="checkbox"
                 name={name}

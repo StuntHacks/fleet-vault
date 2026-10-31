@@ -214,7 +214,17 @@ export default function AuditView() {
             <div className={styles.root}>
                 <div className={styles.toolbar}>
                     {(Object.keys(FILTERS) as AuditType[]).map((type) => (
-                        <Checkbox key={type} name={type} checked={filter[type]} onChange={(v) => setFilter({ ...filter, [type]: v })}>
+                        <Checkbox
+                            key={type}
+                            name={type}
+                            checked={filter[type]}
+                            onChange={(v) => setFilter({ ...filter, [type]: v })}
+                            onRightClick={(e) => {
+                                e.preventDefault();
+                                const none = { flags: false, changes: false, galaxies: false, updates: false, submissions: false };
+                                setFilter({ ...none, [type]: true });
+                            }}
+                        >
                             {FILTERS[type]}
                         </Checkbox>
                     ))}

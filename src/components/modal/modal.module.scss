@@ -107,10 +107,12 @@
 
         &.up span {
             rotate: -90deg;
+            margin-right: -3px;
         }
 
         &.down span {
             rotate: 90deg;
+            margin-left: -1px;
         }
     }
 

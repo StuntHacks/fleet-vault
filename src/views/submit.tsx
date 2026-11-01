@@ -231,16 +231,19 @@ export function SolutionForm({ galaxy: id, solution: s, suggest, updateId }: { g
                         <strong>Please fill in any missing information. </strong>Only empty fields can be filled in. To edit existing information, please flag the solution for review instead.
                     </div>
                 )}
-                {(!suggest || s?.screenshot_url) && <FileUpload
-                    accept={SCREENSHOT_TYPES.join(",")}
-                    preview
-                    file={screenshot}
-                    previewSrc={s?.screenshot_url ?? undefined}
-                    className={styles.fileUpload}
-                    onFileSelected={(file) => setScreenshot(file)}
-                    idleText={screenshot ? screenshot.name : chained ? "Click or drag the screenshot of run 1" : "Click or drag a screenshot to upload"}
-                    disabled={suggest}
-                />}
+                <details open={!suggest} className={`${styles.screenshot} ${suggest ? styles.suggest : ""}`}>
+                    <summary>Screenshot</summary>
+                    {(!suggest || s?.screenshot_url) && <FileUpload
+                        accept={SCREENSHOT_TYPES.join(",")}
+                        preview
+                        file={screenshot}
+                        previewSrc={s?.screenshot_url ?? undefined}
+                        className={styles.fileUpload}
+                        onFileSelected={(file) => setScreenshot(file)}
+                        idleText={screenshot ? screenshot.name : chained ? "Click or drag the screenshot of run 1" : "Click or drag a screenshot to upload"}
+                        disabled={suggest}
+                    />}
+                </details>
                 {screenshotProblem && (
                     <span className={styles.error}>{screenshotProblem}</span>
                 )}
@@ -357,8 +360,8 @@ export function SolutionForm({ galaxy: id, solution: s, suggest, updateId }: { g
                 )}
 
                 {galaxyPurchases.length > 0 && (
-                    <details className={clsx(styles.purchases, { [styles.hidden]: !selectedBattle })}>
-                        <summary className={styles.label}>Ship purchases &amp; patrols (optional)</summary>
+                    <details className={clsx(styles.purchases, { [styles.hidden]: !selectedBattle })} open>
+                        <summary className={styles.label}>Ship purchases &amp; patrols</summary>
                         <div className={styles.purchaseGrid}>
                             {galaxyPurchases.map((p) => (
                                 <label key={p.id} className={styles.purchase}>
@@ -368,7 +371,7 @@ export function SolutionForm({ galaxy: id, solution: s, suggest, updateId }: { g
                                         onChange={(e) => setPurchases((prev) => ({ ...prev, [p.name]: e.target.value }))}
                                         disabled={locked(s?.purchases?.[p.name])}
                                     >
-                                        <option value="">–</option>
+                                        <option value="">-</option>
                                         <option value="none">None</option>
                                         {SHIPS_BY_CLASS[p.class].map((ship) => <option key={ship} value={ship}>{ship}</option>)}
                                     </select>
@@ -389,7 +392,7 @@ export function SolutionForm({ galaxy: id, solution: s, suggest, updateId }: { g
                     <>
                         {!chained && (
                             <div className={styles.field}>
-                                <span className={styles.label}>Shots (optional)</span>
+                                <span className={styles.label}>Shots</span>
                                 <CombatStatInput value={shots} onChange={setShots} min={1} step={1} decimals={0} allowEmpty disabled={locked(s?.shots)} />
                             </div>
                         )}
@@ -509,7 +512,7 @@ function NodeField({ label, options, selected, onToggle, disabled }: {
     return (
         <div className={styles.field}>
             <span className={styles.label}>{label}</span>
-            <div className={clsx(styles.checkboxes, styles.nodeList)}>
+            <div className={styles.checkboxes}>
                 {options.map((o) => (
                     <Checkbox key={o.id} checked={selected.includes(o.id)} onChange={(checked) => onToggle(o.id, checked)} disabled={disabled}>
                         {o.label}

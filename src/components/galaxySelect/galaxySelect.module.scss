@@ -137,6 +137,11 @@
         }
     }
 
+    &.select .dropdown {
+        left: auto;
+        right: -10px;
+    }
+
     .current {
         z-index: 1;
         position: relative;

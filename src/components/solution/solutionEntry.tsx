@@ -1,5 +1,5 @@
 import { useRef } from "react";
-import { getGalaxyUnlocks } from "../../lib/battles";
+import { findBattle, getConditionNodes, getGalaxyUnlocks } from "../../lib/battles";
 import { Solution } from "../../lib/types";
 import styles from "./solution.module.scss";
 
@@ -51,7 +51,8 @@ export function SolutionEntry({ solution, obsolete = false, onOpen, preloadImage
     const bossInfo = getBossInfo(s);
     const purchases = Object.entries(s.purchases ?? {});
     const verified = s.verified_at != null;
-    const hasData = verified || s.support || s.hazards || !!bossInfo || s.non_standard || obsolete;
+    const noHazard = !s.hazards && getConditionNodes(findBattle(s.galaxy_id, s.battle_id)).hazards.length > 0;
+    const hasData = verified || s.support || s.hazards || noHazard || !!bossInfo || s.non_standard || obsolete;
 
     const pressedAt = useRef<{ x: number, y: number } | null>(null);
     const open = (e: React.MouseEvent) => {
@@ -99,11 +100,12 @@ export function SolutionEntry({ solution, obsolete = false, onOpen, preloadImage
                     {battleName && <div className={styles.battleLabel}>{battleName}</div>}
                     {hasData && (
                         <div className={styles.data}>
-                            {(verified || s.support || s.hazards || obsolete) && (
+                            {(verified || s.support || s.hazards || noHazard || obsolete) && (
                                 <div className={styles.modifiers}>
                                     {verified && <span className={styles.verified}>Verified</span>}
                                     {s.support && <span className={styles.support}>Support</span>}
                                     {s.hazards && <span className={styles.hazard}>Hazard</span>}
+                                    {noHazard && <span className={styles.obsoleteLabel}>No hazard</span>}
                                     {obsolete && <span className={styles.obsoleteLabel}>Obsolete</span>}
                                 </div>
                             )}

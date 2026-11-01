@@ -7,18 +7,19 @@ import { Solution } from "../lib/types";
 import { SolutionForm } from "./submit";
 import styles from "./galaxy.module.scss";
 
-export default function EditView({ suggest }: { suggest?: boolean }) {
+export default function EditView({ suggest, copy }: { suggest?: boolean, copy?: boolean }) {
     const session = useAdminSession();
     const navigate = useNavigate();
     const id = Number(useParams().solution);
     const updateId = Number(useSearchParams()[0].get("update")) || undefined;
     const [solution, setSolution] = useState<Solution | null | undefined>(undefined);
     const [error, setError] = useState(false);
+    const openToAll = suggest || copy;
 
     useEffect(() => {
-        if (session === null && !suggest) navigate('/');
+        if (session === null && !openToAll) navigate('/');
         if (session && suggest) navigate(`/edit/${id}`, { replace: true });
-    }, [session, suggest, id, navigate]);
+    }, [session, suggest, openToAll, id, navigate]);
 
     useEffect(() => {
         let current = true;
@@ -33,8 +34,8 @@ export default function EditView({ suggest }: { suggest?: boolean }) {
         return () => { current = false; };
     }, [id, updateId]);
 
-    if (!session && !suggest) return <BaseLayout />;
-    if (solution) return <SolutionForm key={solution.id} solution={solution} suggest={suggest} updateId={updateId} />;
+    if (!session && !openToAll) return <BaseLayout />;
+    if (solution) return <SolutionForm key={solution.id} solution={solution} suggest={suggest} copy={copy} updateId={updateId} />;
 
     return (
         <BaseLayout>

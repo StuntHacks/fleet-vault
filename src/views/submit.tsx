@@ -57,9 +57,9 @@ export default function SubmitView() {
     return <SolutionForm galaxy={id} />;
 }
 
-export function SolutionForm({ galaxy: id, solution: s, suggest, updateId }: { galaxy?: number, solution?: Solution, suggest?: boolean, updateId?: number }) {
+export function SolutionForm({ galaxy: id, solution: s, suggest, copy, updateId }: { galaxy?: number, solution?: Solution, suggest?: boolean, copy?: boolean, updateId?: number }) {
     const navigate = useNavigate();
-    const editing = !!s;
+    const editing = !!s && !copy;
     const locked = (value: unknown) => !!suggest && !isEmpty(value);
     const [selectedGalaxy, setSelectedGalaxy] = useState<number | undefined>(s ? s.galaxy_id : id);
     const orderedBattles = useGalaxyBattles(selectedGalaxy ?? 0);
@@ -113,7 +113,7 @@ export function SolutionForm({ galaxy: id, solution: s, suggest, updateId }: { g
     const [bossDamage, setBossDamage] = useState<string>(optional(s?.boss_damage));
     const [notes, setNotes] = useState<string>(s?.notes ?? "");
     const [unflag, setUnflag] = useState(true);
-    const [verified, setVerified] = useState(s?.verified_at != null);
+    const [verified, setVerified] = useState(!copy && s?.verified_at != null);
 
     const battleData = selectedGalaxy && selectedBattle
         ? galaxies[selectedGalaxy - 1]?.battles[selectedBattle - 1]
@@ -148,7 +148,7 @@ export function SolutionForm({ galaxy: id, solution: s, suggest, updateId }: { g
     const runCommittedTooLow = runValues.map((run) => !isNaN(run.frUsed) && !isNaN(run.frCommitted) && run.frCommitted < run.frUsed);
 
     const runsIncomplete = chained && runs.some((run, i) =>
-        isNaN(runValues[i].frUsed) || runCommittedTooLow[i] || !!screenshotError(run.screenshot) || (!editing && !run.screenshot));
+        isNaN(runValues[i].frUsed) || runCommittedTooLow[i] || !!screenshotError(run.screenshot) || (!editing && !run.screenshot && !run.uploaded?.screenshot_url));
 
     const chainTotal = frUsedValue + runValues.reduce((sum, run) => sum + run.frUsed, 0);
 
@@ -194,6 +194,8 @@ export function SolutionForm({ galaxy: id, solution: s, suggest, updateId }: { g
         chain: chained ? runValues : [],
     };
     const filledIn = suggest && s && fields ? missingInfo(s, fields) : {};
+    const copyUnchanged = copy && !!s && !!fields && fields.galaxyId === s.galaxy_id && fields.battleId === s.battle_id && fields.combatStats === s.combat_stats;
+    const reusedImages = copy && s?.screenshot_url ? { screenshot_url: s.screenshot_url, thumbnail_url: s.thumbnail_url } : undefined;
     const optionalNodes = editing ? " (optional)" : "";
     const nodesMissing = !editing && !!fields &&
         ((hazard && !fields.hazardNodes.length) || (support && !fields.supportNodes.length));
@@ -203,9 +205,9 @@ export function SolutionForm({ galaxy: id, solution: s, suggest, updateId }: { g
         setLoading(true);
         const request = suggest && s
             ? suggestSolutionUpdate(s.id, filledIn).then((updateId) => { rememberSuggestion(s.id, updateId); return s.id; })
-            : s
+            : s && editing
             ? updateSolution(s.id, fields, s.flagged && unflag, verified).then(() => updateId ? resolveSolutionUpdate(updateId, true) : undefined).then(() => s.id)
-            : submitSolution({ ...fields, advancedSolution: undefined, submittedBy: "Anonymous" });
+            : submitSolution({ ...fields, advancedSolution: undefined, submittedBy: "Anonymous", reusedImages });
         request.then((solutionId) => {
             navigate(`/g/${selectedGalaxy}?solution=${solutionId}`, { replace: editing });
         }).catch((e) => {
@@ -219,11 +221,16 @@ export function SolutionForm({ galaxy: id, solution: s, suggest, updateId }: { g
         <BaseLayout galaxy={s?.galaxy_id}>
             <div className={styles.form}>
                 <Link to={s ? `/g/${s.galaxy_id}?solution=${s.id}` : `/g/${id}`} className={styles.backlink}>
-                    {editing ? "← Back to solution" : "← Back to galaxy"}
+                    {s ? "← Back to solution" : "← Back to galaxy"}
                 </Link>
-                {!editing && (
+                {!editing && !copy && (
                     <div className={styles.disclaimer}>
                         <strong>Thank you for submitting to the fleet vault. </strong>Please ensure your screenshot is in <strong>horizontal orientation</strong>, and any notes you provide are written in <strong>english</strong>. Ideally, please use the default skin for your ships, and include all relevant information down below.
+                    </div>
+                )}
+                {copy && (
+                    <div className={styles.disclaimer}>
+                        <strong>Copying an existing solution. </strong>Please change the combat stats to the correct value, and adjust FR used and any other information that has changed from the original. Ideally, please update the screenshot as well.
                     </div>
                 )}
                 {suggest && (
@@ -474,10 +481,10 @@ export function SolutionForm({ galaxy: id, solution: s, suggest, updateId }: { g
                     />
                 </div>
 
-                {s?.flagged && !suggest && (
+                {s?.flagged && editing && !suggest && (
                     <Checkbox checked={unflag} onChange={setUnflag}>Unflag solution</Checkbox>
                 )}
-                {s && !suggest && (
+                {editing && !suggest && (
                     <Checkbox checked={verified} onChange={setVerified}>Verified</Checkbox>
                 )}
 
@@ -487,12 +494,13 @@ export function SolutionForm({ galaxy: id, solution: s, suggest, updateId }: { g
                     frCommittedTooLow ||
                     frTotalTooLow ||
                     runsIncomplete ||
-                    (!screenshot && !editing) ||
+                    (!screenshot && !editing && !reusedImages) ||
                     !!screenshotProblem ||
                     !selectedGalaxy ||
                     !selectedBattle ||
                     !combatStats ||
                     nodesMissing ||
+                    copyUnchanged ||
                     (suggest && !Object.keys(filledIn).length)
                 } onClick={() => submit()}>
                     {suggest ? (loading ? "Submitting..." : "Submit changes") : editing ? (loading ? "Saving..." : "Save") : (loading ? "Submitting..." : "Submit")}

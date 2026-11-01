@@ -404,14 +404,15 @@ export function SolutionPopup({ solution: s, isAdmin, showGalaxy, onFlagsChanged
 
                     {!showFlagged && <button ref={flagTrigger} className={styles.flag} onClick={() => setFlagging(true)}>Flag as incorrect</button>}
                     {!isAdmin && !suggested && <button onClick={() => navigate(`/suggest/${s.id}`)}>Fill in missing information</button>}
+                    <button onClick={() => navigate(`/copy/${s.id}`)}>Copy to different stats</button>
                     {isAdmin && (
-                        <>
+                        <div className={styles.adminRow}>
                             <button className={styles.flag} onClick={remove} disabled={adminBusy}>Delete</button>
                             <button className={s.verified_at ? '' : styles.verify} onClick={toggleVerified} disabled={adminBusy}>{s.verified_at ? 'Unverify' : 'Verify'}</button>
                             {s.flagged && <button onClick={unflag} disabled={adminBusy}>Unflag</button>}
                             <button onClick={() => navigate(`/edit/${s.id}`)} disabled={adminBusy}>Edit</button>
                             {adminError && <span className={styles.error}>{adminError}</span>}
-                        </>
+                        </div>
                     )}
 
                     {showFlagged && <span className={styles.flagged}>Flagged as incorrect</span>}

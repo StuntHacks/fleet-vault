@@ -35,7 +35,7 @@ export default function App() {
       }
 
       const path = window.location.pathname;
-      const isOnSubmit = path.endsWith('/submit') || /\/(edit|suggest)\/\d+$/.test(path);
+      const isOnSubmit = path.endsWith('/submit') || /\/(edit|suggest|copy)\/\d+$/.test(path);
 
       if (isOnSubmit) {
         if (imageFile) {
@@ -62,6 +62,7 @@ export default function App() {
       <Route path="/submit" element={<SubmitView />} />
       <Route path="/edit/:solution" element={<EditView />} />
       <Route path="/suggest/:solution" element={<EditView suggest />} />
+      <Route path="/copy/:solution" element={<EditView copy />} />
       <Route path="/advisors" element={<AdvisorView />} />
       <Route path="/flagged" element={<FlaggedView />} />
       <Route path="/updates" element={<UpdatesView />} />

@@ -518,6 +518,13 @@
             font-weight: normal;
         }
 
+        .adminRow {
+            width: 100%;
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+
         .flagged {
             color: var(--color-hazard);
             width: 100%;

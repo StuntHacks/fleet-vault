@@ -188,10 +188,11 @@ function solutionRow(params: SolutionFields) {
 export async function submitSolution(params: SolutionFields & {
   submittedBy: string;
   advancedSolution?: string;
+  reusedImages?: { screenshot_url: string | null; thumbnail_url: string | null };
 }): Promise<number> {
   const { portrait, images } = params.screenshot
     ? await uploadScreenshot(params.galaxyId, params.battleId, params.screenshot)
-    : { portrait: false, images: { screenshot_url: null, thumbnail_url: null } };
+    : { portrait: false, images: params.reusedImages ?? { screenshot_url: null, thumbnail_url: null } };
   const { portrait: portraitRun, chain } = await uploadChain(params);
 
   const { data, error } = await supabase.from('solutions').insert({

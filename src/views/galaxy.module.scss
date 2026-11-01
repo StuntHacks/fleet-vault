@@ -86,6 +86,26 @@
     }
 
     @media screen and (max-width: 640px) {
+        position: sticky;
+        top: 0;
+        z-index: 2;
+        margin: 0 1rem;
+        padding: 0;
+        border-radius: 0.5rem;
+        background: var(--color-glass);
+        backdrop-filter: var(--glass-blur);
+        box-shadow: 0 0 6px rgba(0, 0, 0, 0.1);
+        transition: box-shadow 200ms;
+
+        &.scrolled {
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+        }
+
+        .settings:first-of-type,
+        .settings:last-of-type {
+            padding: 0 1rem 0.5rem;
+        }
+
         .settingsToggle {
             display: flex;
             align-items: center;
@@ -93,10 +113,7 @@
             width: 100%;
             padding: 0.5rem 1rem;
             border: none;
-            border-radius: 0.5rem;
-            background: var(--color-glass);
-            backdrop-filter: var(--glass-blur);
-            box-shadow: 0 0 6px rgba(0, 0, 0, 0.1);
+            background: none;
             color: var(--color-text);
             font-size: 1rem;
             font-weight: bold;
@@ -113,10 +130,6 @@
                 margin-bottom: -3px;
                 font-size: 1.5rem;
             }
-        }
-
-        &.open .settingsToggle {
-            margin-bottom: 0.25rem;
         }
 
         &:not(.open) .settings {

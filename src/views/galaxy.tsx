@@ -100,6 +100,8 @@ export default function GalaxyView() {
     }, [access.loading, allowed, navigate]);
 
     const listRef = useRef<HTMLDivElement>(null);
+    const menuBarRef = useRef<HTMLDivElement>(null);
+    const [scrolled, setScrolled] = useState(false);
     const { selectedId, openSolution, switchSolution, closeSolution } = useSelectedSolution();
 
     const [showObsolete, setShowObsolete] = useState(() => localStorage.getItem('fleetvault_show_obsolete') === 'true');
@@ -171,6 +173,15 @@ export default function GalaxyView() {
         setTimeout(() => observer.disconnect(), 2000);
     }, [listReady, selectedId, selected]);
 
+    useEffect(() => {
+        const container = menuBarRef.current?.parentElement;
+        if (!container) return;
+        const onScroll = () => setScrolled(container.scrollTop > 0);
+        onScroll();
+        container.addEventListener('scroll', onScroll, { passive: true });
+        return () => container.removeEventListener('scroll', onScroll);
+    }, [listReady]);
+
     const [navOrigin, setNavOrigin] = useState<{ stats: number, unlocks: string[] } | null>(null);
 
     useEffect(() => {
@@ -229,7 +240,7 @@ export default function GalaxyView() {
             {solutions.error && <p className={styles.error}>Error loading solutions</p>}
             {listReady && (
                 <>
-                    <div className={clsx(styles.menuBar, settingsOpen && styles.open)}>
+                    <div ref={menuBarRef} className={clsx(styles.menuBar, settingsOpen && styles.open, scrolled && styles.scrolled)}>
                         <button className={styles.settingsToggle} onClick={() => setSettingsOpen(!settingsOpen)}>
                             Settings & Filters
                             {statFilter != null && <span>{upToStats ? "Up to " : "At "}{formatStats(statFilter)}</span>}

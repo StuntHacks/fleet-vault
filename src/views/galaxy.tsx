@@ -230,8 +230,16 @@ export default function GalaxyView() {
     const handleScroll = (e: React.WheelEvent<HTMLDivElement>) => {
         if (e.deltaY === 0) return;
         e.preventDefault();
-        if (!listRef.current) return;
-        listRef.current.scrollLeft += e.deltaY * 1.0;
+
+        const list = listRef.current;
+        const first = list?.firstElementChild as HTMLElement | null;
+        if (!list || !first) return;
+        
+        const stops = Array.from(list.children, (child) => (child as HTMLElement).offsetLeft - first.offsetLeft);
+        const left = list.scrollLeft;
+        const target = e.deltaY > 0 ? stops.find((s) => s > left + 1) : stops.reverse().find((s) => s < left - 1);
+
+        if (target != null) list.scrollLeft = target;
     }
 
     return (

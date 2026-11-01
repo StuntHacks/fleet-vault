@@ -558,17 +558,27 @@
             bottom: 2.5rem;
             background: var(--color-background-secondary);
             padding: 1rem;
+            padding-top: 0.5rem;
             border-radius: 0.5rem;
             color: var(--color-text);
             font-size: 0.9rem;
             font-weight: bold;
             box-shadow: 0 0 5px black;
             transition: opacity 150ms;
+            overflow: hidden;
 
             &.hidden {
                 opacity: 0;
                 visibility: hidden;
                 transition: opacity 150ms, visibility 150ms;
+            }
+
+            p {
+                font-weight: normal;
+                margin: 0;
+                margin-bottom: 0.5rem;
+                max-width: 200px;
+                padding: 0 0.25rem;
             }
 
             textarea {

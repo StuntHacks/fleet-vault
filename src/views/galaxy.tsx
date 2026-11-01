@@ -191,11 +191,33 @@ export default function GalaxyView() {
     const neighbor = (direction: 1 | -1): ModalTarget | null => {
         if (!selected) return null;
         const origin = navOrigin ?? { stats: selected.combat_stats, unlocks: selected.unlocks };
+
         for (let i = battles.findIndex((b) => b.id === selected.battle_id) + direction; i >= 0 && i < battles.length; i += direction) {
             const best = pickBest(solutions.forBattle(battles[i].id).best, origin.stats, origin.unlocks);
+
             if (best) return { title: battles[i].name, onSelect: () => { setNavOrigin(origin); switchSolution(best); } };
         }
+
         return null;
+    };
+
+    const sibling = (direction: 1 | -1): ModalTarget | null => {
+        if (!selected) return null;
+
+        const all = solutions.forBattle(selected.battle_id);
+        const visible = filterByStats(all, statFilter, upToStats);
+        let list = [...visible.best, ...(showObsolete ? visible.obsolete : [])].filter((s) => !flaggedOnly || s.flagged);
+
+        if (!list.some((s) => s.id === selected.id)) list = [...all.best, ...all.obsolete];
+
+        const target = list[list.findIndex((s) => s.id === selected.id) + direction];
+
+        if (!target) return null;
+
+        return {
+            title: `${formatStats(target.combat_stats)} · ${target.fr_total ?? target.fr_used} FR`,
+            onSelect: () => { setNavOrigin(null); switchSolution(target); },
+        };
     };
 
     const columns = battles
@@ -306,7 +328,7 @@ export default function GalaxyView() {
                     </SolutionColumns>
                 </>
             )}
-            <Modal open={!!selected} onClose={closeSolution} nav={{ prev: neighbor(-1), next: neighbor(1) }}>
+            <Modal open={!!selected} onClose={closeSolution} nav={{ prev: neighbor(-1), next: neighbor(1), up: sibling(-1), down: sibling(1) }}>
                 {selected && (
                     <SolutionPopup
                         key={selected.id}

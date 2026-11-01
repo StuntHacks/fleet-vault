@@ -16,7 +16,7 @@ const select = (target: ModalTarget | null | undefined, panel: HTMLDivElement | 
 interface ModalProps {
     open: boolean;
     onClose: () => void;
-    nav?: { prev: ModalTarget | null; next: ModalTarget | null };
+    nav?: { prev: ModalTarget | null; next: ModalTarget | null; up?: ModalTarget | null; down?: ModalTarget | null };
     children: React.ReactNode;
 }
 
@@ -40,8 +40,20 @@ export function Modal({ open, onClose, nav, children }: ModalProps) {
         const onKeyDown = (e: KeyboardEvent) => {
             const target = e.target as HTMLElement;
             if (e.altKey || e.ctrlKey || e.metaKey || target.closest("input, textarea, select, [contenteditable]")) return;
-            if (e.key === "ArrowLeft") select(navRef.current?.prev, panel.current);
-            else if (e.key === "ArrowRight") select(navRef.current?.next, panel.current);
+
+            const targets: Record<string, ModalTarget | null | undefined> = {
+                ArrowLeft: navRef.current?.prev,
+                ArrowRight: navRef.current?.next,
+                ArrowUp: navRef.current?.up,
+                ArrowDown: navRef.current?.down,
+            };
+
+            const destination = targets[e.key];
+
+            if (!destination) return;
+
+            e.preventDefault();
+            select(destination, panel.current);
         };
 
         document.addEventListener("keydown", onKeyDown);
@@ -86,17 +98,21 @@ export function Modal({ open, onClose, nav, children }: ModalProps) {
         };
     }, [open]);
 
-    const arrow = (target: ModalTarget | null, direction: "prev" | "next") => (
+    const labels = { prev: "Previous battle", next: "Next battle", up: "Previous solution", down: "Next solution" };
+
+    const arrow = (target: ModalTarget | null | undefined, direction: keyof typeof labels) => (
         <button
             className={clsx(styles.arrow, styles[direction])}
             onClick={() => select(target, panel.current)}
             disabled={!target}
             title={target?.title}
-            aria-label={direction === "prev" ? "Previous battle" : "Next battle"}
+            aria-label={labels[direction]}
         >
-            {direction === "prev" ? "‹" : "›"}
+            <span>{direction === "prev" ? "‹" : "›"}</span>
         </button>
     );
+
+    const vertical = nav && (nav.up !== undefined || nav.down !== undefined);
 
     return (
         <dialog
@@ -124,7 +140,13 @@ export function Modal({ open, onClose, nav, children }: ModalProps) {
                         </div>
                     </div>
                     {nav && arrow(nav.prev, "prev")}
-                    {nav && arrow(nav.next, "next")}
+                    {nav && (
+                        <div className={styles.side}>
+                            {vertical && arrow(nav.up, "up")}
+                            {arrow(nav.next, "next")}
+                            {vertical && arrow(nav.down, "down")}
+                        </div>
+                    )}
                 </>
             )}
         </dialog>

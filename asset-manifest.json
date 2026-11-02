@@ -1,7 +1,7 @@
 {
   "files": {
-    "main.css": "/fleet-vault/static/css/main.407ed030.css",
-    "main.js": "/fleet-vault/static/js/main.dfe22265.js",
+    "main.css": "/fleet-vault/static/css/main.10e83075.css",
+    "main.js": "/fleet-vault/static/js/main.17ec8b9f.js",
     "static/js/915.8503a7c0.chunk.js": "/fleet-vault/static/js/915.8503a7c0.chunk.js",
     "static/js/453.fc2f17c8.chunk.js": "/fleet-vault/static/js/453.fc2f17c8.chunk.js",
     "static/js/401.712d549c.chunk.js": "/fleet-vault/static/js/401.712d549c.chunk.js",
@@ -9,8 +9,8 @@
     "static/media/ParticleCannon.svg": "/fleet-vault/static/media/ParticleCannon.6336b9e6551034966b66a9c3dd582f95.svg",
     "static/media/PowerMode.svg": "/fleet-vault/static/media/PowerMode.9185d01ce6adb69442d26cf1068c7cc5.svg",
     "static/media/CorvetteShieldMod.svg": "/fleet-vault/static/media/CorvetteShieldMod.d1cc5c52e2777b78f2bc1443bc3d630d.svg",
-    "static/media/ShieldRegenStart.svg": "/fleet-vault/static/media/ShieldRegenStart.7f853a5856d1cf7648bdea46f904336a.svg",
     "index.html": "/fleet-vault/index.html",
+    "static/media/ShieldRegenStart.svg": "/fleet-vault/static/media/ShieldRegenStart.7f853a5856d1cf7648bdea46f904336a.svg",
     "static/media/Datacore.svg": "/fleet-vault/static/media/Datacore.5e2a32b65db52a6d220ecaab6ab6f355.svg",
     "static/media/ArmorDamageSynergy.svg": "/fleet-vault/static/media/ArmorDamageSynergy.ac614ff2b953eaefcaa114255e409d4f.svg",
     "static/media/PristineArmor.svg": "/fleet-vault/static/media/PristineArmor.5ea7eb4950647ac0b5a0689fee661c21.svg",
@@ -18,14 +18,14 @@
     "static/media/HealthBoost.svg": "/fleet-vault/static/media/HealthBoost.a1c60f198b58c4556c51cd4462f3a39c.svg",
     "static/media/RapidFire.svg": "/fleet-vault/static/media/RapidFire.a1c60f198b58c4556c51cd4462f3a39c.svg",
     "static/media/ShotgunMissiles.svg": "/fleet-vault/static/media/ShotgunMissiles.a1c60f198b58c4556c51cd4462f3a39c.svg",
-    "main.407ed030.css.map": "/fleet-vault/static/css/main.407ed030.css.map",
-    "main.dfe22265.js.map": "/fleet-vault/static/js/main.dfe22265.js.map",
+    "main.10e83075.css.map": "/fleet-vault/static/css/main.10e83075.css.map",
+    "main.17ec8b9f.js.map": "/fleet-vault/static/js/main.17ec8b9f.js.map",
     "915.8503a7c0.chunk.js.map": "/fleet-vault/static/js/915.8503a7c0.chunk.js.map",
     "453.fc2f17c8.chunk.js.map": "/fleet-vault/static/js/453.fc2f17c8.chunk.js.map",
     "401.712d549c.chunk.js.map": "/fleet-vault/static/js/401.712d549c.chunk.js.map"
   },
   "entrypoints": [
-    "static/css/main.407ed030.css",
-    "static/js/main.dfe22265.js"
+    "static/css/main.10e83075.css",
+    "static/js/main.17ec8b9f.js"
   ]
 }

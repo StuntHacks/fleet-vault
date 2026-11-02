@@ -1,5 +1,5 @@
 import { supabase } from './supabase';
-import { AuditEntry, ChainRun, Galaxy, Solution, SolutionFlag, SolutionUpdate } from './types';
+import { AuditEntry, ChainRun, FlaggedSolution, Galaxy, Solution, SolutionFlag, SolutionUpdate } from './types';
 
 export async function getBattlesForGalaxy(galaxyId: number): Promise<string[]> {
   const { data, error } = await supabase
@@ -325,7 +325,7 @@ export async function setSolutionVerified(id: number, verified: boolean): Promis
   if (!data.length) throw new Error(`Solution not ${verified ? 'verified' : 'unverified'}`);
 }
 
-export async function getFlaggedSolutions(): Promise<Solution[]> {
+export async function getFlaggedSolutions(): Promise<FlaggedSolution[]> {
   const { data, error } = await supabase
     .from('solutions_ranked')
     .select('*')
@@ -337,7 +337,18 @@ export async function getFlaggedSolutions(): Promise<Solution[]> {
     .order('id');
 
   if (error) throw error;
-  return data as Solution[];
+  if (!data.length) return [];
+
+  const { data: flags, error: flagsError } = await supabase
+    .from('solution_flags')
+    .select('*')
+    .in('solution_id', data.map((s) => s.id))
+    .is('resolved_at', null)
+    .not('reason', 'is', null)
+    .order('created_at', { ascending: false });
+
+  if (flagsError) throw flagsError;
+  return (data as Solution[]).map((s) => ({ ...s, solution_flags: flags.filter((f) => f.solution_id === s.id) }));
 }
 
 export async function getFlaggedCount(): Promise<number> {

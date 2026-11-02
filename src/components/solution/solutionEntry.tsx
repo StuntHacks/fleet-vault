@@ -1,6 +1,6 @@
 import { useRef } from "react";
 import { findBattle, getConditionNodes, getGalaxyUnlocks } from "../../lib/battles";
-import { Solution } from "../../lib/types";
+import { Solution, SolutionFlag } from "../../lib/types";
 import styles from "./solution.module.scss";
 
 const getUnlockName = (galaxyId: number, unlock: string) => {
@@ -44,7 +44,7 @@ export function Extras({ solution: s }: { solution: Solution }) {
     );
 }
 
-export function SolutionEntry({ solution, obsolete = false, onOpen, preloadImages, isAdmin, battleName }: { solution: Solution, obsolete?: boolean, onOpen: (s: Solution) => void, preloadImages: boolean, isAdmin: boolean, battleName?: string }) {
+export function SolutionEntry({ solution, obsolete = false, onOpen, preloadImages, isAdmin, battleName, flags }: { solution: Solution, obsolete?: boolean, onOpen: (s: Solution) => void, preloadImages: boolean, isAdmin: boolean, battleName?: string, flags?: SolutionFlag[] }) {
     const s = solution;
     const chained = s.chain.length > 0;
     const perShot = !chained && !!s.shots && s.shots > 1;
@@ -95,7 +95,7 @@ export function SolutionEntry({ solution, obsolete = false, onOpen, preloadImage
                     )}
                 </div>
             </div>
-            {(battleName || hasData || purchases.length > 0 || s.unlocks?.length > 0 || s.notes) && (
+            {(battleName || hasData || purchases.length > 0 || s.unlocks?.length > 0 || s.notes || !!flags?.length) && (
                 <div className={styles.details}>
                     {battleName && <div className={styles.battleLabel}>{battleName}</div>}
                     {hasData && (
@@ -123,6 +123,12 @@ export function SolutionEntry({ solution, obsolete = false, onOpen, preloadImage
                             <strong>Notes: </strong>{s.notes}
                         </div>
                     }
+                    {!!flags?.length && (
+                        <div className={styles.flagReasons}>
+                            <strong>Flag reasons: </strong>
+                            {flags.map((f) => <span key={f.id}>{f.reason}</span>)}
+                        </div>
+                    )}
                 </div>
             )}
         </div>

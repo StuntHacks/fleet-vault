@@ -368,7 +368,7 @@ export function SolutionPopup({ solution: s, isAdmin, showGalaxy, onFlagsChanged
                 <Extras solution={s} />
                 <div className={styles.curation}>
                     <div ref={flagBox} className={`${styles.flagging} ${flagging ? '' : styles.hidden}`}>
-                        <p>Please make sure the setup you tried is <strong>identical</strong> to the one shown here, and note that the stats shown in the screenshot may not always match what's listed in the solution. That's normal, and the setup should work regardless.</p>
+                        <p>Please make sure the setup you tried is <strong>identical</strong> to the one shown here, and note that the stats shown in the screenshot may not always match what's listed in the solution. That's normal, and the setup should work regardless.<br /><br /><strong>If you have a better setup than this one, please submit it instead of flagging this solution.</strong></p>
                         <textarea
                             name="reason"
                             placeholder="Further context..."

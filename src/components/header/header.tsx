@@ -59,7 +59,7 @@ export default function Header({ galaxy: current }: { galaxy?: number }) {
 
         {isAdmin ?
           <Button variant="secondary" onClick={() => adminLogout()}>Logout</Button> :
-          <Button variant="secondary" onClick={() => {adminLogin(window.prompt() || "").catch(() => alert("Invalid token"))}}>Login</Button>
+          <Button variant="secondary" onClick={() => {adminLogin(window.prompt("Curator login: please enter your login token. If you don't have one, ignore this button, it's not needed to use this website.") || "").catch(() => alert("Invalid token"))}}>Login</Button>
         }
 
         <Button onClick={() => navigate(`/g/${id}/submit`)}>

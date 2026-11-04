@@ -2,7 +2,7 @@ import { Link, useMatch, useParams } from 'react-router-dom';
 import { clsx } from "clsx"
 import styles from './galaxySelect.module.scss';
 import data from '../../data.json';
-import { useState, useRef, useEffect } from 'react';
+import { useState, useRef, useEffect, useLayoutEffect } from 'react';
 import { useAdminSession, useGalaxyAccess } from '../../lib/hooks';
 
 export interface SelectItem {
@@ -12,7 +12,28 @@ export interface SelectItem {
 
 export default function GalaxySelect({ className, isSelect, selected, callback, items, placeholder = 'Select Galaxy', disabled }: { className?: string; isSelect?: boolean; selected?: number; callback?: (id: number) => void; items?: SelectItem[]; placeholder?: string; disabled?: boolean }) {
   const [shown, setShown] = useState(false);
+  const [maxHeight, setMaxHeight] = useState<number>();
   const ref = useRef<HTMLDivElement>(null);
+  const dropdownRef = useRef<HTMLDivElement>(null);
+
+  useLayoutEffect(() => {
+    if (!shown || !dropdownRef.current) return;
+
+    const update = () => {
+      const element = dropdownRef.current!;
+      const { paddingTop, paddingBottom } = getComputedStyle(element);
+
+      const top = element.getBoundingClientRect().top + parseFloat(paddingTop) + parseFloat(paddingBottom);
+      const bottom = document.querySelector('footer')?.getBoundingClientRect().top ?? window.innerHeight;
+
+      setMaxHeight(Math.max(bottom - top - 10, 150));
+    };
+
+    update();
+    window.addEventListener('resize', update);
+
+    return () => window.removeEventListener('resize', update);
+  }, [shown]);
 
   useEffect(() => {
     const handleClickOutside = (e: MouseEvent) => {
@@ -61,40 +82,44 @@ export default function GalaxySelect({ className, isSelect, selected, callback, 
         </span>
       )}
       {!isSelect && <span className={styles.current}>{pageName ?? `Galaxy ${id}`}</span>}
-      <div className={styles.dropdown}>
-        {items
-          ? items.filter(item => item.value !== selected).map((item) => (
-              <Link data-id={item.value} key={item.value} to="#" className={styles.dropdownItem} onClick={(e) => handleCallback(e)}>
-                {item.label}
-              </Link>
-            ))
-          : data.galaxies.map((g, index) => (isSelect && index + 1 === selected) || (!isSelect && !pageName && index + 1 === id) || !access.canView(index + 1) ? undefined : (
-              <Link data-id={index + 1} key={index} to={`/g/${index + 1}`} className={styles.dropdownItem} onClick={(e) => handleCallback(e)}>
-                Galaxy {index + 1}{access.isHidden(index + 1) && ' (hidden)'}
-              </Link>
-            ))
-        }
-        {isAdmin && <div className={styles.divider} />}
-        {isAdmin && !isAdvisorPage && !isSelect && (
-          <Link to="/advisors" className={styles.dropdownItem}>
-            Advisor Explorer
-          </Link>
-        )}
-        {isAdmin && !isFlaggedPage && !isSelect && (
-          <Link to="/flagged" className={styles.dropdownItem}>
-            Flagged Solutions
-          </Link>
-        )}
-        {isAdmin && !isUpdatesPage && !isSelect && (
-          <Link to="/updates" className={styles.dropdownItem}>
-            Pending Updates
-          </Link>
-        )}
-        {isAdmin && !isAuditPage && !isSelect && (
-          <Link to="/audit" className={styles.dropdownItem}>
-            Audit Log
-          </Link>
-        )}
+      <div ref={dropdownRef} className={styles.dropdown}>
+        <div className={styles.items} style={{ maxHeight: maxHeight && Math.min(maxHeight, 525) }}>
+          {items
+            ? items.filter(item => item.value !== selected).map((item) => (
+                <Link data-id={item.value} key={item.value} to="#" className={styles.dropdownItem} onClick={(e) => handleCallback(e)}>
+                  {item.label}
+                </Link>
+              ))
+            : data.galaxies.map((g, index) => (isSelect && index + 1 === selected) || (!isSelect && !pageName && index + 1 === id) || !access.canView(index + 1) ? undefined : (
+                <Link data-id={index + 1} key={index} to={`/g/${index + 1}`} className={styles.dropdownItem} onClick={(e) => handleCallback(e)}>
+                  Galaxy {index + 1}{access.isHidden(index + 1) && ' (hidden)'}
+                </Link>
+              ))
+          }
+
+          {isAdmin && <div className={styles.divider} />}
+
+          {isAdmin && !isAdvisorPage && !isSelect && (
+            <Link to="/advisors" className={styles.dropdownItem}>
+              Advisor Explorer
+            </Link>
+          )}
+          {isAdmin && !isFlaggedPage && !isSelect && (
+            <Link to="/flagged" className={styles.dropdownItem}>
+              Flagged Solutions
+            </Link>
+          )}
+          {isAdmin && !isUpdatesPage && !isSelect && (
+            <Link to="/updates" className={styles.dropdownItem}>
+              Pending Updates
+            </Link>
+          )}
+          {isAdmin && !isAuditPage && !isSelect && (
+            <Link to="/audit" className={styles.dropdownItem}>
+              Audit Log
+            </Link>
+          )}
+        </div>
       </div>
     </div>
   );

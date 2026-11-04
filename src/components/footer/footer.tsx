@@ -25,7 +25,7 @@ export default function Footer() {
   }, [darkMode])
   
   return (
-    <div className={styles.footer}>
+    <footer className={styles.footer}>
       <Checkbox className={styles.darkMode} name="darkMode" checked={darkMode} onChange={setDarkMode}>
         Dark Mode
       </Checkbox>
@@ -34,6 +34,6 @@ export default function Footer() {
         v{process.env.REACT_APP_VERSION}
         <span className={styles.footnote}> - report bugs & feedback in <a href="https://discord.com/channels/1023372620705566740/1223829273668751381" target="_blank" rel="noreferrer">#wiki-stuff</a> on the discord</span>
       </span>
-    </div>
+    </footer>
   );
 }

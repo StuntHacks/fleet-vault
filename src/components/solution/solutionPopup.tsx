@@ -457,7 +457,7 @@ export function SolutionPopup({ solution: s, isAdmin, showGalaxy, viewers, onFla
                             <p><strong>Do you still wish to flag it?</strong></p>
                             {flagError && confirming && <span className={styles.error}>Flagging failed, please try again</span>}
                             <div className={styles.flagButtons}>
-                                <button onClick={() => setConfirming(false)} disabled={submitting}>Cancel</button>
+                                <button onClick={() => setFlagging(false)} disabled={submitting}>Cancel</button>
                                 <button className={styles.flag} onClick={flag} disabled={submitting}>Yes, flag it</button>
                             </div>
                         </div>

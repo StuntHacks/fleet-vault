@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { useLocation, useNavigate, useSearchParams } from 'react-router-dom';
-import { Session } from '@supabase/supabase-js';
+import { RealtimeChannel, Session } from '@supabase/supabase-js';
 import { supabase } from './supabase';
 import { getSolutionsForBattle, getSolutionsForGalaxy, getBattlesForGalaxy, getGalaxy, getFlaggedCount, getUpdateCount, getGalaxies, getAuditLog, AUDIT_PAGE } from './api';
 import { galaxies, orderBattles } from './battles';
@@ -257,6 +257,61 @@ export function useSelectedSolution() {
   };
 
   return { selectedId, openSolution, switchSolution, closeSolution };
+}
+
+type ReviewPresence = { label: string, solutionId: number };
+
+const trackPresence = (channel: RealtimeChannel, presence: ReviewPresence | null) => presence ? channel.track(presence) : channel.untrack();
+
+export function useReviewPresence(solutionId: number | null) {
+  const session = useAdminSession();
+  const userId = session?.user.id;
+  const label: string = session?.user.app_metadata?.admin_label ?? 'Another admin';
+  const [viewers, setViewers] = useState<Record<number, string[]>>({});
+  const channelRef = useRef<RealtimeChannel | null>(null);
+  const current = useRef<ReviewPresence | null>(null);
+
+  useEffect(() => {
+    if (!userId) return;
+    const channel = supabase.channel('admin-review', { config: { private: true, presence: { key: userId } } });
+
+    channel
+      .on('presence', { event: 'sync' }, () => {
+        const result: Record<number, string[]> = {};
+
+        for (const [key, metas] of Object.entries(channel.presenceState<ReviewPresence>())) {
+          if (key === userId) continue;
+
+          for (const { label, solutionId } of metas) {
+            const list = (result[solutionId] ??= []);
+
+            if (!list.includes(label)) list.push(label);
+          }
+        }
+
+        setViewers(result);
+      })
+      .subscribe((status) => {
+        if (status !== 'SUBSCRIBED') return;
+
+        channelRef.current = channel;
+        trackPresence(channel, current.current);
+      });
+
+    return () => {
+      channelRef.current = null;
+      setViewers({});
+      supabase.removeChannel(channel);
+    };
+  }, [userId]);
+
+  useEffect(() => {
+    current.current = solutionId == null ? null : { label, solutionId };
+
+    if (channelRef.current) trackPresence(channelRef.current, current.current);
+  }, [label, solutionId]);
+
+  return viewers;
 }
 
 export function useSolutions(galaxyId: number, battleId: string) {

@@ -44,7 +44,7 @@ export function Extras({ solution: s }: { solution: Solution }) {
     );
 }
 
-export function SolutionEntry({ solution, obsolete = false, onOpen, preloadImages, isAdmin, battleName, flags }: { solution: Solution, obsolete?: boolean, onOpen: (s: Solution) => void, preloadImages: boolean, isAdmin: boolean, battleName?: string, flags?: SolutionFlag[] }) {
+export function SolutionEntry({ solution, obsolete = false, onOpen, preloadImages, isAdmin, battleName, flags, viewers }: { solution: Solution, obsolete?: boolean, onOpen: (s: Solution) => void, preloadImages: boolean, isAdmin: boolean, battleName?: string, flags?: SolutionFlag[], viewers?: string[] }) {
     const s = solution;
     const chained = s.chain.length > 0;
     const perShot = !chained && !!s.shots && s.shots > 1;
@@ -77,6 +77,9 @@ export function SolutionEntry({ solution, obsolete = false, onOpen, preloadImage
         >
             <div className={styles.screenshot}>
                 {solution.screenshot_url && preloadImages && <img src={solution.thumbnail_url ?? solution.screenshot_url} loading="lazy" alt="Solution screenshot" />}
+                {!!viewers?.length && <span className={styles.viewers}>
+                    <span className={styles.eye}>👁</span>{viewers.join(", ")}
+                </span>}
                 <div className={styles.info}>
                     <span className={styles.stats} title="Combat stats">
                         {formatStats(s.combat_stats)}

@@ -6,7 +6,7 @@ import { SolutionColumn, SolutionColumns } from "../components/solution/solution
 import { SolutionEntry } from "../components/solution/solutionEntry";
 import { SolutionPopup } from "../components/solution/solutionPopup";
 import { getFlaggedSolutions } from "../lib/api";
-import { useAdminSession, useSelectedSolution, useSolutionQueue } from "../lib/hooks";
+import { useAdminSession, useReviewPresence, useSelectedSolution, useSolutionQueue } from "../lib/hooks";
 import { findBattle, galaxies } from "../lib/battles";
 import { FlaggedSolution, Solution } from "../lib/types";
 import styles from "./galaxy.module.scss";
@@ -24,6 +24,7 @@ export function SolutionQueue({ load, empty }: { load: () => Promise<Solution[]>
     const solutions = useSolutionQueue(load);
     const listRef = useRef<HTMLDivElement>(null);
     const { selectedId, openSolution, closeSolution } = useSelectedSolution();
+    const viewers = useReviewPresence(selectedId);
 
     useEffect(() => {
         if (session === null) navigate('/');
@@ -74,6 +75,7 @@ export function SolutionQueue({ load, empty }: { load: () => Promise<Solution[]>
                                         isAdmin={isAdmin}
                                         battleName={findBattle(s.galaxy_id, s.battle_id)?.name ?? s.battle_id}
                                         flags={(s as Partial<FlaggedSolution>).solution_flags}
+                                        viewers={viewers[s.id]}
                                     />
                                 ))}
                             </SolutionColumn>
@@ -88,6 +90,7 @@ export function SolutionQueue({ load, empty }: { load: () => Promise<Solution[]>
                         solution={selected}
                         isAdmin={isAdmin}
                         showGalaxy
+                        viewers={viewers[selected.id]}
                         onFlagsChanged={() => { closeSolution(); refreshSolutions(); }}
                         onUpdatesChanged={() => { closeSolution(); refreshSolutions(); }}
                         onVerified={refreshSolutions}

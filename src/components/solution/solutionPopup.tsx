@@ -78,7 +78,7 @@ function Screenshot({ url, thumbnailUrl }: { url: string, thumbnailUrl: string |
     );
 }
 
-export function SolutionPopup({ solution: s, isAdmin, showGalaxy, onFlagsChanged, onUpdatesChanged, onVerified, onDeleted }: { solution: Solution, isAdmin: boolean, showGalaxy?: boolean, onFlagsChanged: () => void, onUpdatesChanged?: () => void, onVerified: () => void, onDeleted: () => void }) {
+export function SolutionPopup({ solution: s, isAdmin, showGalaxy, viewers, onFlagsChanged, onUpdatesChanged, onVerified, onDeleted }: { solution: Solution, isAdmin: boolean, showGalaxy?: boolean, viewers?: string[], onFlagsChanged: () => void, onUpdatesChanged?: () => void, onVerified: () => void, onDeleted: () => void }) {
     const battle = findBattle(s.galaxy_id, s.battle_id);
 
     const { hazards, supports } = getConditionNodes(battle);
@@ -301,6 +301,14 @@ export function SolutionPopup({ solution: s, isAdmin, showGalaxy, onFlagsChanged
                     {obsolete && <span className={styles.obsoleteLabel}>Obsolete</span>}
                 </div>
             </div>
+
+            {!!viewers?.length && (
+                <div className={styles.viewersBanner}>
+                    <span className={styles.eye}>👁</span>
+                    Also being viewed by:&nbsp;
+                    {viewers.join(", ")}
+                </div>
+            )}
 
             {chained && (
                 <div className={styles.runs}>

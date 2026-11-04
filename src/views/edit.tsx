@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useNavigate, useParams, useSearchParams } from "react-router-dom";
 import { BaseLayout } from "../components/baselayout/baselayout";
 import { getSolution, getSolutionUpdate } from "../lib/api";
-import { useAdminSession } from "../lib/hooks";
+import { useAdminSession, useReviewPresence } from "../lib/hooks";
 import { Solution } from "../lib/types";
 import { SolutionForm } from "./submit";
 import styles from "./galaxy.module.scss";
@@ -15,6 +15,7 @@ export default function EditView({ suggest, copy }: { suggest?: boolean, copy?: 
     const [solution, setSolution] = useState<Solution | null | undefined>(undefined);
     const [error, setError] = useState(false);
     const openToAll = suggest || copy;
+    useReviewPresence(openToAll ? null : id);
 
     useEffect(() => {
         if (session === null && !openToAll) navigate('/');

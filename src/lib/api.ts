@@ -32,13 +32,15 @@ export interface RankedSolutions {
   flagged: Solution[];
 }
 
-const verifiedFirst = (a: Solution, b: Solution) =>
-  a.combat_stats - b.combat_stats || Number(b.verified_at != null) - Number(a.verified_at != null);
+const displayOrder = (a: Solution, b: Solution) =>
+  a.combat_stats - b.combat_stats
+  || Number(b.verified_at != null) - Number(a.verified_at != null)
+  || (a.fr_total ?? a.fr_used) - (b.fr_total ?? b.fr_used);
 
 function splitRanked(solutions: Solution[]): RankedSolutions {
   return {
-    best: solutions.filter(s => s.rank_in_group === 1).sort(verifiedFirst),
-    obsolete: solutions.filter(s => s.rank_in_group != null && s.rank_in_group > 1).sort(verifiedFirst),
+    best: solutions.filter(s => s.rank_in_group === 1).sort(displayOrder),
+    obsolete: solutions.filter(s => s.rank_in_group != null && s.rank_in_group > 1).sort(displayOrder),
     flagged: solutions.filter(s => s.flagged),
   };
 }

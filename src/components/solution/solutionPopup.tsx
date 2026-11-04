@@ -1,8 +1,9 @@
-import { Fragment, useEffect, useRef, useState } from "react";
+import { Fragment, ReactNode, useEffect, useLayoutEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { clsx } from "clsx";
 import { deleteSolution, flagSolution, getOpenUpdateIds, getSolutionFlags, getSolutionUpdates, resolveSolutionUpdate, setSolutionVerified, unflagSolution } from "../../lib/api";
-import { findBattle, getConditionNodes, getGalaxyUnlocks } from "../../lib/battles";
+import { Battle } from "../../lib/advisor";
+import { findBattle, getConditionNodes, getGalaxyUnlocks, usesReinforcements } from "../../lib/battles";
 import { ChainRun, Solution, SolutionFlag, SolutionUpdate } from "../../lib/types";
 import { Extras, formatStats } from "./solutionEntry";
 import styles from "./solution.module.scss";
@@ -45,6 +46,24 @@ const getPopupValues = (s: Solution): string[] => {
     if (s.fr_total != null) values.push(`Total FR: ${s.fr_total}`);
 
     return values;
+}
+
+const getFlagWarnings = (s: Solution, battle: Battle | undefined, reason: string): ReactNode[] => {
+    const warnings: ReactNode[] = [];
+
+    if (usesReinforcements(battle, s.support, s.support_nodes)) {
+        warnings.push(<p key="support">This solution has a reinforcement support node active. Make sure it's active for you as well, and make sure <strong>all</strong> your weapons and mods are set as indicated, <strong>even those on ships you haven't actually deployed</strong>, as the reinforcements will use the loadout you selected.</p>);
+    }
+
+    if (/screenshot|stats/i.test(reason)) {
+        warnings.push(<p key="stats">As stated on the previous screen, the stats shown in the screenshot may not always match what's listed in the solution entry - the setup should work regardless.</p>);
+    }
+
+    if (s.verified_at) {
+        warnings.push(<p key="verified">You're trying to flag a verified solution. Bar some fleet changes, they all were tested and should work. Make sure you try it with <strong>exactly</strong> the ships from the screenshot and stats from the description.</p>);
+    }
+
+    return warnings;
 }
 
 const UPDATE_LABELS: Record<string, string> = {
@@ -95,6 +114,9 @@ export function SolutionPopup({ solution: s, isAdmin, showGalaxy, viewers, onFla
     const [submitting, setSubmitting] = useState(false);
     const [flagError, setFlagError] = useState(false);
     const [reason, setReason] = useState('');
+    const [warnings, setWarnings] = useState<ReactNode[]>([]);
+    const [confirming, setConfirming] = useState(false);
+    const [flagHeight, setFlagHeight] = useState<number>();
     const [flagReasons, setFlagReasons] = useState<SolutionFlag[]>([]);
     const [updates, setUpdates] = useState<SolutionUpdate[]>([]);
     const noteUpdates = updates.filter((u) => u.changes.notes != null);
@@ -111,6 +133,8 @@ export function SolutionPopup({ solution: s, isAdmin, showGalaxy, viewers, onFla
     const showFlagged = flagged || (isAdmin && s.flagged);
     const flagTrigger = useRef<HTMLButtonElement>(null);
     const flagBox = useRef<HTMLDivElement>(null);
+    const flagForm = useRef<HTMLDivElement>(null);
+    const flagConfirm = useRef<HTMLDivElement>(null);
     const touchedAt = useRef<{ x: number, y: number } | null>(null);
 
     useEffect(() => {
@@ -174,7 +198,6 @@ export function SolutionPopup({ solution: s, isAdmin, showGalaxy, viewers, onFla
 
     useEffect(() => {
         if (!flagging) return;
-        flagBox.current?.getElementsByTagName('textarea')[0]?.focus();
 
         const onPointerDown = (e: PointerEvent) => {
             const target = e.target as Node;
@@ -185,6 +208,37 @@ export function SolutionPopup({ solution: s, isAdmin, showGalaxy, viewers, onFla
         document.addEventListener('pointerdown', onPointerDown);
         return () => document.removeEventListener('pointerdown', onPointerDown);
     }, [flagging]);
+
+    useLayoutEffect(() => {
+        const pane = (confirming ? flagConfirm : flagForm).current;
+        if (!pane) return;
+
+        setFlagHeight(pane.offsetHeight);
+        const observer = new ResizeObserver(() => setFlagHeight(pane.offsetHeight));
+        observer.observe(pane);
+
+        return () => observer.disconnect();
+    }, [confirming, warnings]);
+
+    useEffect(() => {
+        if (!flagging) return;
+
+        const target = confirming
+            ? flagConfirm.current?.getElementsByTagName('button')[0]
+            : flagForm.current?.getElementsByTagName('textarea')[0];
+        target?.focus({ preventScroll: true });
+    }, [flagging, confirming]);
+
+    const requestFlag = () => {
+        if (submitting) return;
+
+        const found = getFlagWarnings(s, battle, reason);
+        if (!found.length) return flag();
+
+        setWarnings(found);
+        setFlagError(false);
+        setConfirming(true);
+    }
 
     const flag = async () => {
         setSubmitting(true);
@@ -375,22 +429,38 @@ export function SolutionPopup({ solution: s, isAdmin, showGalaxy, viewers, onFla
 
                 <Extras solution={s} />
                 <div className={styles.curation}>
-                    <div ref={flagBox} className={`${styles.flagging} ${flagging ? '' : styles.hidden}`}>
-                        <p>Please make sure the setup you tried is <strong>identical</strong> to the one shown here, and note that the stats shown in the screenshot may not always match what's listed in the solution. That's normal, and the setup should work regardless.<br /><br /><strong>If you have a better setup than this one, please submit it instead of flagging this solution.</strong></p>
-                        <textarea
-                            name="reason"
-                            placeholder="Further context..."
-                            maxLength={500}
-                            value={reason}
-                            onChange={(e) => setReason(e.target.value)}
-                            onKeyDown={(e) => {
-                                if (e.key !== 'Enter' || !(e.ctrlKey || e.metaKey)) return;
-                                e.preventDefault();
-                                if (!submitting) flag();
-                            }}
-                        />
-                        {flagError && <span className={styles.error}>Flagging failed, please try again</span>}
-                        <button className={styles.flag} onClick={flag} disabled={submitting}>Flag</button>
+                    <div
+                        ref={flagBox}
+                        className={clsx(styles.flagging, !flagging && styles.hidden)}
+                        style={{ height: flagHeight }}
+                        onTransitionEnd={(e) => { if (e.target === e.currentTarget && !flagging) setConfirming(false); }}
+                    >
+                        <div ref={flagForm} className={clsx(styles.flagPane, confirming && styles.away)}>
+                            <p>Please make sure the setup you tried is <strong>identical</strong> to the one shown here, and note that the stats shown in the screenshot may not always match what's listed in the solution. That's normal, and the setup should work regardless.<br /><br /><strong>If you have a better setup than this one, please submit it instead of flagging this solution.</strong></p>
+                            <textarea
+                                name="reason"
+                                placeholder="Further context..."
+                                maxLength={500}
+                                value={reason}
+                                onChange={(e) => setReason(e.target.value)}
+                                onKeyDown={(e) => {
+                                    if (e.key !== 'Enter' || !(e.ctrlKey || e.metaKey)) return;
+                                    e.preventDefault();
+                                    requestFlag();
+                                }}
+                            />
+                            {flagError && !confirming && <span className={styles.error}>Flagging failed, please try again</span>}
+                            <button className={styles.flag} onClick={requestFlag} disabled={submitting}>Flag</button>
+                        </div>
+                        <div ref={flagConfirm} className={clsx(styles.flagPane, styles.confirm, confirming && styles.active)}>
+                            {warnings}
+                            <p><strong>Do you still wish to flag it?</strong></p>
+                            {flagError && confirming && <span className={styles.error}>Flagging failed, please try again</span>}
+                            <div className={styles.flagButtons}>
+                                <button onClick={() => setConfirming(false)} disabled={submitting}>Cancel</button>
+                                <button className={styles.flag} onClick={flag} disabled={submitting}>Yes, flag it</button>
+                            </div>
+                        </div>
                     </div>
 
                     {isAdmin && updates.map((u) => (
@@ -410,7 +480,7 @@ export function SolutionPopup({ solution: s, isAdmin, showGalaxy, viewers, onFla
                         </Fragment>
                     ))}
 
-                    {!showFlagged && <button ref={flagTrigger} className={styles.flag} onClick={() => setFlagging(true)}>Flag as incorrect</button>}
+                    {!showFlagged && <button ref={flagTrigger} className={styles.flag} onClick={() => { setConfirming(false); setFlagging(true); }}>Flag as incorrect</button>}
                     {!isAdmin && !suggested && <button onClick={() => navigate(`/suggest/${s.id}`)}>Fill in missing information</button>}
                     <button onClick={() => navigate(`/copy/${s.id}`)}>Copy to different stats</button>
                     {isAdmin && (

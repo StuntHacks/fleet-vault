@@ -613,26 +613,64 @@
         }
 
         .flagging {
-            display: flex;
-            gap: 0.5rem;
-            flex-direction: column;
+            display: grid;
+            grid-template-rows: minmax(0, 1fr);
             position: absolute;
             bottom: 2.5rem;
             background: var(--color-background-secondary);
-            padding: 1rem;
-            padding-top: 0.5rem;
             border-radius: 0.5rem;
             color: var(--color-text);
             font-size: 0.9rem;
             font-weight: bold;
             box-shadow: 0 0 5px black;
-            transition: opacity 150ms;
+            transition: opacity 150ms, height 300ms ease;
             overflow: hidden;
 
             &.hidden {
                 opacity: 0;
                 visibility: hidden;
                 transition: opacity 150ms, visibility 150ms;
+            }
+
+            .flagPane {
+                grid-area: 1 / 1;
+                align-self: unsafe end;
+                display: flex;
+                gap: 0.5rem;
+                flex-direction: column;
+                padding: 1rem;
+                padding-top: 0.5rem;
+                transition: transform 300ms ease, visibility 0s 300ms;
+
+                &.away {
+                    transform: translateX(-100%);
+                    visibility: hidden;
+                }
+
+                &.confirm {
+                    transform: translateX(100%);
+                    visibility: hidden;
+
+                    &.active {
+                        transform: none;
+                        visibility: inherit;
+                    }
+                }
+
+                &:not(.away, .confirm),
+                &.active {
+                    transition: transform 300ms ease;
+                }
+            }
+
+            &.hidden .flagPane {
+                transition: none;
+            }
+
+            .flagButtons {
+                display: flex;
+                gap: 0.5rem;
+                justify-content: flex-end;
             }
 
             p {

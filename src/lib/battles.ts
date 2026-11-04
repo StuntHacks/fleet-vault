@@ -74,6 +74,14 @@ export function getConditionNodes(battle: Battle | undefined): { hazards: Condit
     return { hazards, supports };
 }
 
+export function usesReinforcements(battle: Battle | undefined, support: boolean, supportNodes: string[]): boolean {
+    if (!support && !supportNodes.length) return false;
+
+    const nodes = (battle?.hazard ?? []).filter((h) => h.support && h.id !== battle?.id);
+    const active = supportNodes.length ? nodes.filter((h) => supportNodes.includes(h.id)) : nodes;
+    return !active.length || active.some((h) => h.type === "Reinforcements");
+}
+
 export function isBossBattle(battle: Battle | undefined): boolean {
     return !!battle?.boss;
 }

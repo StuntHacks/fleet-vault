@@ -9,7 +9,7 @@ import ParticleCannon from './ParticleCannon.svg';
 import RapidFire from './RapidFire.svg';
 import ChargeLaserBurst from './ChargeLaserBurst.svg';
 import HealthBoost from './HealthBoost.svg';
-import ShotgunMissiles from './ShotgunMissiles.svg';
+import RapidMissiles from './RapidMissiles.svg';
 
 const icons: Record<string, string> = {
     Datacore,
@@ -23,7 +23,7 @@ const icons: Record<string, string> = {
     RapidFire,
     ChargeLaserBurst,
     HealthBoost,
-    ShotgunMissiles,
+    RapidMissiles,
 };
 
 export default icons;

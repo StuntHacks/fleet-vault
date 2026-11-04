@@ -23,7 +23,7 @@ export const MOD_MAP: Record<string, { name: string; icon: string }> = {
     CorvetteRapidFire:        { name: "Corvette Rapid Fire", icon: "RapidFire" },
     CorvetteChargeLaserBurst: { name: "Corvette Charge Laser Burst", icon: "ChargeLaserBurst" },
     FrigateHealthBoost:       { name: "Frigate Health Boost", icon: "HealthBoost" },
-    FrigateShotgunMissileMod: { name: "Frigate Shotgun Missiles", icon: "ShotgunMissiles" },
+    FrigateRapidMissileMod:   { name: "Frigate Rapid Missiles", icon: "RapidMissiles" },
 };
 
 export interface Hazard {

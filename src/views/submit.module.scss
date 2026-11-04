@@ -153,6 +153,11 @@
         color: var(--color-text-secondary);
     }
 
+    .obsolete {
+        align-self: flex-start;
+        margin-top: -0.75rem;
+    }
+
     .error {
         margin-top: -1rem;
         text-align: right;

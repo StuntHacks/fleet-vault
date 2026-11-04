@@ -239,14 +239,13 @@ export async function getOpenUpdateIds(ids: number[]): Promise<number[]> {
 }
 
 export async function getSolution(id: number): Promise<Solution | null> {
-  const { data, error } = await supabase
-    .from('solutions')
-    .select('*')
-    .eq('id', id)
-    .maybeSingle();
+  const [{ data, error }, ranked] = await Promise.all([
+    supabase.from('solutions').select('*').eq('id', id).maybeSingle(),
+    supabase.from('solutions_ranked').select('rank_in_group').eq('id', id).maybeSingle(),
+  ]);
   if (error) throw error;
 
-  return data;
+  return data && { ...data, rank_in_group: ranked.data?.rank_in_group ?? null };
 }
 
 // admin stuff

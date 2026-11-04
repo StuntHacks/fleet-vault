@@ -9,6 +9,7 @@ import { ChainRun, Solution } from "../lib/types";
 import { useGalaxyAccess, useGalaxyBattles } from "../lib/hooks";
 import { ConditionNode, galaxies, getConditionNodes, getGalaxyPurchases, getGalaxyUnlocks, isBossBattle, SHIPS_BY_CLASS } from "../lib/battles";
 import styles from "./submit.module.scss";
+import solutionStyles from "../components/solution/solution.module.scss";
 import clsx from "clsx";
 import { Link, Navigate, useParams, useLocation, useNavigate } from "react-router-dom";
 import { Button } from "../components/button/button";
@@ -63,12 +64,13 @@ export function SolutionForm({ galaxy: id, solution: s, suggest, copy, updateId 
     const locked = (value: unknown) => !!suggest && !isEmpty(value);
     const [selectedGalaxy, setSelectedGalaxy] = useState<number | undefined>(s ? s.galaxy_id : id);
     const orderedBattles = useGalaxyBattles(selectedGalaxy ?? 0);
+    const [screenshot, setScreenshot] = useState<File | undefined>(undefined);
+
     const [selectedBattle, setSelectedBattle] = useState<number | undefined>(() => {
         if (!s) return undefined;
         const index = galaxies[s.galaxy_id - 1]?.battles.findIndex((b) => b.id === s.battle_id) ?? -1;
         return index >= 0 ? index + 1 : undefined;
     });
-    const [screenshot, setScreenshot] = useState<File | undefined>(undefined);
 
     const location = useLocation();
     useEffect(() => {
@@ -251,6 +253,9 @@ export function SolutionForm({ galaxy: id, solution: s, suggest, copy, updateId 
                         disabled={suggest}
                     />}
                 </details>
+                {editing && s?.rank_in_group != null && s.rank_in_group > 1 && (
+                    <span className={clsx(solutionStyles.obsoleteLabel, styles.obsolete)}>Obsolete</span>
+                )}
                 {screenshotProblem && (
                     <span className={styles.error}>{screenshotProblem}</span>
                 )}

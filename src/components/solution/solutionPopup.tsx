@@ -1,7 +1,7 @@
 import { Fragment, ReactNode, useEffect, useLayoutEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { clsx } from "clsx";
-import { deleteSolution, flagSolution, getOpenUpdateIds, getSolutionFlags, getSolutionUpdates, resolveSolutionUpdate, setSolutionVerified, unflagSolution } from "../../lib/api";
+import { deleteSolution, flagSolution, getOpenUpdateIds, getSolutionFlags, getSolutionUpdates, resolveSolutionUpdate, setSolutionVerified, undoFlag, unflagSolution } from "../../lib/api";
 import { Battle } from "../../lib/advisor";
 import { findBattle, getConditionNodes, getGalaxyUnlocks, usesReinforcements } from "../../lib/battles";
 import { ChainRun, Solution, SolutionFlag, SolutionUpdate } from "../../lib/types";
@@ -9,22 +9,40 @@ import { Extras, formatStats } from "./solutionEntry";
 import styles from "./solution.module.scss";
 
 const flaggedKey = 'fleetvault_flagged_solutions';
+const flagTokensKey = 'fleetvault_flag_tokens';
 const flaggedThisSession = new Set<number>();
+
+const readFlagTokens = () => JSON.parse(localStorage.getItem(flagTokensKey) ?? '{}') as Record<number, string>;
 
 const isFlaggedByUser = (s: Solution) => {
     const ids = JSON.parse(localStorage.getItem(flaggedKey) ?? '[]') as number[];
 
     if (!ids.includes(s.id)) return false;
     if (s.flagged || flaggedThisSession.has(s.id)) return true;
-    localStorage.setItem(flaggedKey, JSON.stringify(ids.filter((id) => id !== s.id)))
+    forgetFlagged(s.id);
 
     return false;
 }
 
-const rememberFlagged = (id: number) => {
+const rememberFlagged = (id: number, token: string | null) => {
     flaggedThisSession.add(id);
     const flagged = JSON.parse(localStorage.getItem(flaggedKey) ?? '[]') as number[];
     localStorage.setItem(flaggedKey, JSON.stringify([...flagged.filter((x) => x !== id), id]))
+
+    const tokens = readFlagTokens();
+    if (token) tokens[id] = token;
+    else delete tokens[id];
+    localStorage.setItem(flagTokensKey, JSON.stringify(tokens));
+}
+
+const forgetFlagged = (id: number) => {
+    flaggedThisSession.delete(id);
+    const flagged = JSON.parse(localStorage.getItem(flaggedKey) ?? '[]') as number[];
+    localStorage.setItem(flaggedKey, JSON.stringify(flagged.filter((x) => x !== id)));
+
+    const tokens = readFlagTokens();
+    delete tokens[id];
+    localStorage.setItem(flagTokensKey, JSON.stringify(tokens));
 }
 
 const suggestedKey = 'fleetvault_suggested_updates';
@@ -110,6 +128,8 @@ export function SolutionPopup({ solution: s, isAdmin, showGalaxy, viewers, onFla
     const run = runs[runIndex] ?? runs[0];
     
     const [flagged, setFlagged] = useState(() => isFlaggedByUser(s));
+    const [undoToken, setUndoToken] = useState<string | null>(() => readFlagTokens()[s.id] ?? null);
+    const [undoError, setUndoError] = useState<string | null>(null);
     const [flagging, setFlagging] = useState(false);
     const [submitting, setSubmitting] = useState(false);
     const [flagError, setFlagError] = useState(false);
@@ -245,9 +265,11 @@ export function SolutionPopup({ solution: s, isAdmin, showGalaxy, viewers, onFla
         setFlagError(false);
 
         try {
-            await flagSolution(s.id, reason);
-            rememberFlagged(s.id);
+            const token = await flagSolution(s.id, reason);
+            rememberFlagged(s.id, token);
             setFlagged(true);
+            setUndoToken(token);
+            setUndoError(null);
             setFlagging(false);
 
             if (isAdmin) {
@@ -256,6 +278,35 @@ export function SolutionPopup({ solution: s, isAdmin, showGalaxy, viewers, onFla
             }
         } catch {
             setFlagError(true);
+        } finally {
+            setSubmitting(false);
+        }
+    }
+
+    const undoOwnFlag = async () => {
+        if (!undoToken) return;
+        setSubmitting(true);
+        setUndoError(null);
+
+        try {
+            const undone = await undoFlag(undoToken);
+            setUndoToken(null);
+
+            if (!undone) {
+                rememberFlagged(s.id, null);
+                setUndoError('This flag has already been reviewed');
+                return;
+            }
+
+            forgetFlagged(s.id);
+            setFlagged(false);
+
+            if (isAdmin) {
+                window.dispatchEvent(new Event('fv:flags-changed'));
+                onFlagsChanged();
+            }
+        } catch {
+            setUndoError('Undoing failed, please try again');
         } finally {
             setSubmitting(false);
         }
@@ -481,6 +532,7 @@ export function SolutionPopup({ solution: s, isAdmin, showGalaxy, viewers, onFla
                     ))}
 
                     {!showFlagged && <button ref={flagTrigger} className={styles.flag} onClick={() => { setConfirming(false); setFlagging(true); }}>Flag as incorrect</button>}
+                    {flagged && undoToken && <button onClick={undoOwnFlag} disabled={submitting}>Undo flag</button>}
                     {!isAdmin && !suggested && <button onClick={() => navigate(`/suggest/${s.id}`)}>Fill in missing information</button>}
                     <button onClick={() => navigate(`/copy/${s.id}`)}>Copy to different stats</button>
                     {isAdmin && (
@@ -494,6 +546,7 @@ export function SolutionPopup({ solution: s, isAdmin, showGalaxy, viewers, onFla
                     )}
 
                     {showFlagged && <span className={styles.flagged}>Flagged as incorrect</span>}
+                    {undoError && <span className={styles.error}>{undoError}</span>}
                     {!isAdmin && suggested && <span className={styles.suggested}>Missing information submitted for review</span>}
 
                     {isAdmin && flagReasons.length > 0 && (

@@ -299,9 +299,16 @@ export async function updateBattleOrder(galaxyId: number, battleOrder: string[] 
   if (!data.length) throw new Error('Battle order not saved');
 }
 
-export async function flagSolution(id: number, reason?: string): Promise<void> {
-  const { error } = await supabase.rpc('flag_solution', { solution_id: id, reason: reason?.trim() || null });
+export async function flagSolution(id: number, reason?: string): Promise<string | null> {
+  const { data, error } = await supabase.rpc('flag_solution', { solution_id: id, reason: reason?.trim() || null });
   if (error) throw error;
+  return data ?? null;
+}
+
+export async function undoFlag(token: string): Promise<boolean> {
+  const { data, error } = await supabase.rpc('undo_flag', { token });
+  if (error) throw error;
+  return data === true;
 }
 
 export async function unflagSolution(id: number): Promise<void> {

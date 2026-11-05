@@ -35,12 +35,14 @@ function display(key: string, value: unknown, labels: Record<string, string>): s
     return format(value);
 }
 
+const HIDDEN_KEYS = ["id", "undo_token", "set_flagged"];
+
 function changes(entry: AuditEntry, labels: Record<string, string>) {
     const before = entry.old_data ?? {};
     const after = entry.new_data ?? {};
 
     return Object.keys({ ...before, ...after })
-        .filter((key) => key !== "id" && format(before[key]) !== format(after[key]))
+        .filter((key) => !HIDDEN_KEYS.includes(key) && format(before[key]) !== format(after[key]))
         .map((key) => ({ key, before: display(key, before[key], labels), after: display(key, after[key], labels) }));
 }
 
@@ -230,7 +232,7 @@ export default function AuditView() {
                     ))}
                 </div>
                 {log.error && <p className={galaxyStyles.error}>Error loading audit log</p>}
-                {log.entries.filter((e) => filter.flags ? !isFlagSync(e, log.entries) : !isFlaggedOnly(e)).map((e) => <AuditItem entry={e} key={e.id} labels={labels} reasons={flagReasons(e, log.entries)} solutionExists={existing.includes(solutionIdOf(e)!)} onUndone={log.reload} />)}
+                {log.entries.filter((e) => !(isFlagEdit(e) && !changes(e, {}).length) && (filter.flags ? !isFlagSync(e, log.entries) : !isFlaggedOnly(e))).map((e) => <AuditItem entry={e} key={e.id} labels={labels} reasons={flagReasons(e, log.entries)} solutionExists={existing.includes(solutionIdOf(e)!)} onUndone={log.reload} />)}
                 {log.loading && <p className={galaxyStyles.info}>Loading...</p>}
                 {!log.loading && !log.error && !log.entries.length && <p className={galaxyStyles.info}>No entries</p>}
                 {log.hasMore && !log.loading && (

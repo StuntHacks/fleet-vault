@@ -128,6 +128,7 @@ export function SolutionForm({ galaxy: id, solution: s, suggest, copy, updateId 
     const frUsedValue = parseFloat(frUsed.replace(",", "."));
     const frCommittedValue = parseFloat(frCommitted.replace(",", "."));
     const frCommittedTooLow = !isNaN(frUsedValue) && !isNaN(frCommittedValue) && frCommittedValue < frUsedValue;
+    const frCommittedNotWhole = !isNaN(frCommittedValue) && !Number.isInteger(frCommittedValue);
 
     const galaxyUnlocks = getGalaxyUnlocks(selectedGalaxy);
     const galaxyPurchases = getGalaxyPurchases(selectedGalaxy);
@@ -148,9 +149,10 @@ export function SolutionForm({ galaxy: id, solution: s, suggest, copy, updateId 
     }));
 
     const runCommittedTooLow = runValues.map((run) => !isNaN(run.frUsed) && !isNaN(run.frCommitted) && run.frCommitted < run.frUsed);
+    const runCommittedNotWhole = runValues.map((run) => !isNaN(run.frCommitted) && !Number.isInteger(run.frCommitted));
 
     const runsIncomplete = chained && runs.some((run, i) =>
-        isNaN(runValues[i].frUsed) || runCommittedTooLow[i] || !!screenshotError(run.screenshot) || (!editing && !run.screenshot && !run.uploaded?.screenshot_url));
+        isNaN(runValues[i].frUsed) || runCommittedTooLow[i] || runCommittedNotWhole[i] ||!!screenshotError(run.screenshot) || (!editing && !run.screenshot && !run.uploaded?.screenshot_url));
 
     const chainTotal = frUsedValue + runValues.reduce((sum, run) => sum + run.frUsed, 0);
 
@@ -321,8 +323,8 @@ export function SolutionForm({ galaxy: id, solution: s, suggest, copy, updateId 
                         value={frCommitted}
                         onChange={setFrCommitted}
                         min={0}
-                        step={0.01}
-                        decimals={2}
+                        step={1}
+                        decimals={0}
                         stepper={false}
                         allowEmpty
                         disabled={!selectedGalaxy || locked(s?.fr_committed)}
@@ -330,6 +332,9 @@ export function SolutionForm({ galaxy: id, solution: s, suggest, copy, updateId 
                 </div>
                 {frCommittedTooLow && (
                     <span className={styles.error}>FR Committed can't be lower than FR Used</span>
+                )}
+                {frCommittedNotWhole && (
+                    <span className={styles.error}>FR Committed must be a whole number</span>
                 )}
                 {showConditionField && (
                     <div className={clsx(styles.field, { [styles.hidden]: !selectedBattle })}>
@@ -451,11 +456,14 @@ export function SolutionForm({ galaxy: id, solution: s, suggest, copy, updateId 
                                 </div>
                                 <div className={styles.field}>
                                     <span className={styles.label}>FR Committed</span>
-                                    <CombatStatInput value={run.frCommitted} onChange={(value) => updateRun(i, { frCommitted: value })} min={0} step={0.01} decimals={2} stepper={false} allowEmpty disabled={suggest} />
+                                    <CombatStatInput value={run.frCommitted} onChange={(value) => updateRun(i, { frCommitted: value })} min={0} step={1} decimals={0} stepper={false} allowEmpty disabled={suggest} />
                                 </div>
 
                                 {runCommittedTooLow[i] && (
                                     <span className={styles.error}>FR Committed can't be lower than FR Used</span>
+                                )}
+                                {runCommittedNotWhole[i] && (
+                                    <span className={styles.error}>FR Committed must be a whole number</span>
                                 )}
                             </div>
                         ))}
@@ -497,6 +505,7 @@ export function SolutionForm({ galaxy: id, solution: s, suggest, copy, updateId 
                     loading ||
                     !frUsed ||
                     frCommittedTooLow ||
+                    frCommittedNotWhole ||
                     frTotalTooLow ||
                     runsIncomplete ||
                     (!screenshot && !editing && !reusedImages) ||

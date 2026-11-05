@@ -50,6 +50,8 @@ export function CombatStatInput({ className, value, onChange, min, max, step, de
                 value={value}
                 onChange={(e) => handleChange(e.target.value)}
                 onBlur={validate}
+                onWheel={(e) => e.currentTarget.blur()}
+                onKeyDown={(e) => { if (e.key === "ArrowUp" || e.key === "ArrowDown") e.preventDefault(); }}
                 disabled={disabled}
                 step={step}
                 min={min}

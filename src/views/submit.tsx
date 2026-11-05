@@ -488,7 +488,7 @@ export function SolutionForm({ galaxy: id, solution: s, suggest, copy, updateId 
                     <textarea
                         name="notes"
                         className={styles.notes}
-                        placeholder="Oneshot, Better results with additional Cruiser, ..."
+                        placeholder="Advisor has better result, Try mirroring the setup, ..."
                         value={notes}
                         onChange={(e) => setNotes(e.target.value)}
                     />

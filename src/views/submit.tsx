@@ -237,7 +237,7 @@ export function SolutionForm({ galaxy: id, solution: s, suggest, copy, updateId 
                 )}
                 {suggest && (
                     <div className={styles.disclaimer}>
-                        <strong>Please fill in any missing information. </strong>Only empty fields can be filled in. To edit existing information, please flag the solution for review instead.
+                        <strong>Please fill in any missing information. </strong>Only empty fields can be filled in. To edit existing information, please flag the solution for review instead.<br /><br />If you have a better clear, submit a new solution instead of updating this one.
                     </div>
                 )}
                 <details open={!suggest} className={`${styles.screenshot} ${suggest ? styles.suggest : ""}`}>

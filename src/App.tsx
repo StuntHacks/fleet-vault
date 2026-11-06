@@ -48,7 +48,7 @@ export default function App() {
       const galaxyMatch = path.match(/\/g\/(\d+)/);
       const galaxyId = galaxyMatch?.[1];
       const submitPath = galaxyId ? `/g/${galaxyId}/submit` : '/submit';
-      const combatStats = galaxyId && /^\/g\/\d+\/?$/.test(path) ? filteredStats(parseInt(galaxyId, 10)) : undefined;
+      const combatStats = galaxyId && /\/g\/\d+\/?$/.test(path) ? filteredStats(parseInt(galaxyId, 10)) : undefined;
       navigate(submitPath, { state: { pastedFile: imageFile, combatStats } });
     };
 

@@ -7,6 +7,7 @@ import UpdatesView from './views/updates';
 import EditView from './views/edit';
 import AuditView from './views/audit';
 import { useEffect } from 'react';
+import { filteredStats } from './lib/battles';
 
 export default function App() {
   const navigate = useNavigate();
@@ -47,7 +48,8 @@ export default function App() {
       const galaxyMatch = path.match(/\/g\/(\d+)/);
       const galaxyId = galaxyMatch?.[1];
       const submitPath = galaxyId ? `/g/${galaxyId}/submit` : '/submit';
-      navigate(submitPath, imageFile ? { state: { pastedFile: imageFile } } : undefined);
+      const combatStats = galaxyId && /^\/g\/\d+\/?$/.test(path) ? filteredStats(parseInt(galaxyId, 10)) : undefined;
+      navigate(submitPath, { state: { pastedFile: imageFile, combatStats } });
     };
 
     document.addEventListener('paste', handlePaste);

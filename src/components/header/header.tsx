@@ -2,6 +2,7 @@ import { Link, useMatch, useNavigate, useParams } from "react-router-dom";
 import { clsx } from "clsx";
 import logo from "../../assets/logo.png";
 import data from '../../data.json';
+import { filteredStats } from "../../lib/battles";
 import { useAdminSession, useFlaggedCount, useGalaxyAccess, useUpdateCount } from "../../lib/hooks";
 import { Button } from "../button/button";
 import GalaxySelect from "../galaxySelect/galaxySelect";
@@ -19,6 +20,7 @@ export default function Header({ galaxy: current }: { galaxy?: number }) {
   const isUpdatesPage = !!useMatch('/updates');
   const isAdvisorPage = !!useMatch('/advisors');
   const isAuditPage = !!useMatch('/audit');
+  const isGalaxyPage = [useMatch('/'), useMatch('/g'), useMatch('/g/:galaxy')].some(Boolean);
   const access = useGalaxyAccess();
 
   const galaxyIds = data.galaxies.map((_, i) => i + 1).filter(g => access.canView(g));
@@ -56,7 +58,7 @@ export default function Header({ galaxy: current }: { galaxy?: number }) {
           </Button>
         )}
 
-        <Button onClick={() => navigate(`/g/${id}/submit`)}>
+        <Button onClick={() => navigate(`/g/${id}/submit`, isGalaxyPage ? { state: { combatStats: filteredStats(id) } } : undefined)}>
           Submit
           <span>(Ctrl + V)</span>
         </Button>

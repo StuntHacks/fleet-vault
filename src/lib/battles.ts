@@ -86,3 +86,13 @@ export function usesReinforcements(battle: Battle | undefined, support: boolean,
 export function isBossBattle(battle: Battle | undefined): boolean {
     return !!battle?.boss;
 }
+
+export const statFilterKey = (galaxyId: number) => `fleetvault_stat_filter_${galaxyId}`;
+export const combatStatsKey = (galaxyId: number) => `fleetvault_combat_stats_${galaxyId}`;
+
+export function filteredStats(galaxyId: number): string | undefined {
+    if (localStorage.getItem(statFilterKey(galaxyId)) !== 'true') return undefined;
+
+    const stats = localStorage.getItem(combatStatsKey(galaxyId));
+    return stats && !isNaN(parseFloat(stats)) ? stats : undefined;
+}

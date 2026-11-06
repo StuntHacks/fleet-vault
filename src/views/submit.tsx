@@ -96,7 +96,8 @@ export function SolutionForm({ galaxy: id, solution: s, suggest, copy, updateId 
         return () => { current = false; };
     }, [screenshot]);
 
-    const [combatStats, setCombatStats] = useState<string>(s ? String(s.combat_stats) : "1");
+    const [combatStats, setCombatStats] = useState<string>(() =>
+        s ? String(s.combat_stats) : (location.state as { combatStats?: string } | null)?.combatStats ?? "1");
     const [frUsed, setFrUsed] = useState<string>(s ? String(s.fr_used) : "");
     const [frCommitted, setFrCommitted] = useState<string>(optional(s?.fr_committed));
     const [hazard, setHazard] = useState(s?.hazards ?? false);

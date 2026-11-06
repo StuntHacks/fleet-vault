@@ -3,7 +3,7 @@ import { BaseLayout } from "../components/baselayout/baselayout";
 import { Modal, ModalTarget } from "../components/modal/modal";
 import { refreshGalaxies, useAdminSession, useGalaxyAccess, useGalaxyBattles, useGalaxySolutions, useSelectedSolution } from "../lib/hooks";
 import { type RankedSolutions, updateBattleOrder } from "../lib/api";
-import { galaxies, isBossBattle } from "../lib/battles";
+import { combatStatsKey, galaxies, isBossBattle, statFilterKey } from "../lib/battles";
 import styles from "./galaxy.module.scss";
 import { clsx } from "clsx";
 import { useEffect, useMemo, useRef, useState } from "react";
@@ -16,8 +16,6 @@ import { SolutionColumn, SolutionColumns } from "../components/solution/solution
 import { GalaxyNotes } from "../components/galaxyNotes/galaxyNotes";
 import { HiddenGalaxy } from "../components/hiddenGalaxy/hiddenGalaxy";
 
-const statFilterKey = (galaxyId: number) => `fleetvault_stat_filter_${galaxyId}`;
-const combatStatsKey = (galaxyId: number) => `fleetvault_combat_stats_${galaxyId}`;
 const upToStatsKey = (galaxyId: number) => `fleetvault_up_to_stats_${galaxyId}`;
 
 const nearestStats = (solutions: Solution[], stats: number) =>

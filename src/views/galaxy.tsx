@@ -57,10 +57,26 @@ const pickBest = (solutions: Solution[], stats: number, unlocks: string[]): Solu
             || Number(b.verified_at != null) - Number(a.verified_at != null))[0] ?? null;
 }
 
-function Solutions({ solutions, onOpen, showObsolete, filtered, preloadImages, isAdmin, flaggedOnly }: { solutions: RankedSolutions, onOpen: (s: Solution) => void, showObsolete: boolean, filtered: boolean, preloadImages: boolean, isAdmin: boolean, flaggedOnly: boolean }) {
+function Solutions({
+    solutions,
+    onOpen,
+    showObsolete,
+    filtered,
+    preloadImages,
+    isAdmin,
+    include
+}: {
+    solutions: RankedSolutions,
+    onOpen: (s: Solution) => void,
+    showObsolete: boolean,
+    filtered: boolean,
+    preloadImages: boolean,
+    isAdmin: boolean,
+    include: (s: Solution) => boolean
+}) {
     if (!solutions.best.length) return <p className={styles.info}>{filtered ? "No solutions for these stats" : "No solutions yet"}</p>;
-    const filteredBest = solutions.best.filter((s) => !flaggedOnly || s.flagged);
-    const filteredObsolete = solutions.obsolete.filter((s) => !flaggedOnly || s.flagged);
+    const filteredBest = solutions.best.filter(include);
+    const filteredObsolete = solutions.obsolete.filter(include);
 
     return (
         <>
@@ -107,6 +123,7 @@ export default function GalaxyView() {
     const [showObsolete, setShowObsolete] = useState(() => localStorage.getItem('fleetvault_show_obsolete') === 'true');
     const [preloadImages, setPreloadImages] = useState(() => (localStorage.getItem('fleetvault_preload_images') ?? 'true') === 'true');
     const [flaggedOnly, setFlaggedOnly] = useState(false);
+    const [notesOnly, setNotesOnly] = useState(false);
     const [savingOrder, setSavingOrder] = useState(false);
     const [settingsOpen, setSettingsOpen] = useState(false);
     const [filter, setFilter] = useState(() => localStorage.getItem(statFilterKey(id)) === 'true');
@@ -201,12 +218,14 @@ export default function GalaxyView() {
         return null;
     };
 
+    const include = (s: Solution) => (!flaggedOnly || s.flagged) && (!notesOnly || !!s.notes?.trim());
+
     const sibling = (direction: 1 | -1): ModalTarget | null => {
         if (!selected) return null;
 
         const all = solutions.forBattle(selected.battle_id);
         const visible = filterByStats(all, statFilter, upToStats);
-        let list = [...visible.best, ...(showObsolete ? visible.obsolete : [])].filter((s) => !flaggedOnly || s.flagged);
+        let list = [...visible.best, ...(showObsolete ? visible.obsolete : [])].filter(include);
 
         if (!list.some((s) => s.id === selected.id)) list = [...all.best, ...all.obsolete];
 
@@ -222,7 +241,7 @@ export default function GalaxyView() {
 
     const columns = battles
         .map((b) => ({ battle: b, results: filterByStats(solutions.forBattle(b.id), statFilter, upToStats) }))
-        .filter(({ results }) => !flaggedOnly || results.best.some((s) => s.flagged) || (showObsolete && results.obsolete.some((s) => s.flagged)));
+        .filter(({ results }) => (!flaggedOnly && !notesOnly) || results.best.some(include) || (showObsolete && results.obsolete.some(include)));
 
     const refreshSolutions = () => { solutions.reload().catch(() => {}); };
 
@@ -302,9 +321,14 @@ export default function GalaxyView() {
                                 Preload images
                             </Checkbox>
                             {isAdmin && (
-                                <Checkbox name="flaggedOnly" checked={flaggedOnly} onChange={setFlaggedOnly}>
-                                    Show only flagged
-                                </Checkbox>
+                                <>
+                                    <Checkbox name="flaggedOnly" checked={flaggedOnly} onChange={setFlaggedOnly}>
+                                        Show only flagged
+                                    </Checkbox>
+                                    <Checkbox name="notesOnly" checked={notesOnly} onChange={setNotesOnly}>
+                                        Show only with notes
+                                    </Checkbox>
+                                </>
                             )}
                         </div>
                     </div>
@@ -320,7 +344,7 @@ export default function GalaxyView() {
                                     showObsolete={showObsolete}
                                     filtered={statFilter != null}
                                     preloadImages={preloadImages}
-                                    flaggedOnly={flaggedOnly}
+                                    include={include}
                                     isAdmin={isAdmin}
                                 />
                             </SolutionColumn>

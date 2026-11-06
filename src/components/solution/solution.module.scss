@@ -749,4 +749,14 @@
     .values {
         padding-top: 0;
     }
+
+    .disclaimer {
+        width: calc(100% - 2rem);
+        margin: 0 1rem 0.5rem;
+        padding: 0.5rem 1rem;
+        box-sizing: border-box;
+        border-radius: 0.25rem;
+        color: var(--color-text-important);
+        background-color: var(--color-important);
+    }
 }

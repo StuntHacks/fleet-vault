@@ -146,6 +146,7 @@ export function SolutionPopup({ solution: s, isAdmin, showGalaxy, viewers, onFla
     const perShot = !chained && !!s.shots && s.shots > 1;
     const obsolete = s.rank_in_group != null && s.rank_in_group > 1;
     const values = getPopupValues(s);
+    const reinforcements = usesReinforcements(battle, s.support, s.support_nodes);
     const navigate = useNavigate();
     
     const [suggested, setSuggested] = useState(() => !!readSuggested()[s.id]?.length);
@@ -442,6 +443,12 @@ export function SolutionPopup({ solution: s, isAdmin, showGalaxy, viewers, onFla
             )}
 
             <div className={styles.details}>
+                {reinforcements && (
+                    <div className={styles.disclaimer}>
+                        <strong>Notice:</strong> This battle has a <strong>reinforcement</strong> support node active. Make sure <strong>all</strong> of your ships have their mods and weapons set as indicated, <strong>even if they're not deployed</strong>!
+                    </div>
+                )}
+
                 {values.length > 0 && (
                     <div className={styles.values}>
                         {values.join(' • ')}

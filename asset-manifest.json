@@ -1,7 +1,7 @@
 {
   "files": {
     "main.css": "/fleet-vault/static/css/main.5a428b14.css",
-    "main.js": "/fleet-vault/static/js/main.001b2087.js",
+    "main.js": "/fleet-vault/static/js/main.17528500.js",
     "static/js/915.8503a7c0.chunk.js": "/fleet-vault/static/js/915.8503a7c0.chunk.js",
     "static/js/453.fc2f17c8.chunk.js": "/fleet-vault/static/js/453.fc2f17c8.chunk.js",
     "static/js/401.712d549c.chunk.js": "/fleet-vault/static/js/401.712d549c.chunk.js",
@@ -19,13 +19,13 @@
     "static/media/RapidFire.svg": "/fleet-vault/static/media/RapidFire.a1c60f198b58c4556c51cd4462f3a39c.svg",
     "static/media/RapidMissiles.svg": "/fleet-vault/static/media/RapidMissiles.a1c60f198b58c4556c51cd4462f3a39c.svg",
     "main.5a428b14.css.map": "/fleet-vault/static/css/main.5a428b14.css.map",
-    "main.001b2087.js.map": "/fleet-vault/static/js/main.001b2087.js.map",
+    "main.17528500.js.map": "/fleet-vault/static/js/main.17528500.js.map",
     "915.8503a7c0.chunk.js.map": "/fleet-vault/static/js/915.8503a7c0.chunk.js.map",
     "453.fc2f17c8.chunk.js.map": "/fleet-vault/static/js/453.fc2f17c8.chunk.js.map",
     "401.712d549c.chunk.js.map": "/fleet-vault/static/js/401.712d549c.chunk.js.map"
   },
   "entrypoints": [
     "static/css/main.5a428b14.css",
-    "static/js/main.001b2087.js"
+    "static/js/main.17528500.js"
   ]
 }

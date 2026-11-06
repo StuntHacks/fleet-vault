@@ -76,6 +76,7 @@ export async function fetchAdvisors(params: {
     combatStat: number;
     hasBoss: boolean;
     hazardIds: string[];
+    unlockNodes: string[];
 }): Promise<ParsedAdvisor[]> {
     const response = await fetch(API_URL, {
         method: "POST",
@@ -84,7 +85,7 @@ export async function fetchAdvisors(params: {
             fleet_event_id: params.battleId,
             version: 99999999,
             has_boss: params.hasBoss,
-            hazard_node_list: params.hazardIds.join(""),
+            hazard_node_list: [...params.hazardIds, ...params.unlockNodes].join(""),
         }),
     });
 

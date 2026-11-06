@@ -5,9 +5,11 @@ import { BaseLayout } from "../components/baselayout/baselayout";
 import { Button } from "../components/button/button";
 import { FleetGrid } from "../components/fleetGrid/fleetGrid";
 import { HazardSelect } from "../components/hazardSelect/hazardSelect";
+import { UnlockSelect } from "../components/unlockSelect/unlockSelect";
 import { CombatStatInput } from "../components/combatStatInput/combatStatInput";
 import { useAdminSession } from "../lib/hooks";
 import { fetchAdvisors, Galaxy, ParsedAdvisor } from "../lib/advisor";
+import { getGalaxyUnlocks } from "../lib/battles";
 import galaxyData from "../data.json";
 import styles from "./advisor.module.scss";
 
@@ -21,6 +23,7 @@ export default function AdvisorView() {
     const [selectedBattleId, setSelectedBattleId] = useState("");
     const [statValue, setStatValue] = useState("");
     const [hazardIds, setHazardIds] = useState<string[]>([]);
+    const [unlockNodes, setUnlockNodes] = useState<string[]>([]);
     const [bossActive, setBossActive] = useState(false);
     const [advisors, setAdvisors] = useState<ParsedAdvisor[]>([]);
     const [selectedAdvisorIndex, setSelectedAdvisorIndex] = useState(-1);
@@ -34,7 +37,7 @@ export default function AdvisorView() {
 
     const findAdvisors = useCallback(async () => {
         const stat = parseFloat(statValue).toFixed(3);
-        const hash = `${selectedBattleId}_${stat}_${bossActive}_${hazardIds.join("")}`;
+        const hash = `${selectedBattleId}_${stat}_${bossActive}_${hazardIds.join("")}_${unlockNodes.join("")}`;
         if (hash === lastHashRef.current) return;
         lastHashRef.current = hash;
 
@@ -49,6 +52,7 @@ export default function AdvisorView() {
                 combatStat: parseFloat(stat),
                 hasBoss: bossActive,
                 hazardIds,
+                unlockNodes,
             });
             setAdvisors(parsed);
             if (parsed.length === 0) setNoResults(true);
@@ -57,12 +61,13 @@ export default function AdvisorView() {
         } finally {
             setLoading(false);
         }
-    }, [selectedBattleId, statValue, bossActive, hazardIds]);
+    }, [selectedBattleId, statValue, bossActive, hazardIds, unlockNodes]);
 
     if (session === undefined || session === null) return null;
 
     const galaxy = galaxies?.find((g: Galaxy) => g.id === selectedGalaxyId);
     const battleData = galaxy?.battles.find((b) => b.id === selectedBattleId);
+    const galaxyUnlocks = getGalaxyUnlocks(galaxies.findIndex((g) => g.id === selectedGalaxyId) + 1);
 
     const resetResults = () => {
         setAdvisors([]);
@@ -77,6 +82,7 @@ export default function AdvisorView() {
         setSelectedBattleId(g?.battles[0]?.id ?? "");
         setStatValue(g?.minStats?.toString() ?? "");
         setHazardIds([]);
+        setUnlockNodes([]);
         setBossActive(false);
         resetResults();
     };
@@ -95,6 +101,13 @@ export default function AdvisorView() {
         setHazardIds((prev) => checked
             ? [...prev, id].sort((a, b) => order.indexOf(a) - order.indexOf(b))
             : prev.filter((h) => h !== id));
+    };
+
+    const handleUnlockChange = (node: string, checked: boolean) => {
+        const order = galaxyUnlocks.map((u) => u.advisorNode);
+        setUnlockNodes((prev) => checked
+            ? [...prev, node].sort((a, b) => order.indexOf(a) - order.indexOf(b))
+            : prev.filter((n) => n !== node));
     };
 
     const canSearch = !!selectedGalaxyId && !!selectedBattleId && !!statValue;
@@ -159,6 +172,12 @@ export default function AdvisorView() {
                             onBossChange={setBossActive}
                         />
                     )}
+
+                    <UnlockSelect
+                        unlocks={galaxyUnlocks}
+                        selected={unlockNodes}
+                        onChange={handleUnlockChange}
+                    />
 
                     <Button onClick={findAdvisors} disabled={!canSearch || loading}>
                         {loading ? "Searching…" : "Find Advisors"}

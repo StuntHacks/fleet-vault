@@ -11,6 +11,7 @@ export interface ConditionNode {
 export interface Unlock {
     code: string;
     name: string;
+    advisorNode?: string;
 }
 
 const GALAXY_UNLOCKS: Record<number, Unlock[]> = {
@@ -22,8 +23,8 @@ const GALAXY_UNLOCKS: Record<number, Unlock[]> = {
     6: [{ code: "BE", name: "Heavy Cruiser Beam" }, { code: "HP", name: "Starting Heavy Cruiser" }],
     8: [{ code: "HL", name: "Starting Heavy Cruiser" }, { code: "CL", name: "Starting Cruiser" }],
     9: [{ code: "PC", name: "Particle Cannon" }],
-    11: [{ code: "CRF", name: "Corvette Rapid Fire" }, { code: "TM", name: "Temporary Corvette Burst" }],
-    12: [{ code: "FHB", name: "Frigate Health Boost" }, { code: "TM", name: "Temporary Frigate Rapid Missiles" }],
+    11: [{ code: "CRF", name: "Corvette Rapid Fire", advisorNode: "g11_fs_crf" }, { code: "TM", name: "Temporary Corvette Burst" }],
+    12: [{ code: "FHB", name: "Frigate Health Boost", advisorNode: "g12_fs_fhb" }, { code: "TM", name: "Temporary Frigate Rapid Missiles" }],
 };
 
 export const SHIPS_BY_CLASS: Record<PurchaseNode["class"], string[]> = {

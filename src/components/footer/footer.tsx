@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useAdminSession, useUsername } from "../../lib/hooks";
 import { Checkbox } from "../checkbox/checkbox";
 import styles from './footer.module.scss';
+import { adminLogin } from "../../lib/api";
 
 export default function Footer() {
   const session = useAdminSession();
@@ -23,13 +24,25 @@ export default function Footer() {
       body.classList.remove('dark')
     }
   }, [darkMode])
+
+  const login = () => {
+    const token = window.prompt("Curator login: please enter your login token. If you don't have one, ignore this button, it's not needed to use this website.");
+    if (token === null) return;
+    adminLogin(token || "").catch(() => alert("Invalid token"))
+  }
   
   return (
     <footer className={styles.footer}>
       <Checkbox className={styles.darkMode} name="darkMode" checked={darkMode} onChange={setDarkMode}>
         Dark Mode
       </Checkbox>
-      {username && !!session ? `| Logged in as ${username}` : ''}
+      {username && !!session ? (
+        <span>| Logged in as {username}</span>
+      ) : (
+          <>
+          |&nbsp;<a href="#/" onClick={login}>Login</a>
+          </>
+      )}
       <span className={styles.version}>
         v{process.env.REACT_APP_VERSION}
         <span className={styles.footnote}> - report bugs & feedback in <a href="https://discord.com/channels/1023372620705566740/1335896763118129152" target="_blank" rel="noreferrer">#fleet-discussion</a> on the discord</span>

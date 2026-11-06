@@ -2,7 +2,6 @@ import { Link, useMatch, useNavigate, useParams } from "react-router-dom";
 import { clsx } from "clsx";
 import logo from "../../assets/logo.png";
 import data from '../../data.json';
-import { adminLogin, adminLogout } from "../../lib/api";
 import { useAdminSession, useFlaggedCount, useGalaxyAccess, useUpdateCount } from "../../lib/hooks";
 import { Button } from "../button/button";
 import GalaxySelect from "../galaxySelect/galaxySelect";
@@ -56,11 +55,6 @@ export default function Header({ galaxy: current }: { galaxy?: number }) {
             {updateCount} {updateCount === 1 ? 'update' : 'updates'}<span>pending</span>
           </Button>
         )}
-
-        {isAdmin ?
-          <Button variant="secondary" onClick={() => adminLogout()}>Logout</Button> :
-          <Button variant="secondary" onClick={() => {adminLogin(window.prompt("Curator login: please enter your login token. If you don't have one, ignore this button, it's not needed to use this website.") || "").catch(() => alert("Invalid token"))}}>Login</Button>
-        }
 
         <Button onClick={() => navigate(`/g/${id}/submit`)}>
           Submit

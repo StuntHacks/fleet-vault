@@ -472,8 +472,8 @@
     }
 
     .titleBar {
-        display: grid;
-        grid-template-columns: 1fr auto 1fr;
+        display: flex;
+        flex-direction: column-reverse;
         align-items: center;
         gap: 0.5rem;
         padding: 0.5rem 1rem;
@@ -482,6 +482,7 @@
         .stats {
             color: var(--color-text-secondary);
             font-weight: bold;
+            text-align: center;
         }
 
         .title {

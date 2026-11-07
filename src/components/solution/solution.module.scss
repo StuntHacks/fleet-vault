@@ -12,13 +12,30 @@
     }
 
     .battle {
-        background: var(--color-glass);
-        backdrop-filter: var(--glass-blur);
+        position: relative;
+        display: flex;
+        flex-direction: column;
         width: 300px;
         min-width: 300px;
         border-radius: 0.5rem;
         box-shadow: 0 0 6px rgba(0, 0, 0, 0.1);
-        overflow-y: auto;
+
+        &::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            border-radius: inherit;
+            background: var(--color-glass);
+            backdrop-filter: var(--glass-blur);
+        }
+
+        .scrollArea {
+            position: relative;
+            flex: 1;
+            min-height: 0;
+            overflow-y: auto;
+            border-radius: inherit;
+        }
 
         .battleName {
             font-weight: bold;
@@ -90,7 +107,11 @@
             width: auto;
             min-width: 0;
             flex-shrink: 0;
-            overflow: hidden;
+
+            .scroller {
+                flex: none;
+                overflow: hidden;
+            }
 
             .battleName {
                 position: static;

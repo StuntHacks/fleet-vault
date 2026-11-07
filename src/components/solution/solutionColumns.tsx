@@ -12,20 +12,22 @@ export interface ColumnMove {
 export function SolutionColumn({ id, title, boss, count, move, children }: { id?: string, title: string, boss?: boolean, count: number, move?: ColumnMove, children: React.ReactNode }) {
     return (
         <div className={styles.battle} id={id}>
-            <div className={styles.battleName}>
-                {title}
-                {boss && <span className={styles.hasBoss}>Boss</span>}
-                <span className={styles.count}>
-                    {count}
-                </span>
-                {move && (
-                    <span className={styles.move}>
-                        <button onClick={move.earlier ?? undefined} disabled={!move.earlier} title={`Move ${title} to the left`}>‹</button>
-                        <button onClick={move.later ?? undefined} disabled={!move.later} title={`Move ${title} to the right`}>›</button>
+            <div className={styles.scrollArea}>
+                <div className={styles.battleName}>
+                    {title}
+                    {boss && <span className={styles.hasBoss}>Boss</span>}
+                    <span className={styles.count}>
+                        {count}
                     </span>
-                )}
+                    {move && (
+                        <span className={styles.move}>
+                            <button onClick={move.earlier ?? undefined} disabled={!move.earlier} title={`Move ${title} to the left`}>‹</button>
+                            <button onClick={move.later ?? undefined} disabled={!move.later} title={`Move ${title} to the right`}>›</button>
+                        </span>
+                    )}
+                </div>
+                <div className={styles.entries}>{children}</div>
             </div>
-            <div className={styles.entries}>{children}</div>
         </div>
     );
 }

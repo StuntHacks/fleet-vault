@@ -1,5 +1,5 @@
 import { Fragment, ReactNode, useEffect, useLayoutEffect, useRef, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useMatch, useNavigate } from "react-router-dom";
 import { clsx } from "clsx";
 import { deleteSolution, flagSolution, getOpenUpdateIds, getSolutionFlags, getSolutionUpdates, resolveSolutionUpdate, setSolutionVerified, undoFlag, unflagSolution } from "../../lib/api";
 import { Battle } from "../../lib/advisor";
@@ -148,6 +148,7 @@ export function SolutionPopup({ solution: s, isAdmin, showGalaxy, viewers, onFla
     const values = getPopupValues(s);
     const reinforcements = usesReinforcements(battle, s.support, s.support_nodes);
     const navigate = useNavigate();
+    const isUpdatesPage = !!useMatch('/updates');
     
     const [suggested, setSuggested] = useState(() => !!readSuggested()[s.id]?.length);
     
@@ -532,7 +533,7 @@ export function SolutionPopup({ solution: s, isAdmin, showGalaxy, viewers, onFla
                                 </div>
                             )}
                             <div className={styles.row}>
-                                <button className={styles.verify} onClick={() => navigate(`/edit/${s.id}?update=${u.id}`)} disabled={adminBusy}>Apply</button>
+                                <button className={styles.verify} onClick={() => navigate(`/edit/${s.id}?update=${u.id}`, isUpdatesPage ? { state: { returnTo: '/updates' } } : undefined)} disabled={adminBusy}>Apply</button>
                                 <button onClick={() => rejectUpdate(u.id)} disabled={adminBusy}>Reject</button>
                             </div>
                         </Fragment>

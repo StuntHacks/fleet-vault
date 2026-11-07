@@ -73,6 +73,7 @@ export function SolutionForm({ galaxy: id, solution: s, suggest, copy, updateId 
     });
 
     const location = useLocation();
+    const returnTo = updateId ? (location.state as { returnTo?: string } | null)?.returnTo : undefined;
     useEffect(() => {
         const state = location.state as { pastedFile?: File } | null;
         if (state?.pastedFile) {
@@ -214,7 +215,7 @@ export function SolutionForm({ galaxy: id, solution: s, suggest, copy, updateId 
             ? updateSolution(s.id, fields, s.flagged && unflag, verified).then(() => updateId ? resolveSolutionUpdate(updateId, true) : undefined).then(() => s.id)
             : submitSolution({ ...fields, advancedSolution: undefined, submittedBy: "Anonymous", reusedImages });
         request.then((solutionId) => {
-            navigate(`/g/${selectedGalaxy}?solution=${solutionId}`, { replace: editing });
+            navigate(returnTo ?? `/g/${selectedGalaxy}?solution=${solutionId}`, { replace: editing });
         }).catch((e) => {
             alert(`Failed to ${suggest ? "submit changes" : editing ? "save solution" : "submit solution"}: ` + e.message);
             console.error(e);
@@ -225,8 +226,8 @@ export function SolutionForm({ galaxy: id, solution: s, suggest, copy, updateId 
     return (
         <BaseLayout galaxy={s?.galaxy_id}>
             <div className={styles.form}>
-                <Link to={s ? `/g/${s.galaxy_id}?solution=${s.id}` : `/g/${id}`} className={styles.backlink}>
-                    {s ? "← Back to solution" : "← Back to galaxy"}
+                <Link to={returnTo ?? (s ? `/g/${s.galaxy_id}?solution=${s.id}` : `/g/${id}`)} className={styles.backlink}>
+                    {returnTo ? "← Back to updates" : s ? "← Back to solution" : "← Back to galaxy"}
                 </Link>
                 {!editing && !copy && (
                     <div className={styles.disclaimer}>

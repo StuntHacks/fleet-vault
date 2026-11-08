@@ -78,7 +78,7 @@ export function SolutionEntry({ solution, obsolete = false, onOpen, preloadImage
             <div className={styles.screenshot}>
                 {solution.screenshot_url && preloadImages && <img src={solution.thumbnail_url ?? solution.screenshot_url} loading="lazy" alt="Solution screenshot" />}
                 {!!viewers?.length && <span className={styles.viewers}>
-                    <span className={styles.eye}>👁</span>{viewers.join(", ")}
+                    {viewers.join(", ")}
                 </span>}
                 <div className={styles.info}>
                     <span className={styles.stats} title="Combat stats">

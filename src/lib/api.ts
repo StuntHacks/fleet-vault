@@ -1,5 +1,5 @@
 import { supabase } from './supabase';
-import { AuditEntry, ChainRun, FlaggedSolution, Galaxy, Solution, SolutionFlag, SolutionUpdate } from './types';
+import { AuditEntry, ChainRun, FlaggedSolution, Galaxy, Solution, SolutionFlag, SolutionUpdate, UpdatedSolution } from './types';
 
 export async function getBattlesForGalaxy(galaxyId: number): Promise<string[]> {
   const { data, error } = await supabase
@@ -380,11 +380,12 @@ export async function getSolutionFlags(solutionId: number): Promise<SolutionFlag
   return data;
 }
 
-export async function getUpdatedSolutions(): Promise<Solution[]> {
-  const { data, error } = await supabase.from('solution_updates').select('solution_id').is('resolved_at', null);
+export async function getUpdatedSolutions(): Promise<UpdatedSolution[]> {
+  const { data, error } = await supabase.from('solution_updates').select('*').is('resolved_at', null).order('created_at');
   if (error) throw error;
 
-  const ids = [...new Set(data.map((u) => u.solution_id))];
+  const updates = data as SolutionUpdate[];
+  const ids = [...new Set(updates.map((u) => u.solution_id))];
   if (!ids.length) return [];
 
   const { data: solutions, error: solutionsError } = await supabase
@@ -398,7 +399,7 @@ export async function getUpdatedSolutions(): Promise<Solution[]> {
     .order('id');
 
   if (solutionsError) throw solutionsError;
-  return solutions as Solution[];
+  return (solutions as Solution[]).map((s) => ({ ...s, solution_updates: updates.filter((u) => u.solution_id === s.id) }));
 }
 
 export async function getUpdateCount(): Promise<number> {

@@ -374,10 +374,16 @@
         flex-direction: column;
         gap: 0.125rem;
 
-        span {
+        > span {
             padding-left: 0.5rem;
             border-left: 2px solid var(--color-hazard);
             white-space: pre-wrap;
+        }
+
+        &.updates > span {
+            display: flex;
+            flex-direction: column;
+            border-left-color: var(--bg-color-verified);
         }
     }
 

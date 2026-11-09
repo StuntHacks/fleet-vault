@@ -1,6 +1,6 @@
 import { useRef } from "react";
 import { findBattle, getConditionNodes, getGalaxyUnlocks } from "../../lib/battles";
-import { Solution, SolutionFlag } from "../../lib/types";
+import { Solution, SolutionFlag, SolutionUpdate } from "../../lib/types";
 import styles from "./solution.module.scss";
 
 const getUnlockName = (galaxyId: number, unlock: string) => {
@@ -11,6 +11,32 @@ const getUnlockName = (galaxyId: number, unlock: string) => {
 }
 
 export const formatStats = (stats: number) => `${Number.isInteger(stats) ? stats.toFixed(1) : stats}x`;
+
+export const UPDATE_LABELS: Record<string, string> = {
+    fr_committed: "FR committed",
+    hazard_nodes: "Hazards",
+    support_nodes: "Supports",
+    boss_alive: "Boss",
+    unlocks: "Required unlocks",
+    purchases: "Ship selection",
+    shots: "Shots",
+    fr_total: "Total FR",
+    boss_damage: "Damage done",
+    notes: "Notes",
+};
+
+export const formatUpdate = (s: Solution, key: string, value: unknown): string => {
+    const { hazards, supports } = getConditionNodes(findBattle(s.galaxy_id, s.battle_id));
+    const nodeLabel = (nodes: { id: string, label: string }[], id: string) => nodes.find((n) => n.id === id)?.label ?? id;
+
+    if (key === "boss_alive") return value ? "Alive" : "Dead";
+    if (key === "hazard_nodes") return (value as string[]).map((id) => nodeLabel(hazards, id)).join(", ");
+    if (key === "support_nodes") return (value as string[]).map((id) => nodeLabel(supports, id)).join(", ");
+    if (key === "unlocks") return (value as string[]).map((u) => getUnlockName(s.galaxy_id, u)).join(", ");
+    if (key === "purchases") return Object.entries(value as Record<string, string>).map(([node, ship]) => `${node}: ${ship}`).join(", ");
+
+    return String(value);
+};
 
 const getBossInfo = (s: Solution) => {
     if (s.boss_alive === false) return "Boss dead";
@@ -44,7 +70,7 @@ export function Extras({ solution: s }: { solution: Solution }) {
     );
 }
 
-export function SolutionEntry({ solution, obsolete = false, onOpen, preloadImages, isAdmin, battleName, flags, viewers }: { solution: Solution, obsolete?: boolean, onOpen: (s: Solution) => void, preloadImages: boolean, isAdmin: boolean, battleName?: string, flags?: SolutionFlag[], viewers?: string[] }) {
+export function SolutionEntry({ solution, obsolete = false, onOpen, preloadImages, isAdmin, battleName, flags, updates, viewers }: { solution: Solution, obsolete?: boolean, onOpen: (s: Solution) => void, preloadImages: boolean, isAdmin: boolean, battleName?: string, flags?: SolutionFlag[], updates?: SolutionUpdate[], viewers?: string[] }) {
     const s = solution;
     const chained = s.chain.length > 0;
     const perShot = !chained && !!s.shots && s.shots > 1;
@@ -98,7 +124,7 @@ export function SolutionEntry({ solution, obsolete = false, onOpen, preloadImage
                     )}
                 </div>
             </div>
-            {(battleName || hasData || purchases.length > 0 || s.unlocks?.length > 0 || s.notes || !!flags?.length) && (
+            {(battleName || hasData || purchases.length > 0 || s.unlocks?.length > 0 || s.notes || !!flags?.length || !!updates?.length) && (
                 <div className={styles.details}>
                     {battleName && <div className={styles.battleLabel}>{battleName}</div>}
                     {hasData && (
@@ -130,6 +156,18 @@ export function SolutionEntry({ solution, obsolete = false, onOpen, preloadImage
                         <div className={styles.flagReasons}>
                             <strong>Flag reasons: </strong>
                             {flags.map((f) => <span key={f.id}>{f.reason}</span>)}
+                        </div>
+                    )}
+                    {!!updates?.length && (
+                        <div className={`${styles.flagReasons} ${styles.updates}`}>
+                            <strong>Suggested changes: </strong>
+                            {updates.map((u) => (
+                                <span key={u.id}>
+                                    {Object.entries(u.changes).map(([key, value]) => (
+                                        <span key={key}>{UPDATE_LABELS[key] ?? key}: {formatUpdate(s, key, value)}</span>
+                                    ))}
+                                </span>
+                            ))}
                         </div>
                     )}
                 </div>

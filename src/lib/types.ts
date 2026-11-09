@@ -59,6 +59,10 @@ export interface FlaggedSolution extends Solution {
   solution_flags: SolutionFlag[];
 }
 
+export interface UpdatedSolution extends Solution {
+  solution_updates: SolutionUpdate[];
+}
+
 export interface AuditEntry {
   id: number;
   table_name: "solutions" | "galaxies" | "solution_flags" | "solution_updates";

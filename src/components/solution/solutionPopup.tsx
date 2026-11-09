@@ -3,9 +3,9 @@ import { useMatch, useNavigate } from "react-router-dom";
 import { clsx } from "clsx";
 import { deleteSolution, flagSolution, getOpenUpdateIds, getSolutionFlags, getSolutionUpdates, resolveSolutionUpdate, setSolutionVerified, undoFlag, unflagSolution } from "../../lib/api";
 import { Battle } from "../../lib/advisor";
-import { findBattle, getConditionNodes, getGalaxyUnlocks, usesReinforcements } from "../../lib/battles";
+import { findBattle, getConditionNodes, usesReinforcements } from "../../lib/battles";
 import { ChainRun, Solution, SolutionFlag, SolutionUpdate } from "../../lib/types";
-import { Extras, formatStats } from "./solutionEntry";
+import { Extras, formatStats, formatUpdate, UPDATE_LABELS } from "./solutionEntry";
 import styles from "./solution.module.scss";
 
 const flaggedKey = 'fleetvault_flagged_solutions';
@@ -83,18 +83,6 @@ const getFlagWarnings = (s: Solution, battle: Battle | undefined, reason: string
 
     return warnings;
 }
-
-const UPDATE_LABELS: Record<string, string> = {
-    fr_committed: "FR committed",
-    hazard_nodes: "Hazards",
-    support_nodes: "Supports",
-    boss_alive: "Boss",
-    unlocks: "Required unlocks",
-    purchases: "Ship selection",
-    shots: "Shots",
-    fr_total: "Total FR",
-    boss_damage: "Damage done",
-};
 
 function Screenshot({ url, thumbnailUrl }: { url: string, thumbnailUrl: string | null }) {
     const [thumbnailFailed, setThumbnailFailed] = useState(false);
@@ -198,25 +186,6 @@ export function SolutionPopup({ solution: s, isAdmin, showGalaxy, viewers, onFla
 
         return () => { current = false; };
     }, [isAdmin, s.id]);
-
-    const formatUpdate = (key: string, value: unknown): string => {
-        if (key === "boss_alive") return value ? "Alive" : "Dead";
-        if (key === "hazard_nodes") return (value as string[]).map((id) => nodeLabel(hazards, id)).join(", ");
-        if (key === "support_nodes") return (value as string[]).map((id) => nodeLabel(supports, id)).join(", ");
-
-        if (key === "unlocks") {
-            return (value as string[]).map((u) => {
-                const unlock = getGalaxyUnlocks(s.galaxy_id).find((g) => g.code === u);
-
-                if (!unlock) return u;
-                return `${unlock.name} (${unlock.code})`;
-            }).join(", ");
-        }
-
-        if (key === "purchases") return Object.entries(value as Record<string, string>).map(([node, ship]) => `${node}: ${ship}`).join(", ");
-
-        return String(value);
-    };
 
     useEffect(() => {
         if (!flagging) return;
@@ -528,7 +497,7 @@ export function SolutionPopup({ solution: s, isAdmin, showGalaxy, viewers, onFla
                             {Object.keys(u.changes).some((key) => key !== "notes") && (
                                 <div className={clsx(styles.reason, styles.update)}>
                                     {Object.entries(u.changes).filter(([key]) => key !== "notes").map(([key, value]) => (
-                                        <span key={key}>{UPDATE_LABELS[key] ?? key}: {formatUpdate(key, value)}</span>
+                                        <span key={key}>{UPDATE_LABELS[key] ?? key}: {formatUpdate(s, key, value)}</span>
                                     ))}
                                 </div>
                             )}

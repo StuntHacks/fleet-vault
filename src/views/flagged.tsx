@@ -8,7 +8,7 @@ import { SolutionPopup } from "../components/solution/solutionPopup";
 import { getFlaggedSolutions } from "../lib/api";
 import { useAdminSession, useReviewPresence, useSelectedSolution, useSolutionQueue } from "../lib/hooks";
 import { findBattle, galaxies } from "../lib/battles";
-import { FlaggedSolution, Solution } from "../lib/types";
+import { FlaggedSolution, Solution, UpdatedSolution } from "../lib/types";
 import styles from "./galaxy.module.scss";
 
 const battleIndex = (s: Solution) => galaxies[s.galaxy_id - 1]?.battles.findIndex((b) => b.id === s.battle_id) ?? -1;
@@ -75,6 +75,7 @@ export function SolutionQueue({ load, empty }: { load: () => Promise<Solution[]>
                                         isAdmin={isAdmin}
                                         battleName={findBattle(s.galaxy_id, s.battle_id)?.name ?? s.battle_id}
                                         flags={(s as Partial<FlaggedSolution>).solution_flags}
+                                        updates={(s as Partial<UpdatedSolution>).solution_updates}
                                         viewers={viewers[s.id]}
                                     />
                                 ))}

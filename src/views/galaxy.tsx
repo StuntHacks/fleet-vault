@@ -61,6 +61,7 @@ function Solutions({
     onOpen,
     showObsolete,
     filtered,
+    lowestStats,
     preloadImages,
     isAdmin,
     include
@@ -69,11 +70,18 @@ function Solutions({
     onOpen: (s: Solution) => void,
     showObsolete: boolean,
     filtered: boolean,
+    lowestStats: number | null,
     preloadImages: boolean,
     isAdmin: boolean,
     include: (s: Solution) => boolean
 }) {
-    if (!solutions.best.length) return <p className={styles.info}>{filtered ? "No solutions for these stats" : "No solutions yet"}</p>;
+    if (!solutions.best.length) return (
+        <p className={styles.info}>
+            {filtered && lowestStats != null
+                ? <>No solutions below <strong>{formatStats(lowestStats)}</strong></>
+                : "No solutions yet"}
+        </p>
+    );
     const filteredBest = solutions.best.filter(include);
     const filteredObsolete = solutions.obsolete.filter(include);
 
@@ -239,7 +247,12 @@ export default function GalaxyView() {
     };
 
     const columns = battles
-        .map((b) => ({ battle: b, results: filterByStats(solutions.forBattle(b.id), statFilter, upToStats) }))
+        .map((b) => {
+            const all = solutions.forBattle(b.id);
+            const lowestStats = all.best.length ? Math.min(...all.best.map((s) => s.combat_stats)) : null;
+
+            return { battle: b, lowestStats, results: filterByStats(all, statFilter, upToStats) };
+        })
         .filter(({ results }) => (!flaggedOnly && !notesOnly) || results.best.some(include) || (showObsolete && results.obsolete.some(include)));
 
     const refreshSolutions = () => { solutions.reload().catch(() => {}); };
@@ -350,13 +363,14 @@ export default function GalaxyView() {
                     <GalaxyNotes galaxyId={id} isAdmin={isAdmin} />
                     <SolutionColumns ref={listRef} onScroll={saveScroll}>
                         {flaggedOnly && !columns.length && <p className={styles.info}>No flagged solutions</p>}
-                        {columns.map(({ battle: b, results }) => (
+                        {columns.map(({ battle: b, lowestStats, results }) => (
                             <SolutionColumn key={b.id} id={`battle-${b.id}`} title={b.name} boss={isBossBattle(b)} count={results.best.length} move={columnMove(b.id)}>
                                 <Solutions
                                     solutions={results}
                                     onOpen={openSolution}
                                     showObsolete={showObsolete}
                                     filtered={statFilter != null}
+                                    lowestStats={lowestStats}
                                     preloadImages={preloadImages}
                                     include={include}
                                     isAdmin={isAdmin}

@@ -147,6 +147,13 @@
         right: -10px;
     }
 
+    &.up .dropdown {
+        top: auto;
+        bottom: -5px;
+        padding-top: 0.25rem;
+        padding-bottom: 37px;
+    }
+
     .current {
         z-index: 1;
         position: relative;

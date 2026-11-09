@@ -13,20 +13,29 @@ export interface SelectItem {
 export default function GalaxySelect({ className, isSelect, selected, callback, items, placeholder = 'Select Galaxy', disabled }: { className?: string; isSelect?: boolean; selected?: number; callback?: (id: number) => void; items?: SelectItem[]; placeholder?: string; disabled?: boolean }) {
   const [shown, setShown] = useState(false);
   const [maxHeight, setMaxHeight] = useState<number>();
+  const [dropUp, setDropUp] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
   const dropdownRef = useRef<HTMLDivElement>(null);
+  const itemsRef = useRef<HTMLDivElement>(null);
 
   useLayoutEffect(() => {
-    if (!shown || !dropdownRef.current) return;
+    if (!shown || !ref.current || !dropdownRef.current || !itemsRef.current) return;
 
     const update = () => {
-      const element = dropdownRef.current!;
-      const { paddingTop, paddingBottom } = getComputedStyle(element);
+      const { paddingTop, paddingBottom } = getComputedStyle(dropdownRef.current!);
+      const padding = parseFloat(paddingTop) + parseFloat(paddingBottom);
+      const rect = ref.current!.getBoundingClientRect();
 
-      const top = element.getBoundingClientRect().top + parseFloat(paddingTop) + parseFloat(paddingBottom);
-      const bottom = document.querySelector('footer')?.getBoundingClientRect().top ?? window.innerHeight;
+      const limitTop = document.querySelector('header')?.getBoundingClientRect().bottom ?? 0;
+      const limitBottom = document.querySelector('footer')?.getBoundingClientRect().top ?? window.innerHeight;
 
-      setMaxHeight(Math.max(bottom - top - 10, 150));
+      const below = limitBottom - (rect.top - 5 + padding) - 10;
+      const above = (rect.bottom + 5 - padding) - limitTop - 10;
+      const needed = Math.min(itemsRef.current!.scrollHeight, 525);
+
+      const up = below < needed && (above >= needed || above > below + 100);
+      setDropUp(up);
+      setMaxHeight(Math.max(up ? above : below, 150));
     };
 
     update();
@@ -71,7 +80,7 @@ export default function GalaxySelect({ className, isSelect, selected, callback, 
   return (
     <div
       ref={ref}
-      className={clsx(styles.galaxySelect, className, { [styles.shown]: shown, [styles.nav]: !isSelect && !pageName, [styles.select]: isSelect, [styles.disabled]: disabled })}
+      className={clsx(styles.galaxySelect, className, { [styles.shown]: shown, [styles.up]: dropUp, [styles.nav]: !isSelect && !pageName, [styles.select]: isSelect, [styles.disabled]: disabled })}
       onClick={() => !disabled && setShown(!shown)}
     >
       {isSelect && (
@@ -83,7 +92,7 @@ export default function GalaxySelect({ className, isSelect, selected, callback, 
       )}
       {!isSelect && <span className={styles.current}>{pageName ?? `Galaxy ${id}`}</span>}
       <div ref={dropdownRef} className={styles.dropdown}>
-        <div className={styles.items} style={{ maxHeight: maxHeight && Math.min(maxHeight, 525) }}>
+        <div ref={itemsRef} className={styles.items} style={{ maxHeight: maxHeight && Math.min(maxHeight, 525) }}>
           {items
             ? items.filter(item => item.value !== selected).map((item) => (
                 <Link data-id={item.value} key={item.value} to="#" className={styles.dropdownItem} onClick={(e) => handleCallback(e)}>

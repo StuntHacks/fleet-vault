@@ -1616,7 +1616,8 @@
                 {
                     "name": "B43",
                     "id": "g6_b43",
-                    "color": "red",
+                    "color": "pink",
+                    "boss": true,
                     "hazard": [
                         {
                             "type": "Grid Buff",

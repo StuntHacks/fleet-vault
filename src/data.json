@@ -3015,6 +3015,12 @@
                     "boss": true,
                     "hazard": [
                         {
+                            "type": "Grid Buff",
+                            "id": "g12_support_2",
+                            "node": "PF2",
+                            "support": true
+                        },
+                        {
                             "type": "Reinforcements",
                             "id": "g12_b18",
                             "node": "B18"

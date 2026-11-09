@@ -1,0 +1,11 @@
+name = "stunthacks-api-fleet-vault"
+main = "index.js"
+compatibility_date = "2026-10-01"
+workers_dev = false
+
+routes = [
+  { pattern = "api.stunthacks.net/fleet-vault/*", zone_name = "stunthacks.net" },
+]
+
+[vars]
+SUPABASE_URL = "https://ihuzkrvnjgbukatdgenk.supabase.co"

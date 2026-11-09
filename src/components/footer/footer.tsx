@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { useMatch, useParams } from "react-router-dom";
 import { useAdminSession, useUsername } from "../../lib/hooks";
 import { Checkbox } from "../checkbox/checkbox";
 import styles from './footer.module.scss';
@@ -7,6 +8,9 @@ import { adminLogin } from "../../lib/api";
 export default function Footer() {
   const session = useAdminSession();
   const username = useUsername();
+  const { galaxy } = useParams();
+  const isGalaxyPage = [useMatch('/'), useMatch('/g'), useMatch('/g/:galaxy')].some(Boolean);
+
   const [ darkMode, setDarkMode ] = useState(() => {
     const stored = localStorage.getItem('fleetvault_darkmode');
     if (stored !== null) return stored === 'true';
@@ -42,6 +46,9 @@ export default function Footer() {
           <>
           |&nbsp;<a href="#/" onClick={login}>Login</a>
           </>
+      )}
+      {isGalaxyPage && process.env.REACT_APP_API_URL && (
+        <>&nbsp;|&nbsp;<a href={`${process.env.REACT_APP_API_URL}/g/${galaxy ?? 1}`} target="_blank" rel="noreferrer">API</a></>
       )}
       <span className={styles.version}>
         v{process.env.REACT_APP_VERSION}

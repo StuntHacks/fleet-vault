@@ -1,7 +1,7 @@
 import styles from "./solution.module.scss";
 
-export function SolutionColumns({ ref, children }: { ref?: React.Ref<HTMLDivElement>, children: React.ReactNode }) {
-    return <div className={styles.battles} ref={ref}>{children}</div>;
+export function SolutionColumns({ ref, onScroll, children }: { ref?: React.Ref<HTMLDivElement>, onScroll?: React.UIEventHandler<HTMLDivElement>, children: React.ReactNode }) {
+    return <div className={styles.battles} ref={ref} onScroll={onScroll}>{children}</div>;
 }
 
 export interface ColumnMove {

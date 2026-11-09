@@ -16,7 +16,8 @@ import { SolutionColumn, SolutionColumns } from "../components/solution/solution
 import { GalaxyNotes } from "../components/galaxyNotes/galaxyNotes";
 import { HiddenGalaxy } from "../components/hiddenGalaxy/hiddenGalaxy";
 
-const upToStatsKey = (galaxyId: number) => `fleetvault_up_to_stats_${galaxyId}`;
+const upToStatsKey = (id: number) => `fleetvault_up_to_stats_${id}`;
+const scrollLeftKey = (id: number) => `fleetvault_scroll_left_${id}`;
 
 const nearestStats = (solutions: Solution[], stats: number) =>
     Math.max(...solutions.map((s) => s.combat_stats).filter((c) => c <= stats + 1e-6));
@@ -260,11 +261,22 @@ export default function GalaxyView() {
     const columnMove = (battleId: string) => {
         if (!isAdmin || flaggedOnly) return undefined;
         const index = battles.findIndex((b) => b.id === battleId);
+
         return {
             earlier: !savingOrder && index > 0 ? () => moveBattle(index, -1) : null,
             later: !savingOrder && index < battles.length - 1 ? () => moveBattle(index, 1) : null,
         };
-    };
+    }
+
+    useEffect(() => {
+        if (!listReady) return;
+
+        const list = listRef.current;
+        if (!list) return;
+
+        const saved = localStorage.getItem(scrollLeftKey(id));
+        if (saved) list.scrollLeft = parseInt(saved, 10);
+    }, [id, listReady]);
 
     const handleScroll = (e: React.WheelEvent<HTMLDivElement>) => {
         if (e.deltaY === 0) return;
@@ -279,6 +291,10 @@ export default function GalaxyView() {
         const target = e.deltaY > 0 ? stops.find((s) => s > left + 1) : stops.reverse().find((s) => s < left - 1);
 
         if (target != null) list.scrollLeft = target;
+    }
+
+    const saveScroll = (e: React.UIEvent<HTMLDivElement>) => {
+        localStorage.setItem(scrollLeftKey(id), e.currentTarget.scrollLeft.toString());
     }
 
     return (
@@ -332,7 +348,7 @@ export default function GalaxyView() {
                     </div>
                     {isAdmin && access.isHidden(id) && <HiddenGalaxy galaxyId={id} />}
                     <GalaxyNotes galaxyId={id} isAdmin={isAdmin} />
-                    <SolutionColumns ref={listRef}>
+                    <SolutionColumns ref={listRef} onScroll={saveScroll}>
                         {flaggedOnly && !columns.length && <p className={styles.info}>No flagged solutions</p>}
                         {columns.map(({ battle: b, results }) => (
                             <SolutionColumn key={b.id} id={`battle-${b.id}`} title={b.name} boss={isBossBattle(b)} count={results.best.length} move={columnMove(b.id)}>
